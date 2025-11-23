@@ -1,0 +1,116 @@
+
+<!-- Barre de navigation -->
+  <nav class="top-nav">
+    <div class="nav-logo">EduLearn</div>
+    <div class="nav-menu">
+      <a href="/student" (click)="navigate('/student'); $event.preventDefault()">Accueil</a>
+      <a href="/courses" (click)="navigate('/courses'); $event.preventDefault()">courses</a>
+      <a href="/Forum" (click)="navigate('/Forum'); $event.preventDefault()">Forum</a>
+      <a href="/profile" (click)="navigate('/student/profile'); $event.preventDefault()">profile</a>
+    </div>
+    
+     <div class="nav-actions">
+      <div class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
+      <button class="logout-btn" (click)="logout()">Déconnecter</button>
+    </div>
+  </nav>
+
+<!-- Profil header -->
+<div class="profile-header">
+  <div class="profile-avatar">
+    <img [src]="avatarUrl" [alt]="studentName">
+    <div class="badge-student">Student</div>
+  </div>
+  <div class="profile-info">
+    <h1>{{ studentName }}</h1>
+    <p class="profile-email">{{ studentEmail }}</p>
+    
+    <div class="profile-stats">
+      <div class="stat">
+        <div class="stat-number">{{ coursesInProgress.length }}</div>
+        <div class="stat-label">En cours</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">{{ completedCourses.length }}</div>
+        <div class="stat-label">Terminés</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">{{ overallProgress }}%</div>
+        <div class="stat-label">Progression</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cours en cours -->
+<section class="section">
+  <h2>📚 Mes cours en cours</h2>
+  <div class="course-grid">
+    <div class="course-card" *ngFor="let c of coursesInProgress">
+      <img [src]="c.imageUrl" [alt]="c.title" class="course-image">
+      <div class="course-content">
+        <span class="course-category">{{ c.category }}</span>
+        <h3>{{ c.title }}</h3>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="c.progress"></div>
+        </div>
+        <p class="progress-text">{{ c.progress }}% • {{ c.lastLesson }}</p>
+        <button class="btn-continue">Continuer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cours terminés -->
+<section class="section">
+  <h2>🏆 Cours terminés</h2>
+  <div class="course-grid">
+    <div class="course-card completed" *ngFor="let c of completedCourses">
+      <img [src]="c.imageUrl" [alt]="c.title" class="course-image">
+      <div class="course-content">
+        <span class="course-category">{{ c.category }}</span>
+        <h3>{{ c.title }}</h3>
+        <div class="completion-badge">✅ Terminé</div>
+        <p class="completion-date">Le {{ c.completionDate }}</p>
+        <p class="course-grade">Note : <strong>{{ c.grade }}/100</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Recommandations -->
+<section class="section recommendations">
+  <h2>🎯 Recommandé pour vous</h2>
+  <p class="subtitle">Basé sur vos centres d’intérêt</p>
+  <div class="course-grid">
+    <div class="course-card" *ngFor="let c of recommendedCourses">
+      <img [src]="c.imageUrl" [alt]="c.title" class="course-image">
+      <div class="course-content">
+        <span class="course-category">{{ c.category }}</span>
+        <h3>{{ c.title }}</h3>
+        <p class="course-desc">Avancez en {{ c.category }}.</p>
+        <button class="btn-enroll">S’inscrire</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo">
+    <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+    <span>EduLearn</span>
+  </div>
+  <p class="footer-subtitle">Virtual Class for Zoom</p>
+  <p>Subscribe to get our Newsletter</p>
+  <form class="newsletter-form">
+    <input type="email" placeholder="Your Email" class="newsletter-input">
+    <button type="submit" class="newsletter-btn">Subscribe</button>
+  </form>
+  <div class="footer-links">
+    <a href="#">Careers</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms & Conditions</a>
+  </div>
+  <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
+</footer>

@@ -1,0 +1,444 @@
+/* Barre de navigation */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 15px 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4a6cf7;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-menu a {
+  color: #666;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+  color: #4a6cf7;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e0f0f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #4a6cf7;
+  cursor: pointer;
+  position: relative;
+}
+
+.logout-btn {
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #3a5ce5;
+}
+
+
+
+
+/* Conteneur global centré */
+.welcome-container {
+  text-align: center;
+  position: relative;
+  margin-top: 40px;
+}
+
+/* Image welcome — AGRANDIE + centrée */
+.welcome-img {
+  width: 150px;          /* Taille augmentée */
+  height: 150px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 10px auto;
+  animation: bounce 1.8s infinite ease-in-out;
+}
+
+/* Animation bounce */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+
+/* Titre */
+.titrewelcoming {
+  font-size: 40px;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+/* Bulles colorées */
+.bubbles {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 120px;
+  pointer-events: none;
+}
+
+.bubbles span {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  animation: bubbleFloat 4s infinite ease-in-out;
+  opacity: 0.8;
+}
+
+/* Couleurs et positions */
+.bubbles span:nth-child(1) { background: #ff6f91; left: 10%; animation-delay: 0s; }
+.bubbles span:nth-child(2) { background: #6fa8ff; left: 30%; animation-delay: 0.4s; }
+.bubbles span:nth-child(3) { background: #ffd36f; left: 50%; animation-delay: 0.8s; }
+.bubbles span:nth-child(4) { background: #7dffb0; left: 70%; animation-delay: 1.2s; }
+.bubbles span:nth-child(5) { background: #ff8a5c; left: 90%; animation-delay: 1.6s; }
+
+/* Animation des bulles */
+@keyframes bubbleFloat {
+  0% { transform: translateY(0) scale(1); opacity: 0.9; }
+  50% { transform: translateY(-25px) scale(1.25); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.8; }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .welcome-img {
+    width: 110px;
+    height: 110px;
+  }
+  .titrewelcoming {
+    font-size: 28px;
+  }
+}
+
+
+
+/* ================================
+   SECTION GÉNÉRALE DES DOMAINES
+================================ */
+.domain-section {
+  padding: 50px 20px;
+  background: linear-gradient(120deg, #f5f5f5 0%, #ffffff 100%);
+  font-family: 'Poppins', Arial, sans-serif;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* ================================
+   TITRES / LABELS DES DOMAINES
+================================ */
+.domain-title {
+  display: inline-block;
+  padding: 6px 14px;
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 20px;
+  margin: 0 auto 25px auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  animation: bounce 2s infinite;
+}
+
+/* Bounce animation */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  60% { transform: translateY(-3px); }
+}
+
+/* Mobile: titre plus petit */
+@media (max-width: 768px) {
+  .domain-title {
+    font-size: 1rem;
+    padding: 4px 10px;
+    border-radius: 15px;
+  }
+}
+
+/* ================================
+   SLIDER DES COURS
+================================ */
+.course-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+  scroll-behavior: smooth;
+  scroll-padding: 10px;
+}
+
+/* Scrollbar moderne */
+.course-slider::-webkit-scrollbar {
+  height: 10px;
+}
+
+.course-slider::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  border-radius: 5px;
+}
+
+.course-slider::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 5px;
+}
+
+/* Effet survol slider */
+.course-slider:hover .course-card:not(:hover) {
+  opacity: 0.7;
+  transform: scale(0.97);
+}
+
+/* ================================
+   CARTE DE COURS
+================================ */
+.course-card {
+  position: relative;
+  flex: 0 0 220px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  padding: 15px;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+.course-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+/* ================================
+   IMAGE DU COURS
+================================ */
+.course-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: transform 0.3s ease;
+}
+
+.course-card:hover .course-image {
+  transform: scale(1.05);
+}
+
+/* ================================
+   TITRE DU COURS
+================================ */
+.course-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #222;
+  margin: 8px 0;
+  min-height: 45px;
+}
+
+/* ================================
+   META (LEÇON + NOTE)
+================================ */
+.course-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 12px;
+}
+
+/* ================================
+   PROGRESS BAR
+================================ */
+.progress-bar {
+  background-color: #e0e0e0;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  width: 0;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+/* ================================
+   TOOLTIP DESCRIPTION SUR HOVER
+================================ */
+
+/* Tooltip caché */
+.course-card .tooltip {
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 10;
+}
+
+/* Petite flèche du tooltip */
+.course-card .tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+}
+
+/* Affichage du tooltip */
+.course-card:hover .tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+/* ================================
+   RESPONSIVE CARDS
+================================ */
+@media (max-width: 1024px) {
+  .course-card {
+    flex: 0 0 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .course-card {
+    flex: 0 0 160px;
+  }
+}
+/* Footer */
+.footer {
+  background: #1a1a2e;
+  color: white;
+  padding: 40px 40px 20px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.footer-logo img {
+  width: 30px;
+  height: 30px;
+}
+
+.footer-logo span {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.footer-subtitle {
+  font-size: 16px;
+  margin: 0 0 20px 0;
+  opacity: 0.8;
+}
+
+.newsletter-form {
+  display: flex;
+  max-width: 400px;
+  margin: 0 auto 20px;
+  gap: 10px;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.newsletter-btn {
+  padding: 12px 20px;
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 14px;
+  margin: 20px 0;
+  opacity: 0.7;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-copyright {
+  font-size: 14px;
+  opacity: 0.5;
+}

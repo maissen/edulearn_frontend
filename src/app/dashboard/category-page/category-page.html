@@ -1,0 +1,111 @@
+
+
+
+<!-- Barre de navigation -->
+  <nav class="top-nav">
+    <div class="nav-logo">EduLearn</div>
+    <div class="nav-menu">
+      <a href="/student" (click)="navigate('/student'); $event.preventDefault()">Accueil</a>
+      <a href="/courses" (click)="navigate('/courses'); $event.preventDefault()">courses</a>
+      <a href="/Forum" (click)="navigate('/Forum'); $event.preventDefault()">Forum</a>
+      <a href="/profile" (click)="navigate('/profile'); $event.preventDefault()">profile</a>
+    </div>
+    
+     <div class="nav-actions">
+      <div class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
+      <button class="logout-btn" (click)="logout()">Déconnecter</button>
+    </div>
+  </nav>
+<div class="category-page">
+
+  
+  <!-- Header -->
+  <header class="page-header">
+    <h1>{{ categoryName }} Courses</h1>
+    <p>Explorez nos meilleurs cours dans la catégorie "{{ categoryName }}"</p>
+  </header>
+
+  <!-- Cours disponibles -->
+<section class="courses-grid">
+  <a 
+    *ngFor="let course of courses"
+    class="course-card-link"
+    href="/course/:id" (click)="navigate('/course/:id'); $event.preventDefault()">
+    
+    <div class="course-card">
+      <img [src]="course.imageUrl" [alt]="course.title" class="course-image">
+      <div class="course-info">
+        <h3>{{ course.title }}</h3>
+        <p class="course-description">{{ course.description | slice:0:80 }}...</p>
+        <div class="course-meta">
+          <span class="instructor">👨‍🏫 {{ course.instructor }}</span>
+          <span class="rating">⭐ {{ course.rating }}/5</span>
+        </div>
+        <div class="course-footer">
+          <span class="price">${{ course.price }}</span>
+          <button class="btn-enroll" (click)="$event.stopPropagation()">Enroll Now</button>
+        </div>
+      </div>
+    </div>
+  </a>
+</section>
+
+  <!-- Recommended -->
+  <section class="recommended-section">
+    <h2>💡 Recommended for you</h2>
+    <div class="course-grid">
+      <div class="course-card" *ngFor="let course of courses.slice(0, 3)">
+        <img [src]="course.imageUrl" [alt]="course.title" class="course-image">
+        <div class="course-info">
+          <h3>{{ course.title }}</h3>
+          <p class="course-description">{{ course.description | slice:0:60 }}...</p>
+          <div class="course-meta">
+            <span class="instructor">👨‍🏫 {{ course.instructor }}</span>
+            <span class="rating">⭐ {{ course.rating }}/5</span>
+          </div>
+          <div class="course-footer">
+            <span class="price">${{ course.price }}</span>
+            <button class="btn-enroll">Enroll Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Professeurs -->
+  <!-- Professeurs -->
+<section class="professors-section">
+  <h2>🧑‍🏫 Available Professors</h2>
+  <div class="professor-grid">
+    <div class="professor-card" *ngFor="let course of uniqueInstructors">
+      <img 
+        [src]="course.avatarUrl" 
+        [alt]="course.instructor"
+        class="professor-image">
+      <div class="professor-info">
+        <h3>{{ course.instructor }}</h3>
+        <p>Teaches {{ course.title }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Footer -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+      <span>EduLearn</span>
+    </div>
+    <p class="footer-subtitle">Virtual Class for Zoom</p>
+    <p>Subscribe to get our Newsletter</p>
+    <form class="newsletter-form">
+      <input type="email" placeholder="Your Email" class="newsletter-input">
+      <button type="submit" class="newsletter-btn">Subscribe</button>
+    </form>
+    <div class="footer-links">
+      <a href="#">Careers</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms & Conditions</a>
+    </div>
+    <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
+  </footer>
+</div>

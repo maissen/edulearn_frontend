@@ -1,0 +1,111 @@
+<div class="auth-container">
+  <!-- Colonne gauche : Image -->
+  <div class="image-column">
+    <img src="assets/img4.jpg" alt="Classroom with globe and books" class="hero-image">
+    <div class="overlay-text">
+      <h2>Votre savoir, notre mission.</h2>
+      <p>Fais de ta curiosité une force.</p>
+    </div>
+  </div>
+
+  <!-- Colonne droite : Formulaire -->
+  <div class="form-column">
+    <div class="form-header">
+      <h3>Welcome to EduLearn!</h3>
+      <div class="auth-tabs">
+        <button class="tab" (click)="goToLogin()">Login</button>
+        <button class="tab active">Register</button>
+      </div>
+    </div>
+
+    <div class="auth-description">
+      <p>Découvrez une expérience d’apprentissage intuitive, sécurisée et conçue pour vous aider à réussir.</p>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <!-- Choix Étudiant / Enseignant -->
+      <div class="role-selector">
+        <label>Je suis :</label>
+        <div class="role-options">
+          <div class="role-option">
+            <input type="radio" id="student" value="student" formControlName="role" checked>
+            <label for="student">Étudiant</label>
+          </div>
+          <div class="role-option">
+            <input type="radio" id="teacher" value="teacher" formControlName="role">
+            <label for="teacher">Enseignant</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email" 
+          placeholder="Enter your Email Address"
+          [class.invalid]="submitted && email?.errors">
+        @if (submitted && email?.errors) {
+          <div class="error-message">
+            @if (email?.errors?.['required']) {
+              <div>Email is required</div>
+            }
+            @if (email?.errors?.['email']) {
+              <div>Please enter a valid email</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="username">User name</label>
+        <input 
+          type="text" 
+          id="username" 
+          formControlName="username" 
+          placeholder="Enter your User name"
+          [class.invalid]="submitted && username?.errors">
+        @if (submitted && username?.errors) {
+          <div class="error-message">
+            User name is required
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input-wrapper">
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            placeholder="Enter your Password"
+            [class.invalid]="submitted && password?.errors">
+          <span class="toggle-password" (click)="togglePasswordVisibility()">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M1 8s0-.5.1-.9C1.1 7.1 1.5 6.5 2 6h12c.5 0 .9.6 1 1.1.1.4.1.9.1 1.1 0 .5-.1.9-.1 1.1-.1.4-.5.9-1 1.1H2c-.5 0-.9-.6-1-1.1-.1-.4-.1-.9-.1-1.1zm13 0c0-.5-.1-.9-.1-1.1-.1-.4-.5-.9-1-1.1H2c-.5 0-.9.6-1 1.1-.1.4-.1.9-.1 1.1 0 .5.1.9.1 1.1.1.4.5.9 1 1.1h12c.5 0 .9-.6 1-1.1.1-.4.1-.9.1-1.1z"/>
+              <path d="M1 8s0-.5.1-.9C1.1 7.1 1.5 6.5 2 6h12c.5 0 .9.6 1 1.1.1.4.1.9.1 1.1 0 .5-.1.9-.1 1.1-.1.4-.5.9-1 1.1H2c-.5 0-.9-.6-1-1.1-.1-.4-.1-.9-.1-1.1zm13 0c0-.5-.1-.9-.1-1.1-.1-.4-.5-.9-1-1.1H2c-.5 0-.9.6-1 1.1-.1.4-.1.9-.1 1.1 0 .5.1.9.1 1.1.1.4.5.9 1 1.1h12c.5 0 .9-.6 1-1.1.1-.4.1-.9.1-1.1z"/>
+            </svg>
+          </span>
+        </div>
+        @if (submitted && password?.errors) {
+          <div class="error-message">
+            @if (password?.errors?.['required']) {
+              <div>Password is required</div>
+            }
+            @if (password?.errors?.['minlength']) {
+              <div>Password must be at least 6 characters</div>
+            }
+          </div>
+        }
+      </div>
+
+      <button type="submit" class="auth-button">Register</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a (click)="goToLogin()" class="signup-link">Login</a></p>
+    </div>
+  </div>
+</div>

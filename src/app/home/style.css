@@ -1,0 +1,310 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    background-color: #fff8f0;
+    color: #100f0f;
+    margin: 0;
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #ffe4e1; /* Rose poudré */
+    border-bottom: 2px solid #f7c5c2;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #b35f5b;
+    text-decoration: none;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.menu a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #b35f5b;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.menu a:hover {
+    color: #7b3c38;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(120deg, #ffe4e1, #f7c5c2);
+    text-align: center;
+    padding: 5rem 2rem;
+    position: relative;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    color: #7b3c38;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #5a2c29;
+    margin-bottom: 2rem;
+}
+
+.hero button {
+    padding: 0.8rem 1.5rem;
+    background-color: #7b3c38;
+    color: #fff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero button:hover {
+    background-color: #5a2c29;
+    transform: scale(1.05);
+}
+
+/* Video Section */
+.video-section {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    overflow: hidden;
+    margin: 2rem 0;
+}
+
+.video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Image Gallery */
+.image-gallery {
+    padding: 2rem;
+    text-align: center;
+    background-color: #ffe4e1;
+}
+
+.image-gallery h2 {
+    font-size: 2rem;
+    color: #7b3c38;
+    margin-bottom: 1rem;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.image-item {
+    overflow: hidden;
+    border-radius: 8px;
+    border: 2px solid #f7c5c2;
+    background-color: #fff;
+}
+
+.image-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.image-item img:hover {
+    transform: scale(1.1);
+}
+
+/* Bande Passante */
+.marquee-container {
+    background-color: #f00742;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 1rem 0;
+    position: relative;
+}
+
+.marquee {
+    display: flex;
+    animation: scroll-left 10s linear infinite;
+    gap: 2rem;
+}
+
+.marquee span {
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #f6f6f6;
+    font-weight: bold;
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Comment Section */
+.comment-box {
+padding: 2rem;
+background-color: rgba(255, 255, 255, 0.8); /* Semi-translucide pour laisser transparaître l'image */
+margin: 2rem auto;
+border: 1px solid #fc79b8;
+border-radius: 10px;
+max-width: 600px;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+position: relative;
+background-image: url('https://www.itl.cat/pngfile/big/0-6323_cute-wallpapers-for-desktop.jpg'); /* Remplacez par l'URL de votre image */
+background-size: cover;
+background-position: center;
+text-align: center;
+}
+
+.comment-box::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(255, 255, 255, 0.909); /* Légèrement translucide pour faire ressortir le texte */
+filter: blur(2px); /* Effet de flou sur l'image */
+z-index: -1; /* S'assurer que le flou est en dessous du contenu */
+}
+
+
+.comment-box h2 {
+font-size: 2rem;
+color: #0a0d50;
+margin-bottom: 1rem;
+font-family: 'Poppins', sans-serif;
+display: inline-block;
+position: relative;
+animation: glow 3s ease-in-out infinite alternate, bounce 1s ease-in-out infinite; /* Animation lumineuse et sautante */
+}
+
+/* Animation lumineuse */
+@keyframes glow {
+0% {
+text-shadow: 0 0 50px #b3ff00, 0 0 20px #ff004c, 0 0 30px #ffffff, 0 0 40px #b3ff00;
+}
+100% {
+text-shadow: 0 0 50px #b3ff00, 0 0 30px #ff004c, 0 0 40px #b3ff00, 0 0 50px #ffffff;
+}
+}
+
+/* Animation de saut */
+@keyframes bounce {
+0%, 100% {
+transform: translateY(0);
+}
+50% {
+transform: translateY(-10px); /* Rebondir vers le haut */
+}
+}
+
+.comment-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.comment-box input,
+.comment-box textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #1c0128;
+    border-radius: 10px;
+    outline: none;
+    font-size: 1rem;
+}
+
+.comment-box textarea {
+    resize: none;
+    height: 80px;
+}
+
+.comment-box button {
+    padding: 0.75rem;
+    background-color: #0a0d50;
+    color: #fff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.comment-box button:hover {
+    background-color: #e37eff;
+    transform: scale(1.05);
+}
+/* Style des liens sociaux */
+/* Lien contact (téléphone, email) */
+.contact-link {
+text-decoration: none;
+color: #ea5e4e;
+font-weight: bold;
+transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+color: #55022c;
+}
+
+/* Lien social */
+.social-link {
+text-decoration: none;
+font-size: 1.2rem;
+font-weight: bold;
+color: #000202; /* Couleur initiale */
+background: linear-gradient(45deg, #ffe4e1, #f7c5c2);
+padding: 0.5rem 1rem;
+border-radius: 8px;
+transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.social-link:hover {
+background: linear-gradient(45deg, #f7c5c2, #b20349);
+color: #fff;
+transform: scale(1.1);
+}
+
+
+
+/* Ajout d'un effet de scroll suave */
+html {
+scroll-behavior: smooth;
+}

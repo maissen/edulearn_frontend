@@ -1,0 +1,170 @@
+<div class="student-dashboard">
+  <!-- Barre de navigation -->
+  <nav class="top-nav">
+    <div class="nav-logo">EduLearn</div>
+    <div class="nav-menu">
+      <a routerLink="/student" routerLinkActive="active">Accueil</a>
+      <a routerLink="/courses" routerLinkActive="active">Courses</a>
+      <a routerLink="/forum" routerLinkActive="active">Forum</a>
+      <a routerLink="/profile" routerLinkActive="active">Profil</a>
+      
+
+    </div>
+     <div class="nav-actions">
+      <div class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
+      <button class="logout-btn" (click)="logout()">Déconnecter</button>
+    </div>
+  </nav>
+
+  <!-- Bannière d'accueil -->
+<div class="hero-banner">
+  <div class="rolling-images">
+    <div class="rolling-track">
+      <img src="assets/aff1.jpg" alt="">
+      <img src="assets/aff2.jpg" alt="">
+      <img src="assets/aff3.jpg" alt="">
+      <img src="assets/aff4.jpg" alt="">
+      <img src="assets/aff5.jpg" alt="">
+      <img src="assets/aff6.jpg" alt="">
+      <img src="assets/aff7.jpg" alt="">
+      <!-- duplication pour boucle fluide -->
+      <img src="assets/aff1.jpg" alt="">
+      <img src="assets/aff2.jpg" alt="">
+      <img src="assets/aff3.jpg" alt="">
+      <img src="assets/aff4.jpg" alt="">
+      <img src="assets/aff5.jpg" alt="">
+      <img src="assets/aff6.jpg" alt="">
+      <img src="assets/aff7.jpg" alt="">
+    </div>
+  </div>
+</div>
+
+
+  <!-- Section "Welcome back" -->
+  <section class="welcome-section">
+    <h2>Welcome back ! Ready for your next lesson?</h2>
+    <div class="course-slider">
+      <div class="course-card">
+        <img src="assets/img8.jpg" alt="Java Course" class="course-image">
+        <h3 class="course-title">Java course</h3>
+        <div class="course-meta">
+          <span>Lesson 5 of 7</span>
+          <span>⭐ 4.8</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 70%;"></div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <img src="assets/img7.jpg" alt="PHP Course" class="course-image">
+        <h3 class="course-title">Kotlin course</h3>
+        <div class="course-meta">
+          <span>Lesson 3 of 7</span>
+          <span>⭐ 4.6</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 40%;"></div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <img src="assets/img9.jpg" alt="Angular Course" class="course-image">
+        <h3 class="course-title">PHP course</h3>
+        <div class="course-meta">
+          <span>Lesson 6 of 7</span>
+          <span>⭐ 4.9</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 85%;"></div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <img src="assets/img10.jpg" alt="Python Course" class="course-image">
+        <h3 class="course-title">Angular course</h3>
+        <div class="course-meta">
+          <span>Lesson 2 of 7</span>
+          <span>⭐ 4.7</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 30%;"></div>
+        </div>
+      </div>
+
+         <div class="course-card">
+        <img src="assets/img11.jpg" alt="Python Course" class="course-image">
+        <h3 class="course-title">Python course</h3>
+        <div class="course-meta">
+          <span>Lesson 2 of 7</span>
+          <span>⭐ 4.7</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 30%;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catégories de cours -->
+  <section class="categories-section">
+    <h2>Choice favourite course from top category</h2>
+    <div class="category-grid">
+      <a routerLink="/category/programmation" class="category-card">
+      <div class="category-icon">💻</div>
+      <h3 class="category-title">Development</h3>
+      <p class="category-desc">Web, Mobile, Python, JavaScript ,Angular,machine learning </p>
+    </a>
+
+      <div class="category-card">
+        <div class="category-icon">✏️</div>
+        <h3 class="category-title">Design</h3>
+        <p class="category-desc">UI/UX, Figma, Adobe XD, prototyping</p>
+      </div>
+
+      <div class="category-card">
+        <div class="category-icon">📈</div>
+        <h3 class="category-title">Business</h3>
+        <p class="category-desc">Management, Finance, Entrepreneurship</p>
+      </div>
+
+      <div class="category-card">
+        <div class="category-icon">📢</div>
+        <h3 class="category-title">Marketing</h3>
+        <p class="category-desc">Digital, SEO, Social Media, Branding</p>
+      </div>
+
+      <div class="category-card">
+        <div class="category-icon">📷</div>
+        <h3 class="category-title">Photography</h3>
+        <p class="category-desc">Lightroom, Composition, Portrait</p>
+      </div>
+
+      <div class="category-card">
+        <div class="category-icon">🎭</div>
+        <h3 class="category-title">Acting</h3>
+        <p class="category-desc">Voice, Stage, Film, Improvisation</p>
+      </div>
+    </div>
+  </section>
+
+   <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+      <span>EduLearn</span>
+    </div>
+    <p class="footer-subtitle">Virtual Class for Zoom</p>
+    <p>Subscribe to get our Newsletter</p>
+    <form class="newsletter-form">
+      <input type="email" placeholder="Your Email" class="newsletter-input">
+      <button type="submit" class="newsletter-btn">Subscribe</button>
+    </form>
+    <div class="footer-links">
+      <a href="#">Careers</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms & Conditions</a>
+    </div>
+    <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
+  </footer>
+</div>

@@ -1,0 +1,353 @@
+/* Style global */
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --light-color: #ecf0f1;
+  --dark-color: #2c3e50;
+  --success-color: #2ecc71;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  color: var(--dark-color);
+  line-height: 1.6;
+}
+
+
+/* Contenu principal */
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, rgba(121, 171, 220, 0.95) 0%, rgba(169, 216, 248, 0.9) 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-content::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(21, 31, 227, 0.568) 0%, transparent 70%);
+  animation: rotate-gradient 20s linear infinite;
+}
+
+@keyframes rotate-gradient {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.main-content-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Animation des boules colorées dansantes */
+@keyframes bubbleDance {
+  0% { transform: translateY(0); opacity: 0.8; }
+  50% { transform: translateY(-20px); opacity: 1; }
+  100% { transform: translateY(0); opacity: 0.8; }
+}
+
+
+/* Container principal */
+
+
+/* Contenu textuel */
+.text-content {
+  flex: 1;
+  color: #fff;
+  max-width: 600px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Titre impressionnant */
+.text-content h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 10px;
+  text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 123, 255, 0.8);
+  letter-spacing: 3px;
+  animation: glow 2s infinite;
+  line-height: 1.2;
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 4px 4px 10px rgb(226, 138, 15), 0 0 20px rgb(40, 39, 39);
+  }
+  50% {
+    text-shadow: 4px 4px 20px rgb(225, 132, 9), 0 0 40px rgb(255, 255, 255);
+  }
+}
+
+/* Phrases dans le texte */
+.text-content p {
+  font-size: 1.2rem;
+  color: #fff;
+  margin: 10px 0;
+  line-height: 1.6;
+  font-family: Georgia, 'Times New Roman', Times, serif
+}
+
+/* Section image */
+.image-content {
+  flex: 1;
+  text-align: center;
+}
+
+.image-content img {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.cta-button {
+  padding: 12px 30px;
+  background-color: #0009ae;
+  color: #fff;
+  border: 2px solid #ff9100;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer; 
+  transition: all 0.3s ease-in-out; 
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  animation: buttonZoom 1s infinite; /* Add a zoom animation */
+}
+
+@keyframes buttonZoom {
+  0% {
+    transform: scale(1); 
+  }
+  50% {
+    transform: scale(1.05); 
+  }
+  100% {
+    transform: scale(1); 
+  }
+}
+
+.cta-button:hover {
+  background-color: #0056b3; 
+  border-color: #0056b3;
+  transform: translateY(-5px); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  animation: buttonZoomHover 0.8s infinite; 
+}
+
+@keyframes buttonZoomHover {
+  0% {
+    transform: scale(1.05); 
+  }
+  50% {
+    transform: scale(1.1); 
+  }
+  100% {
+    transform: scale(1.05); 
+  }
+}
+
+.cta-button:before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: inherit;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); 
+  pointer-events: none; 
+}
+
+
+
+
+/* Médias queries pour responsivité */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .main-content-container {
+    flex-direction: column;
+  }
+
+  .content h1 {
+    font-size: 2.5rem;
+  }
+
+  .content p {
+    font-size: 1rem;
+  }
+}
+.inspiration-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.video-container {
+  flex: 1;
+  max-width: 50%;
+  text-align: center;
+  padding: 20px;
+}
+
+.video-container video {
+  width: 100%;
+  max-width: 500px;
+}
+
+.quotes-container {
+  flex: 1;
+  max-width: 50%;
+  text-align: center;
+  padding: 20px;
+  animation: float 80s ease-in-out infinite;
+}
+
+.quotes-container blockquote {
+  font-style: italic;
+  font-size: 18px;
+  margin: 10px 0;
+  
+}
+
+/* Animation pour les citations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Conteneur des bulles */
+.bubbles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Styles des bulles */
+.bubble {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  animation: bubble-rise 6s linear infinite, rotate 8s linear infinite;
+}
+
+/* Couleurs, tailles et positions différentes */
+.bubble:nth-child(1) {
+  width: 40px;
+  height: 40px;
+  background: rgb(41, 201, 255); /* Bleu clair */
+  left: 10%;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(2) {
+  width: 25px;
+  height: 25px;
+  background: rgb(234, 33, 67); /* Rose clair */
+  left: 40%;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(3) {
+  width: 30px;
+  height: 30px;
+  background: rgb(255, 230, 0); /* Jaune clair */
+  left: 70%;
+  animation-delay: 3s;
+}
+
+.bubble:nth-child(4) {
+  width: 20px;
+  height: 20px;
+  background: rgb(0, 255, 0); /* Vert clair */
+  left: 20%;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(5) {
+  width: 50px;
+  height: 50px;
+  background: rgb(255, 0, 255); /* Violet clair */
+  left: 80%;
+  animation-delay: 5s;
+}
+
+/* Animation de montée des bulles */
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(100%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Animation de rotation */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+video {
+  width: 100%;
+  max-width: 600px;
+  margin: 10px;
+  
+}
