@@ -40,28 +40,28 @@ export class CoursService {
   /**
    * Create a new course.
    * @param cours Cours object containing course details
-   * @returns Observable of the created Cours
+   * @returns Observable of the response message
    */
-  createCours(cours: Cours): Observable<Cours> {
-    return this.http.post<Cours>(this.apiUrl, cours);
+  createCours(cours: Cours): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(this.apiUrl, cours);
   }
 
   /**
    * Update an existing course.
    * @param id Course ID
    * @param cours Partial Cours object with updated fields
-   * @returns Observable of the updated Cours
+   * @returns Observable of the response message
    */
-  updateCours(id: number, cours: Partial<Cours>): Observable<Cours> {
-    return this.http.put<Cours>(`${this.apiUrl}/${id}`, cours);
+  updateCours(id: number, cours: Partial<Cours>): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.apiUrl}/${id}`, cours);
   }
 
   /**
    * Delete a course by its ID.
    * @param id Course ID
-   * @returns Observable of deletion result
+   * @returns Observable of the response message
    */
-  deleteCours(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteCours(id: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 }

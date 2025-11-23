@@ -1,17 +1,15 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-
-export class HomeComponent{
-isRegisterVisible: any;
-showRegister() {
-throw new Error('Method not implemented.');
-}
+export class HomeComponent {
   isLoggedIn: boolean = false;
   isLoginFormVisible: boolean = false;
 
@@ -24,13 +22,23 @@ throw new Error('Method not implemented.');
 
   // Navigate to the login page
   goToLogin(): void {
-    this.router.navigate(['/login']);
-    this.isLoginFormVisible = true;
+    console.log('Navigating to login...');
+    this.router.navigate(['/login']).then(
+      (success) => {
+        if (success) {
+          console.log('Navigation successful');
+        } else {
+          console.error('Navigation failed');
+        }
+      }
+    ).catch(err => {
+      console.error('Navigation error:', err);
+    });
   }
 
   // Navigate to the register page
   goToRegister(): void {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/signup']);
   }
 
   // Logout and return to home

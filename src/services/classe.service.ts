@@ -30,28 +30,28 @@ export class ClasseService {
   /**
    * Add a new class.
    * @param classe Classe object
-   * @returns Observable of the created Classe
+   * @returns Observable of the response message
    */
-  addClasse(classe: Classe): Observable<Classe> {
-    return this.http.post<Classe>(this.apiUrl, classe);
+  addClasse(classe: Classe): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(this.apiUrl, classe);
   }
 
   /**
    * Update an existing class by ID.
    * @param id ID of the class to update
    * @param classe Partial Classe object with fields to update
-   * @returns Observable of the updated Classe
+   * @returns Observable of the response message
    */
-  updateClasse(id: number, classe: Partial<Classe>): Observable<Classe> {
-    return this.http.put<Classe>(`${this.apiUrl}/${id}`, classe);
+  updateClasse(id: number, classe: Partial<Classe>): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.apiUrl}/${id}`, classe);
   }
 
   /**
    * Delete a class by ID.
    * @param id ID of the class to delete
-   * @returns Observable of any response
+   * @returns Observable of the response message
    */
-  deleteClasse(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteClasse(id: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 }

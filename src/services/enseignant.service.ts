@@ -5,11 +5,9 @@ import { API_BASE_URL } from '../api.config';
 
 export interface Enseignant {
   id?: number;
-  nom: string;
-  prenom: string;
+  username: string;
   email: string;
-  matiere: string;
-  password?: string;
+  module: string;
 }
 
 @Injectable({
@@ -33,28 +31,28 @@ export class EnseignantService {
   /**
    * Add a new enseignant.
    * @param enseignant Enseignant object to add
-   * @returns Observable of the added Enseignant
+   * @returns Observable of the response message
    */
-  addEnseignant(enseignant: Enseignant): Observable<Enseignant> {
-    return this.http.post<Enseignant>(this.apiUrl, enseignant);
+  addEnseignant(enseignant: Enseignant): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(this.apiUrl, enseignant);
   }
 
   /**
    * Update an existing enseignant by ID.
    * @param id ID of the enseignant to update
    * @param enseignant Partial Enseignant object with updated fields
-   * @returns Observable of the updated Enseignant
+   * @returns Observable of the response message
    */
-  updateEnseignant(id: number, enseignant: Partial<Enseignant>): Observable<Enseignant> {
-    return this.http.put<Enseignant>(`${this.apiUrl}/${id}`, enseignant);
+  updateEnseignant(id: number, enseignant: Partial<Enseignant>): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.apiUrl}/${id}`, enseignant);
   }
 
   /**
    * Delete an enseignant by ID.
    * @param id ID of the enseignant to delete
-   * @returns Observable of the deletion response
+   * @returns Observable of the response message
    */
-  deleteEnseignant(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteEnseignant(id: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 }

@@ -5,8 +5,12 @@ import { API_BASE_URL } from '../api.config';
 
 export interface ImageResponse {
   id: number;
-  filename: string;
-  path: string;
+  url: string;
+}
+
+export interface ImageUploadResponse {
+  message: string;
+  url: string;
 }
 
 @Injectable({
@@ -22,12 +26,12 @@ export class ImagesService {
   /**
    * Upload an image file to the server.
    * @param file File object to upload
-   * @returns Observable of the uploaded ImageResponse
+   * @returns Observable of the upload response
    */
-  uploadImage(file: File): Observable<ImageResponse> {
+  uploadImage(file: File): Observable<ImageUploadResponse> {
     const formData = new FormData();
     formData.append('image', file);
-    return this.http.post<ImageResponse>(this.apiUrl, formData);
+    return this.http.post<ImageUploadResponse>(this.apiUrl, formData);
   }
 
   /**

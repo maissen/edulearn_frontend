@@ -7,15 +7,8 @@ export interface ForumPost {
   id?: number;
   titre: string;
   contenu: string;
-  auteur_id?: number;
-  comments?: Comment[];
-}
-
-export interface Comment {
-  id?: number;
-  contenu: string;
-  auteur_id?: number;
-  post_id?: number;
+  user_id?: number;
+  username?: string;
 }
 
 export interface CreatePostRequest {
@@ -48,19 +41,19 @@ export class ForumService {
   /**
    * Create a new forum post.
    * @param post CreatePostRequest object with title and content
-   * @returns Observable of the created ForumPost
+   * @returns Observable of the response message
    */
-  createPost(post: CreatePostRequest): Observable<ForumPost> {
-    return this.http.post<ForumPost>(this.apiUrl, post);
+  createPost(post: CreatePostRequest): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(this.apiUrl, post);
   }
 
   /**
    * Add a comment to a specific forum post.
    * @param postId ID of the forum post
    * @param comment AddCommentRequest object with comment content
-   * @returns Observable of the created Comment
+   * @returns Observable of the response message
    */
-  addComment(postId: number, comment: AddCommentRequest): Observable<Comment> {
-    return this.http.post<Comment>(`${this.apiUrl}/${postId}/comment`, comment);
+  addComment(postId: number, comment: AddCommentRequest): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/${postId}/comment`, comment);
   }
 }

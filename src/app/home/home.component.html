@@ -1,54 +1,196 @@
-<body>
-  <section class="main-content">
-    <div class="main-content-container">
-      <div class="text-content">
-        <h1>Bienvenue sur EduLearn</h1>
-        <p>
-          Solution complète pour gérer les besoins étudiants, enseignants <br> Simplifiez l'administration de votre institution éducative
-        </p>
+<div class="landing-page">
+  <!-- Navigation Header -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <h2>EduLearn</h2>
+      </div>
+      <div class="nav-links">
+        <a routerLink="/home" class="nav-link">Accueil</a>
+        <a routerLink="/courses" class="nav-link">Cours</a>
+        <button class="nav-button" (click)="goToLogin()">Se connecter</button>
+        <button class="nav-button secondary" (click)="goToRegister()">S'inscrire</button>
+      </div>
+    </div>
+  </nav>
 
-        <div class="cta-container">
-          <p class="cta-text">Prêt à optimiser votre gestion académique?</p>
-          <button class="cta-button" (click)="goToLogin()">Commencer</button>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <div class="animated-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="gradient-text">Bienvenue sur EduLearn</span>
+        </h1>
+        <p class="hero-subtitle">
+          Solution complète pour gérer les besoins étudiants, enseignants et administrateurs.
+          Simplifiez l'administration de votre institution éducative avec notre plateforme moderne.
+        </p>
+        <div class="hero-buttons">
+          <button type="button" class="btn-primary" (click)="goToLogin()">
+            <span>Commencer</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button type="button" class="btn-secondary" (click)="goToRegister()">
+            Créer un compte
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">1000+</div>
+            <div class="stat-label">Étudiants</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Enseignants</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">200+</div>
+            <div class="stat-label">Cours</div>
+          </div>
         </div>
       </div>
-      <div class="image-content">
-        <img src="assets/educ.png" alt="Illustration gestion éducative">
+      <div class="hero-image">
+        <div class="image-placeholder">
+          <svg width="400" height="400" viewBox="0 0 400 400" fill="none">
+            <circle cx="200" cy="200" r="150" fill="url(#gradient1)" opacity="0.3"/>
+            <path d="M150 200 L200 150 L250 200 L200 250 Z" fill="url(#gradient2)"/>
+            <defs>
+              <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
       </div>
     </div>
   </section>
-  <section class="inspiration">
-    <div class="inspiration-container">
-      <div class="video-container">
-        <h2>Optimisez votre administration</h2>
-        <p>Découvrez comment notre plateforme peut transformer la gestion de votre institution éducative</p>
-        <video autoplay muted loop>
-          <source src="assets/vidd.mp4" type="video/mp4">
-          Votre navigateur ne supporte pas les vidéos.
-        </video>
-      </div>
-      <div class="quotes-container"><br>
-        <h2>Citations inspirantes</h2>
-        <div class="bubbles-container">
-          <span class="bubble"></span>
-          <span class="bubble"></span>
-          <span class="bubble"></span>
-          <span class="bubble"></span>
-          <span class="bubble"></span>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title">Pourquoi choisir EduLearn ?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📚</div>
+          <h3>Gestion des Cours</h3>
+          <p>Créez et gérez facilement vos cours avec une interface intuitive et moderne.</p>
         </div>
-        <blockquote>
-          "L'éducation est l'arme la plus puissante qu'on puisse utiliser pour changer le monde" - Nelson Mandela
-        </blockquote>
-        <blockquote>
-          "La technologie n'est qu'un outil. Pour que les enfants travaillent ensemble et soient motivés, c'est l'enseignant qui compte" - Bill Gates
-        </blockquote>
-        <blockquote>
-          "L'administration efficace est le socle invisible de toute éducation réussie" - Anonyme
-        </blockquote>
-        <blockquote>
-          "L'avenir de l'éducation est indissociable de la technologie" - David Lassner
-        </blockquote>
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h3>Gestion des Utilisateurs</h3>
+          <p>Administrez étudiants, enseignants et classes en quelques clics.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Examens & Quiz</h3>
+          <p>Créez des examens et quiz interactifs pour évaluer vos étudiants.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Forum de Discussion</h3>
+          <p>Encouragez les échanges entre étudiants et enseignants.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Tableau de Bord</h3>
+          <p>Suivez les performances et statistiques en temps réel.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>Sécurisé</h3>
+          <p>Vos données sont protégées avec les dernières technologies de sécurité.</p>
+        </div>
       </div>
     </div>
   </section>
-</body>
+
+  <!-- Inspiration Section -->
+  <section class="inspiration-section">
+    <div class="container">
+      <div class="inspiration-content">
+        <div class="quotes-section">
+          <h2 class="section-title">Citations Inspirantes</h2>
+          <div class="quotes-carousel">
+            <blockquote class="quote-card">
+              <p>"L'éducation est l'arme la plus puissante qu'on puisse utiliser pour changer le monde"</p>
+              <cite>- Nelson Mandela</cite>
+            </blockquote>
+            <blockquote class="quote-card">
+              <p>"La technologie n'est qu'un outil. Pour que les enfants travaillent ensemble et soient motivés, c'est l'enseignant qui compte"</p>
+              <cite>- Bill Gates</cite>
+            </blockquote>
+            <blockquote class="quote-card">
+              <p>"L'administration efficace est le socle invisible de toute éducation réussie"</p>
+              <cite>- Anonyme</cite>
+            </blockquote>
+            <blockquote class="quote-card">
+              <p>"L'avenir de l'éducation est indissociable de la technologie"</p>
+              <cite>- David Lassner</cite>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Prêt à commencer votre parcours éducatif ?</h2>
+        <p>Rejoignez des milliers d'étudiants et enseignants qui utilisent déjà EduLearn</p>
+        <div class="cta-buttons">
+          <button type="button" class="btn-primary large" (click)="goToLogin()">
+            Commencer maintenant
+          </button>
+          <button type="button" class="btn-outline large" (click)="goToRegister()">
+            Créer un compte gratuit
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>EduLearn</h3>
+          <p>Votre plateforme éducative complète pour une gestion moderne et efficace.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Liens rapides</h4>
+          <ul>
+            <li><a routerLink="/home">Accueil</a></li>
+            <li><a routerLink="/courses">Cours</a></li>
+            <li><a routerLink="/login">Connexion</a></li>
+            <li><a routerLink="/signup">Inscription</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <p>Email: contact@edulearn.com</p>
+          <p>Téléphone: +33 1 23 45 67 89</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 EduLearn. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+</div>

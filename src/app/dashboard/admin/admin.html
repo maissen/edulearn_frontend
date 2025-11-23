@@ -1,0 +1,81 @@
+<div class="admin-dashboard">
+  <!-- Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-logo">EduLearn Admin</div>
+    <div class="nav-menu">
+      <a routerLink="/admin" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/admin/teachers" routerLinkActive="active">Teachers</a>
+      <a routerLink="/admin/students" routerLinkActive="active">Students</a>
+      <a routerLink="/admin/classes" routerLinkActive="active">Classes</a>
+      <a routerLink="/admin/courses" routerLinkActive="active">Courses</a>
+      <a routerLink="/admin/exams" routerLinkActive="active">Exams</a>
+    </div>
+    <div class="nav-actions">
+      <div class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h1>Welcome, {{ userName }}!</h1>
+      <p>Manage your school platform from here.</p>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="stats-section">
+    <h2>Platform Statistics</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.teachers }}</div>
+        <div class="stat-label">Teachers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.students }}</div>
+        <div class="stat-label">Students</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.classes }}</div>
+        <div class="stat-label">Classes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.courses }}</div>
+        <div class="stat-label">Courses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.exams }}</div>
+        <div class="stat-label">Exams</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Actions -->
+  <section class="actions-section">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+      <div class="action-card">
+        <h3>Manage Teachers</h3>
+        <p>Add, edit, or remove teachers</p>
+        <button class="action-btn">Go to Teachers</button>
+      </div>
+      <div class="action-card">
+        <h3>Manage Students</h3>
+        <p>Add, edit, or remove students</p>
+        <button class="action-btn">Go to Students</button>
+      </div>
+      <div class="action-card">
+        <h3>Manage Classes</h3>
+        <p>Create and manage classes</p>
+        <button class="action-btn">Go to Classes</button>
+      </div>
+      <div class="action-card">
+        <h3>Manage Courses</h3>
+        <p>View and manage all courses</p>
+        <button class="action-btn">Go to Courses</button>
+      </div>
+    </div>
+  </section>
+</div>
+

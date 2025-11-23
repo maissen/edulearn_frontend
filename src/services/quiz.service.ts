@@ -7,7 +7,6 @@ export interface Quiz {
   id?: number;
   titre: string;
   cours_id: number;
-  duree: number;
 }
 
 @Injectable({
@@ -30,19 +29,19 @@ export class QuizService {
 
   /**
    * Create a new quiz.
-   * @param quiz Quiz object containing title, course id, and duration
-   * @returns Observable of the created Quiz
+   * @param quiz Quiz object containing title and course id
+   * @returns Observable of the response message
    */
-  createQuiz(quiz: Quiz): Observable<Quiz> {
-    return this.http.post<Quiz>(this.apiUrl, quiz);
+  createQuiz(quiz: Quiz): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(this.apiUrl, quiz);
   }
 
   /**
    * Delete a quiz by its ID.
    * @param id Quiz ID to delete
-   * @returns Observable of any response from the server
+   * @returns Observable of the response message
    */
-  deleteQuiz(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteQuiz(id: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 }

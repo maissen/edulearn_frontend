@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -14,16 +15,20 @@ export class Signup {
   signupForm: FormGroup;
   submitted = false;
   showPassword = false;
+  errorMessage: string = '';
+  successMessage: string = '';
+  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.signupForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['student'] // Par défaut : étudiant
+      role: ['student', Validators.required]
     });
   }
 
@@ -34,20 +39,43 @@ export class Signup {
 
   onSubmit() {
     this.submitted = true;
+    this.errorMessage = '';
+    this.successMessage = '';
 
     if (this.signupForm.invalid) {
       return;
     }
 
-    console.log('Signup attempt with:', this.signupForm.value);
+    this.loading = true;
+    const { email, username, password } = this.signupForm.value;
+    const role = this.signupForm.value.role;
 
-    // Ici, tu peux rediriger vers un dashboard différent selon le rôle
-    const userRole = this.role?.value;
-    if (userRole === 'teacher') {
-      this.router.navigate(['/teacher-dashboard']);
+    let registerObservable;
+
+    if (role === 'student') {
+      registerObservable = this.authService.registerStudent({ email, username, password });
+    } else if (role === 'teacher') {
+      registerObservable = this.authService.registerTeacher({ email, username, password });
     } else {
-      this.router.navigate(['/student-dashboard']);
+      this.errorMessage = 'Only student and teacher registration is available';
+      this.loading = false;
+      return;
     }
+
+    registerObservable.subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.successMessage = response.message || 'Registration successful!';
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+      },
+      error: (error) => {
+        this.loading = false;
+        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        console.error('Signup error:', error);
+      }
+    });
   }
 
   goToLogin() {
@@ -57,6 +85,8 @@ export class Signup {
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
     const passwordInput = document.getElementById('password') as HTMLInputElement;
-    passwordInput.type = this.showPassword ? 'text' : 'password';
+    if (passwordInput) {
+      passwordInput.type = this.showPassword ? 'text' : 'password';
+    }
   }
 }

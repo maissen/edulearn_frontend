@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-student',
@@ -9,16 +10,23 @@ import { CommonModule } from '@angular/common';
   templateUrl: './student.html',
   styleUrl: './student.css'
 })
-export class Student {
-  userName = 'èlè ammar '; // À remplacer par les données réelles plus tard
+export class Student implements OnInit {
+  userName = 'Student';
 
   constructor(
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
+  ngOnInit() {
+    const user = this.authService.getUser();
+    if (user) {
+      this.userName = user.username || 'Student';
+    }
+  }
+
   logout() {
-    localStorage.removeItem('authToken');
-    sessionStorage.clear();
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 }

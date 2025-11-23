@@ -77,7 +77,7 @@
         <label for="password">Password</label>
         <div class="password-input-wrapper">
           <input 
-            type="password" 
+            [type]="showPassword ? 'text' : 'password'" 
             id="password" 
             formControlName="password" 
             placeholder="Enter your Password"
@@ -101,7 +101,17 @@
         }
       </div>
 
-      <button type="submit" class="auth-button">Register</button>
+      @if (errorMessage) {
+        <div class="error-message" style="margin-bottom: 1rem;">{{ errorMessage }}</div>
+      }
+
+      @if (successMessage) {
+        <div class="success-message" style="margin-bottom: 1rem; color: green;">{{ successMessage }}</div>
+      }
+
+      <button type="submit" class="auth-button" [disabled]="loading">
+        {{ loading ? 'Registering...' : 'Register' }}
+      </button>
     </form>
 
     <div class="auth-footer">

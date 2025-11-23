@@ -5,9 +5,8 @@ import { API_BASE_URL } from '../api.config';
 
 export interface Profile {
   id: number;
+  username: string;
   email: string;
-  nom: string;
-  prenom: string;
   role: string;
 }
 
