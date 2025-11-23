@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_BASE_URL } from '../environments/api.config';
+import { API_BASE_URL } from '../api.config';
 
 export interface Classe {
   id?: number;

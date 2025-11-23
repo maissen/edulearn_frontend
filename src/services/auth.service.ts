@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { API_BASE_URL } from '../environments/api.config';
+import { API_BASE_URL } from '../api.config';
 
 export interface LoginRequest {
   email: string;

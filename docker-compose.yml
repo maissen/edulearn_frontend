@@ -1,0 +1,20 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: edulearn_frontend
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - API_BASE_URL=http://localhost:5000
+    restart: unless-stopped
+    networks:
+      - edulearn-network
+
+networks:
+  edulearn-network:
+    driver: bridge
+
