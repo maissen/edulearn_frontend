@@ -48,6 +48,8 @@ export class AuthService {
    * @param data LoginRequest object containing email and password
    * @returns Observable of AuthResponse
    */
+
+  // save the fetched token as a local storage in the browser (caching)
   login(data: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data).pipe(
       tap(response => this.setToken(response.token))
@@ -57,6 +59,8 @@ export class AuthService {
   /**
    * Log out the user by removing the token from localStorage.
    */
+
+  // remove the token from the local storage to logout the user
   logout(): void {
     localStorage.removeItem('token');
   }
