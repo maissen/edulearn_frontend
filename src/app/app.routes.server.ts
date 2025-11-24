@@ -10,6 +10,35 @@ export const serverRoutes: ServerRoute[] = [
     path: 'course/:id',
     renderMode: RenderMode.Server
   },
+  // Authenticated routes should use SSR instead of prerendering
+  {
+    path: 'student',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'teacher',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'admin',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'profile',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'teacher/profile',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'coursesManage',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'analytics',
+    renderMode: RenderMode.Server
+  },
   // All other routes can be prerendered
   {
     path: '**',

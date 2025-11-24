@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { TeacherGuard } from '../guards/auth.guard';
+import { AuthGuard, TeacherGuard } from '../guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -17,15 +17,18 @@ export const routes: Routes = [
   },
   {
     path: 'student',
-    loadComponent: () => import('./dashboard/student/student').then(m => m.Student)
+    loadComponent: () => import('./dashboard/student/student').then(m => m.Student),
+    canActivate: [AuthGuard]
   },
   {
     path: 'teacher',
-    loadComponent: () => import('./dashboard/teacher/teacher').then(m => m.Teacher)
+    loadComponent: () => import('./dashboard/teacher/teacher').then(m => m.Teacher),
+    canActivate: [AuthGuard]
   },
   {
     path: 'admin',
-    loadComponent: () => import('./dashboard/admin/admin').then(m => m.AdminComponent)
+    loadComponent: () => import('./dashboard/admin/admin').then(m => m.AdminComponent),
+    canActivate: [AuthGuard]
   },
   {
     path: 'courses',
@@ -42,7 +45,8 @@ export const routes: Routes = [
   },
   {
     path: 'profile',
-    loadComponent: () => import('./dashboard/student-profile/student-profile').then(c => c.StudentProfileComponent)
+    loadComponent: () => import('./dashboard/student-profile/student-profile').then(c => c.StudentProfileComponent),
+    canActivate: [AuthGuard]
   },
   {
     path: 'course/:id',
@@ -54,6 +58,7 @@ export const routes: Routes = [
   },
   {
     path: 'teacher/profile',
-    loadComponent: () => import('./dashboard/teacher-profile/teacher-profile').then(c => c.TeacherProfileComponent)
+    loadComponent: () => import('./dashboard/teacher-profile/teacher-profile').then(c => c.TeacherProfileComponent),
+    canActivate: [AuthGuard]
   }
 ];

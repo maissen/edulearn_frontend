@@ -58,7 +58,7 @@ export class CoursesComponent implements OnInit {
           id: c.id || index + 1,
           title: c.titre,
           category: 'Informatique', // Default category, can be enhanced
-          image: `assets/img${(index % 6) + 8}.jpg`, // Cycle through images
+          image: `https://picsum.photos/300/180?random=${index + 1}`, // Use placeholder images
           currentLesson: Math.floor(Math.random() * 5) + 1,
           totalLessons: 7,
           rating: 4.5 + Math.random() * 0.5, // Random rating between 4.5-5.0

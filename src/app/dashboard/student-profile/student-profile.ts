@@ -85,7 +85,7 @@ export class StudentProfileComponent implements OnInit {
           category: 'General',
           progress: Math.floor(Math.random() * 80) + 10, // Mock progress
           completed: false,
-          imageUrl: 'assets/img8.jpg'
+          imageUrl: 'https://picsum.photos/300/180?random=8'
         }));
         
         // Mock completed courses (in real app, this would come from API)
@@ -97,7 +97,7 @@ export class StudentProfileComponent implements OnInit {
           completed: true,
           completionDate: new Date().toLocaleDateString('fr-FR'),
           grade: Math.floor(Math.random() * 20) + 80,
-          imageUrl: 'assets/img8.jpg'
+          imageUrl: 'https://picsum.photos/300/180?random=8'
         }));
 
         // Recommended courses

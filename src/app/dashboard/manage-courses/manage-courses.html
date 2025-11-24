@@ -219,7 +219,7 @@
       <div class="course-grid">
         <div class="course-card" *ngFor="let course of courses">
           <div class="course-media">
-            <img [src]="course.imageUrl || 'https://via.placeholder.com/300x180/667eea/ffffff?text=No+Image'"
+            <img [src]="course.imageUrl || 'https://picsum.photos/300/180?random=1'"
                   [alt]="course.titre" loading="lazy">
             <div class="course-badges">
               <span class="badge badge-video" *ngIf="course.videoUrl">🎥 Video</span>
@@ -270,7 +270,7 @@
 <!-- 🏁 Footer (identique au template) -->
 <footer class="footer">
   <div class="footer-logo">
-    <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+    <app-logo></app-logo>
     <span>EduLearn</span>
   </div>
   <p class="footer-subtitle">Virtual Class for Zoom</p>

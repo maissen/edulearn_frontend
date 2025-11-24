@@ -151,11 +151,29 @@ export class AuthService {
   }
 
   /**
-   * Check if the user is authenticated (i.e., token exists).
+   * Check if the token is expired.
+   * @returns boolean
+   */
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expirationDate = payload.exp * 1000; // Convert to milliseconds
+      return Date.now() >= expirationDate;
+    } catch (error) {
+      console.error('Error parsing token:', error);
+      return true;
+    }
+  }
+
+  /**
+   * Check if the user is authenticated (i.e., token exists and is not expired).
    * @returns boolean
    */
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return !!this.getToken() && !this.isTokenExpired();
   }
 
   /**

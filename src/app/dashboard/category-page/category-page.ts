@@ -71,7 +71,7 @@ export class CategoryPageComponent implements OnInit {
           title: c.titre,
           description: c.description || 'No description available',
           category: 'programming', // Default category
-          imageUrl: `assets/img${(index % 6) + 8}.jpg`,
+          imageUrl: `https://picsum.photos/300/180?random=${index + 10}`,
           price: Math.floor(Math.random() * 50) + 50,
           rating: 4.5 + Math.random() * 0.5,
           instructor: 'Instructor',

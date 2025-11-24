@@ -6,6 +6,7 @@ import { CoursService, Cours } from '../../../services/cours.service';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
+import { LogoComponent } from '../../shared/logo/logo.component';
 
 interface Quiz {
   question: string;
@@ -27,7 +28,7 @@ interface CourseTemplate {
 @Component({
   selector: 'app-manage-courses',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, LogoComponent],
   templateUrl: './manage-courses.html',
   styleUrls: ['./manage-courses.css']
 })

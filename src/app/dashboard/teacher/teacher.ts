@@ -5,11 +5,12 @@ import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { CoursService, Cours } from '../../../services/cours.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
+import { LogoComponent } from '../../shared/logo/logo.component';
 
 @Component({
   selector: 'app-teacher',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, LogoComponent],
   templateUrl: './teacher.html',
   styleUrl: './teacher.css'
 })

@@ -68,6 +68,7 @@ export class Login {
     loginObservable.subscribe({
       next: (response) => {
         this.loading = false;
+
         // Route based on user role
         const userRole = response.user.role.toLowerCase();
         if (userRole === 'admin') {

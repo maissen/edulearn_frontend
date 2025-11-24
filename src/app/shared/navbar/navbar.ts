@@ -29,20 +29,42 @@ export class NavbarComponent implements OnInit {
   }
 
   loadUserData() {
-    this.profileService.getProfile().subscribe({
-      next: (profile) => {
-        this.userName = profile.username || '';
-        this.userRole = this.authService.getUserRole() || '';
-      },
-      error: (error) => {
-        console.error('Error loading profile:', error);
-        const user = this.authService.getUser();
-        if (user) {
-          this.userName = user.username || '';
-          this.userRole = user.role || '';
+    // Only load user data if user is authenticated and token is not expired
+    if (this.authService.isAuthenticated()) {
+      this.profileService.getProfile().subscribe({
+        next: (profile) => {
+          this.userName = profile.username || '';
+          this.userRole = this.authService.getUserRole() || '';
+        },
+        error: (error) => {
+          console.error('Error loading profile:', error);
+          // If profile request fails with 401, the token might be invalid/expired
+          if (error.status === 401) {
+            console.log('Token expired or invalid, logging out...');
+            this.authService.logout();
+            this.router.navigate(['/login']);
+            this.userName = '';
+            this.userRole = '';
+            return;
+          }
+
+          // If profile request fails for other reasons, try to get data from localStorage as fallback
+          const user = this.authService.getUser();
+          if (user) {
+            this.userName = user.username || '';
+            this.userRole = user.role || '';
+          } else {
+            // If no user data available, clear the navbar data
+            this.userName = '';
+            this.userRole = '';
+          }
         }
-      }
-    });
+      });
+    } else {
+      // Clear navbar data if not authenticated
+      this.userName = '';
+      this.userRole = '';
+    }
   }
 
   setupRouteTracking() {
