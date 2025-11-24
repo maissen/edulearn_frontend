@@ -10,6 +10,7 @@ import { QuestionService, Question } from '../../../services/question.service';
 import { AuthService } from '../../../services/auth.service';
 import { EnseignantService } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
+import { LogoComponent } from '../../shared/logo/logo.component';
 interface Quiz {
   question: string;
   options: string[];
@@ -40,7 +41,7 @@ interface Course {
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, LogoComponent],
   templateUrl: './course-detail.html',
   styleUrls: ['./course-detail.css']
 })
@@ -53,6 +54,15 @@ export class CourseDetailComponent implements OnInit {
   courseId: number = 0;
   userName = '';
   isTeacher = false;
+
+  // Quiz modal state
+  showQuizModal = false;
+  editingQuizIndex: number | null = null;
+  currentQuiz: Quiz = {
+    question: '',
+    options: ['', '', '', ''],
+    correctAnswer: 0
+  };
 
   constructor(
     private router: Router,
@@ -147,10 +157,107 @@ export class CourseDetailComponent implements OnInit {
   }
 
   loadQuizzes() {
-    // Quizzes will be loaded separately using QuizService
-    // For now, using empty array
+    if (this.courseId) {
+      this.quizService.getQuizzesByCourse(this.courseId).subscribe({
+        next: (quizzes) => {
+          if (this.course) {
+            // Transform API quizzes to component format
+            this.course.quizzes = quizzes.map(quiz => ({
+              question: quiz.titre, // Assuming titre contains the question
+              options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'], // This should come from questions API
+              correctAnswer: 0
+            }));
+          }
+        },
+        error: (error) => {
+          console.error('Error loading quizzes:', error);
+          if (this.course) {
+            this.course.quizzes = [];
+          }
+        }
+      });
+    }
   }
 
+  // Quiz Modal Methods
+  openAddQuizModal() {
+    this.editingQuizIndex = null;
+    this.currentQuiz = {
+      question: '',
+      options: ['', '', '', ''],
+      correctAnswer: 0
+    };
+    this.showQuizModal = true;
+  }
+
+  editQuiz(index: number) {
+    if (this.course && this.course.quizzes[index]) {
+      this.editingQuizIndex = index;
+      this.currentQuiz = { ...this.course.quizzes[index] };
+      this.showQuizModal = true;
+    }
+  }
+
+  closeQuizModal() {
+    this.showQuizModal = false;
+    this.editingQuizIndex = null;
+    this.currentQuiz = {
+      question: '',
+      options: ['', '', '', ''],
+      correctAnswer: 0
+    };
+  }
+
+  addOption() {
+    if (this.currentQuiz.options.length < 6) {
+      this.currentQuiz.options.push('');
+    }
+  }
+
+  removeOption(index: number) {
+    if (this.currentQuiz.options.length > 2) {
+      this.currentQuiz.options.splice(index, 1);
+      // Adjust correct answer if it was pointing to a removed option
+      if (this.currentQuiz.correctAnswer >= this.currentQuiz.options.length) {
+        this.currentQuiz.correctAnswer = this.currentQuiz.options.length - 1;
+      }
+    }
+  }
+
+  isQuizFormValid(): boolean {
+    return !!(
+      this.currentQuiz.question.trim() &&
+      this.currentQuiz.options.every(opt => opt.trim()) &&
+      this.currentQuiz.correctAnswer >= 0 &&
+      this.currentQuiz.correctAnswer < this.currentQuiz.options.length
+    );
+  }
+
+  saveQuiz() {
+    if (!this.isQuizFormValid()) return;
+
+    if (!this.course) return;
+
+    if (this.editingQuizIndex !== null) {
+      // Update existing quiz
+      this.course.quizzes[this.editingQuizIndex] = { ...this.currentQuiz };
+    } else {
+      // Add new quiz
+      this.course.quizzes.push({ ...this.currentQuiz });
+    }
+
+    // Here you would typically save to the backend
+    // For now, we'll just close the modal
+    this.closeQuizModal();
+  }
+
+  deleteQuiz(index: number) {
+    if (confirm('Are you sure you want to delete this quiz? This action cannot be undone.')) {
+      if (this.course) {
+        this.course.quizzes.splice(index, 1);
+      }
+    }
+  }
 
   navigate(url: string) {
     this.router.navigateByUrl(url);

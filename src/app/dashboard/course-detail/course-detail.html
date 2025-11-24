@@ -28,73 +28,67 @@
   <!-- Description & sections -->
   <div class="course-content">
 
-    <!-- Left column -->
-    <div class="left-column">
-      <section class="section">
-        <h2>📚 Who this course is for?</h2>
-        <p>{{ course?.targetAudience }}</p>
-      </section>
+  <!-- Course Description -->
+  <section class="course-description-section">
+    <h2>📖 Course Description</h2>
+    <p>{{ course?.description }}</p>
+  </section>
 
-      <section class="section">
-        <h2>📝 Prerequisites</h2>
-        <p>{{ course?.prerequisites }}</p>
-      </section>
+  <!-- Quiz Section -->
+  <section class="quiz-section">
+    <div class="quiz-header">
+      <h2>🧠 Practice Quizzes</h2>
+      @if (isTeacher) {
+        <button type="button" class="btn-add-quiz" (click)="openAddQuizModal()">
+          <i class="icon-plus"></i> Add Quiz
+        </button>
+      }
+    </div>
 
-      <section class="section">
-        <h2>🧠 Practice Quiz</h2>
-        <div *ngIf="quizzes.length === 0" class="empty-quiz">
-          Aucun quiz. Cliquez sur "+ Ajouter un quiz".
-        </div>
-        <div class="quiz-list">
-          <div class="quiz-item" *ngFor="let quiz of quizzes; let i = index">
-           
-            <div class="quiz-body">
-              <div class="form-group">
-                <label>Question</label>
-                <input type="text" [(ngModel)]="quizzes[i].question" [name]="'quiz_' + i + '_question'" required>
+    @if (quizzes.length === 0) {
+      <div class="empty-quiz">
+        <div class="empty-icon">🧠</div>
+        <h3>No quizzes yet</h3>
+        <p>Quizzes will help students test their knowledge and understanding.</p>
+        @if (isTeacher) {
+          <button type="button" class="btn-add-first-quiz" (click)="openAddQuizModal()">
+            Create First Quiz
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="quiz-gallery">
+        <div class="quiz-card" *ngFor="let quiz of quizzes; let i = index">
+          <div class="quiz-card-header">
+            <div class="quiz-number">Quiz {{ i + 1 }}</div>
+            @if (isTeacher) {
+              <div class="quiz-actions">
+                <button class="btn-edit-quiz" (click)="editQuiz(i)" title="Edit quiz">
+                  <i class="icon-edit"></i>
+                </button>
+                <button class="btn-delete-quiz" (click)="deleteQuiz(i)" title="Delete quiz">
+                  <i class="icon-trash"></i>
+                </button>
               </div>
-              <div class="options">
-                <div *ngFor="let opt of quiz.options; let j = index" class="option-row">
-                  <label>Option {{ j + 1 }}</label>
-                  <input type="text" [(ngModel)]="quizzes[i].options[j]" [name]="'quiz_' + i + '_opt_' + j">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Bonne réponse (indice 0 à {{ quiz.options.length - 1 }})</label>
-                <input type="number" [(ngModel)]="quizzes[i].correctAnswer" [name]="'quiz_' + i + '_correct'" min="0" [max]="quizzes[i].options.length - 1">
+            }
+          </div>
+          <div class="quiz-card-content">
+            <h3 class="quiz-question">{{ quiz.question }}</h3>
+            <div class="quiz-options">
+              <div class="option" *ngFor="let option of quiz.options; let j = index"
+                   [class.correct]="j === quiz.correctAnswer">
+                <span class="option-label">{{ j + 1 }}.</span>
+                <span class="option-text">{{ option }}</span>
+                @if (j === quiz.correctAnswer) {
+                  <span class="correct-badge">✓ Correct</span>
+                }
               </div>
             </div>
           </div>
         </div>
-        
-      </section>
-
-      <section class="section">
-        <h2>👨‍🏫 Instructor</h2>
-        <div class="instructor-card">
-          <img [src]="instructor.avatarUrl" [alt]="instructor.name" class="instructor-avatar">
-          <div class="instructor-info">
-            <h3>{{ instructor.name }}</h3>
-            <p>{{ instructor.bio }}</p>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- Right column -->
-    <div class="right-column">
-      <section class="section">
-        <h2>📖 Course Description</h2>
-        <p>{{ course?.description }}</p>
-      </section>
-
-      <section class="section">
-        <h2>🎯 What you'll learn</h2>
-        <ul class="learning-points">
-          <li *ngFor="let objective of course?.learningObjectives">{{ objective }}</li>
-        </ul>
-      </section>
-    </div>
+      </div>
+    }
+  </section>
   </div>
 
   <!-- Recommandations -->
@@ -115,12 +109,70 @@
     </div>
   </section>
 
+  <!-- Quiz Modal -->
+  @if (showQuizModal) {
+    <div class="modal-overlay" (click)="closeQuizModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>{{ editingQuizIndex !== null ? 'Edit Quiz' : 'Add New Quiz' }}</h3>
+          <button type="button" class="modal-close" (click)="closeQuizModal()">
+            <i class="icon-close"></i>
+          </button>
+        </div>
+
+        <form (ngSubmit)="saveQuiz()" class="quiz-form">
+          <div class="form-group">
+            <label for="quizQuestion">Question *</label>
+            <input type="text" id="quizQuestion" [(ngModel)]="currentQuiz.question"
+                   name="question" placeholder="Enter your quiz question" required>
+          </div>
+
+          <div class="options-section">
+            <label>Options</label>
+            <div class="options-list">
+              <div class="option-input" *ngFor="let option of currentQuiz.options; let j = index">
+                <input type="text" [(ngModel)]="currentQuiz.options[j]"
+                       [name]="'option_' + j"
+                       [placeholder]="'Option ' + (j + 1)"
+                       required>
+                <button type="button" class="btn-remove-option"
+                        (click)="removeOption(j)"
+                        [disabled]="currentQuiz.options.length <= 2">
+                  <i class="icon-minus"></i>
+                </button>
+              </div>
+            </div>
+            <button type="button" class="btn-add-option" (click)="addOption()">
+              <i class="icon-plus"></i> Add Option
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label for="correctAnswer">Correct Answer *</label>
+            <select id="correctAnswer" [(ngModel)]="currentQuiz.correctAnswer" name="correctAnswer" required>
+              <option [value]="j" *ngFor="let option of currentQuiz.options; let j = index">
+                Option {{ j + 1 }}: {{ option || 'Option ' + (j + 1) }}
+              </option>
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="closeQuizModal()">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="!isQuizFormValid()">
+              {{ editingQuizIndex !== null ? 'Update Quiz' : 'Create Quiz' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
 </div>
 
 <!-- 🏁 Footer (identique au template) -->
 <footer class="footer">
   <div class="footer-logo">
-    <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+    <app-logo></app-logo>
     <span>EduLearn</span>
   </div>
   <p class="footer-subtitle">Virtual Class for Zoom</p>
@@ -135,4 +187,5 @@
     <a href="#">Terms & Conditions</a>
   </div>
   <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
+</footer>
 </footer>
