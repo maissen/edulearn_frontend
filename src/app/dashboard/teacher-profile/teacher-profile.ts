@@ -69,13 +69,13 @@ export class TeacherProfileComponent implements OnInit {
 
   saveProfile() {
     this.profileService.updateProfile(this.editForm).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.teacherName = this.editForm.username;
         this.teacherEmail = this.editForm.email;
         this.isEditing = false;
         alert('Profile updated successfully!');
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error updating profile:', error);
         alert('Error updating profile. Please try again.');
       }

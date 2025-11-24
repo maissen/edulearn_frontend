@@ -8,6 +8,8 @@ export interface Profile {
   username: string;
   email: string;
   role: string;
+  bio?: string;
+  specialization?: string;
 }
 
 @Injectable({
@@ -26,5 +28,14 @@ export class ProfileService {
    */
   getProfile(): Observable<Profile> {
     return this.http.get<Profile>(this.apiUrl);
+  }
+
+  /**
+   * Update the currently logged-in user's profile.
+   * @param profileData Partial profile data to update
+   * @returns Observable of Profile
+   */
+  updateProfile(profileData: Partial<Profile>): Observable<Profile> {
+    return this.http.put<Profile>(this.apiUrl, profileData);
   }
 }
