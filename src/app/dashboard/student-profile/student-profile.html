@@ -10,7 +10,7 @@
   </div>
   <div class="profile-info">
     <h1>Profil Étudiant</h1>
-    <p class="profile-email">Suivez vos progrès et gérez vos informations</p>
+    <p class="profile-email">{{ editForm.biography || 'Aucune biographie définie' }}</p>
 
     <div class="profile-actions">
       <button class="btn-edit" (click)="openUpdateProfileModal()">Mettre à jour le profil</button>
@@ -24,10 +24,6 @@
       <div class="stat">
         <div class="stat-number">{{ completedCourses.length }}</div>
         <div class="stat-label">Terminés</div>
-      </div>
-      <div class="stat">
-        <div class="stat-number">{{ overallProgress }}%</div>
-        <div class="stat-label">Progression</div>
       </div>
     </div>
   </div>
@@ -140,22 +136,6 @@
   </ng-template>
 </section>
 
-<!-- Recommandations -->
-<section class="section recommendations">
-  <h2>🎯 Recommandé pour vous</h2>
-  <p class="subtitle">Basé sur vos centres d’intérêt</p>
-  <div class="course-grid">
-    <div class="course-card" *ngFor="let c of recommendedCourses">
-      <img [src]="c.imageUrl" [alt]="c.title" class="course-image">
-      <div class="course-content">
-        <span class="course-category">{{ c.category }}</span>
-        <h3>{{ c.title }}</h3>
-        <p class="course-desc">Avancez en {{ c.category }}.</p>
-        <button class="btn-enroll">S’inscrire</button>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- Update Profile Modal -->
 @if (showProfileModal) {
@@ -224,6 +204,4 @@
     <a href="#">Terms & Conditions</a>
   </div>
   <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
-</footer>
-</footer>
 </footer>

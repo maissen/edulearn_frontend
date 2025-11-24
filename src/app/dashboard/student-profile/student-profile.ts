@@ -34,6 +34,18 @@ interface CompletedCourse {
   teacher_username: string;
 }
 
+interface Course {
+  id: number;
+  title: string;
+  category: string;
+  progress: number;
+  lastLesson?: string;
+  completed: boolean;
+  completionDate?: string;
+  grade?: number;
+  imageUrl: string;
+}
+
 @Component({
   selector: 'app-student-profile',
   standalone: true,
@@ -46,10 +58,12 @@ export class StudentProfileComponent implements OnInit {
   studentEmail = '';
   initial = '';
   avatarUrl = 'https://i.pravatar.cc/150?u=student';
-  overallProgress = 0;
   loading = true;
   errorMessage = '';
   showProfileModal = false;
+
+  // Make Math available in templates
+  Math = Math;
 
   // Form data for editing
   editForm = {
@@ -61,7 +75,6 @@ export class StudentProfileComponent implements OnInit {
   coursesInProgress: InProgressCourse[] = [];
   completedCourses: CompletedCourse[] = [];
   quizResults: QuizResult[] = [];
-  recommendedCourses: Course[] = [];
   allCourses: Cours[] = [];
 
   constructor(
@@ -111,7 +124,6 @@ export class StudentProfileComponent implements OnInit {
     this.etudiantService.getInProgressCourses().subscribe({
       next: (courses) => {
         this.coursesInProgress = courses;
-        this.calculateOverallProgress();
       },
       error: (error) => {
         console.error('Error loading in-progress courses:', error);
@@ -144,15 +156,6 @@ export class StudentProfileComponent implements OnInit {
     });
   }
 
-  calculateOverallProgress() {
-    if (this.coursesInProgress.length > 0) {
-      this.overallProgress = Math.round(
-        this.coursesInProgress.reduce((sum, c) => sum + c.progress_percentage, 0) / this.coursesInProgress.length
-      );
-    } else {
-      this.overallProgress = 0;
-    }
-  }
 
   openUpdateProfileModal() {
     // Load current data into form

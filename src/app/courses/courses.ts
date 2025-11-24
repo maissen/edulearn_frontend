@@ -38,6 +38,10 @@ export class CoursesComponent implements OnInit {
   filteredCourses: Course[] = [];
   enrollmentStatuses: Map<number, CourseEnrollmentStatus> = new Map();
 
+  // Make Math and Object available in templates
+  Math = Math;
+  Object = Object;
+
   constructor(
     private router: Router,
     private coursService: CoursService,
@@ -66,7 +70,14 @@ export class CoursesComponent implements OnInit {
     const enrollmentChecks = allCourses.map(course =>
       this.etudiantService.getCourseEnrollmentStatus(course.id).toPromise()
         .then(status => {
-          this.enrollmentStatuses.set(course.id, status);
+          this.enrollmentStatuses.set(course.id, status || {
+            isEnrolled: false,
+            status: null,
+            enrollmentId: null,
+            progressPercentage: 0,
+            startedAt: null,
+            completedAt: null
+          });
           return status;
         })
         .catch(error => {
