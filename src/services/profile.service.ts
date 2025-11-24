@@ -8,8 +8,7 @@ export interface Profile {
   username: string;
   email: string;
   role: string;
-  bio?: string;
-  specialization?: string;
+  biography?: string;
   avatarUrl?: string;
 }
 

@@ -8,8 +8,8 @@
     <div class="badge-teacher">Teacher</div>
   </div>
   <div class="profile-info">
-    <h1>{{ teacherName }}</h1>
-    <p class="profile-email">{{ teacherEmail }}</p>
+    <h1>Profil Enseignant</h1>
+    <p class="profile-email">Gérez vos informations personnelles et professionnelles</p>
 
     <div class="profile-actions">
       <button class="btn-edit" (click)="openUpdateProfileModal()">Mettre à jour le profil</button>
@@ -23,19 +23,15 @@
   <div class="info-grid">
     <div class="info-item">
       <label>Nom complet</label>
-      <p>{{ teacherName }}</p>
+      <p>Utilisateur Enseignant</p>
     </div>
     <div class="info-item">
       <label>Email</label>
-      <p>{{ teacherEmail }}</p>
-    </div>
-    <div class="info-item">
-      <label>Spécialisation</label>
-      <p>{{ editForm.specialization || 'Non spécifiée' }}</p>
+      <p>enseignant@exemple.com</p>
     </div>
     <div class="info-item">
       <label>Biographie</label>
-      <p>{{ editForm.biography || 'Aucune biographie' }}</p>
+      <p>Enseignant passionné par l'éducation et le partage des connaissances.</p>
     </div>
   </div>
 </section>
