@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-// Définir l'interface Course
+import { CoursService, Cours } from '../../services/cours.service';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+
 interface Course {
   id: number;
   title: string;
@@ -16,40 +19,64 @@ interface Course {
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [FormsModule], // permet l'utilisation de [(ngModel)]
+  imports: [FormsModule, RouterModule, CommonModule],
   templateUrl: './courses.html',
   styleUrls: ['./courses.css']
 })
 export class CoursesComponent implements OnInit {
-   userName = 'èlè ammar '; // À remplacer par les données réelles plus tard
+  userName = '';
+  loading = true;
+  errorMessage = '';
 
-  constructor(
-    private router: Router
-  ) {}
-
-  logout() {
-    localStorage.removeItem('authToken');
-    sessionStorage.clear();
-    this.router.navigate(['/login']);
-  }
-
-  courses: Course[] = [
-    { id: 1, title: 'Introduction to Java', category: 'Informatique', image: 'assets/img8.jpg', currentLesson: 5, totalLessons: 7, rating: 4.8, progress: 70 },
-    { id: 2, title: 'Kotlin Basics', category: 'Informatique', image: 'assets/img7.jpg', currentLesson: 3, totalLessons: 7, rating: 4.6, progress: 40 },
-    { id: 3, title: 'Advanced PHP', category: 'Informatique', image: 'assets/img9.jpg', currentLesson: 6, totalLessons: 7, rating: 4.9, progress: 85 },
-    { id: 4, title: 'Angular for Beginners', category: 'Informatique', image: 'assets/img10.jpg', currentLesson: 2, totalLessons: 7, rating: 4.7, progress: 30 },
-    { id: 5, title: 'Digital Marketing 101', category: 'Marketing', image: 'assets/img11.jpg', currentLesson: 4, totalLessons: 8, rating: 4.5, progress: 50 },
-    { id: 6, title: 'Photography Basics', category: 'Photography', image: 'assets/img12.jpg', currentLesson: 2, totalLessons: 5, rating: 4.3, progress: 40 }
-  ];
-
-  categories: string[] = ['All', 'Informatique', 'Marketing', 'Photography'];
-
+  courses: Course[] = [];
+  categories: string[] = ['All'];
   searchTerm: string = '';
   selectedCategory: string = 'All';
   filteredCourses: Course[] = [];
 
+  constructor(
+    private router: Router,
+    private coursService: CoursService,
+    private authService: AuthService
+  ) {
+    const user = this.authService.getUser();
+    if (user) {
+      this.userName = user.username || 'User';
+    }
+  }
+
   ngOnInit(): void {
-    this.filteredCourses = this.courses;
+    this.loadCourses();
+  }
+
+  loadCourses() {
+    this.coursService.getAllCours().subscribe({
+      next: (apiCourses) => {
+        // Transform API courses to display format
+        this.courses = apiCourses.map((c, index) => ({
+          id: c.id || index + 1,
+          title: c.titre,
+          category: 'Informatique', // Default category, can be enhanced
+          image: `assets/img${(index % 6) + 8}.jpg`, // Cycle through images
+          currentLesson: Math.floor(Math.random() * 5) + 1,
+          totalLessons: 7,
+          rating: 4.5 + Math.random() * 0.5, // Random rating between 4.5-5.0
+          progress: Math.floor(Math.random() * 100)
+        }));
+
+        // Extract unique categories
+        const uniqueCategories = new Set(this.courses.map(c => c.category));
+        this.categories = ['All', ...Array.from(uniqueCategories)];
+
+        this.filteredCourses = this.courses;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading courses:', error);
+        this.errorMessage = 'Failed to load courses. Please try again later.';
+        this.loading = false;
+      }
+    });
   }
 
   filterCourses(): void {
@@ -61,12 +88,15 @@ export class CoursesComponent implements OnInit {
   }
 
   openCourse(id: number): void {
-    console.log('Ouvrir le cours avec ID :', id);
-    // Rediriger vers le cours réel
-    // Exemple : this.router.navigate(['/course', id]);
+    this.router.navigate(['/course', id]);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   navigate(url: string) {
-  this.router.navigateByUrl(url);
-}
+    this.router.navigateByUrl(url);
+  }
 }

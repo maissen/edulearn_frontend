@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { CoursService } from '../../../services/cours.service';
+import { QuizService } from '../../../services/quiz.service';
+import { QuestionService, Question } from '../../../services/question.service';
+import { AuthService } from '../../../services/auth.service';
 interface Quiz {
   question: string;
   options: string[];
@@ -42,97 +46,129 @@ interface Course {
   templateUrl: './course-detail.html',
   styleUrls: ['./course-detail.css']
 })
-export class CourseDetailComponent {
-  
+export class CourseDetailComponent implements OnInit {
+  safeVideoUrl: SafeResourceUrl;
 
-safeVideoUrl: SafeResourceUrl;
-  
-  course: Course = {
-    id: 1,
-    title: 'Learn about Machine Learning',
-    subtitle: 'Master Machine Learning — from basics to expert level.',
-    duration: '1 hour',
-    imageUrl: 'assets/img11.jpg',
-    videoUrl: 'https://www.youtube.com/embed/ukzFI9rgwfU',
-    description: 'This course covers everything from linear regression to neural networks. Perfect for beginners and intermediate learners.',
-    targetAudience: 'Students with basic math knowledge and interest in AI.',
-    prerequisites: 'Basic Python and algebra.',
-    instructor: {
-      name: 'Budin Simps',
-      avatarUrl: 'https://i.pravatar.cc/150?u=budin-instructor',
-      bio: 'Experienced AI educator with 10+ years in industry.',
-      rating: 4.8 // ✅ Défini ici
-    },
-    relatedCourses: [
-      {
-        title: 'AWS Certified solutions Architect',
-        imageUrl: 'assets/img5.jpg',
-        price: 80,
-        rating: 4.5
-      },
-      {
-        title: 'Data Visualization with D3.js',
-        imageUrl: 'assets/img11.jpg',
-        price: 65,
-        rating: 4.6
-      },
-      {
-        title: 'Python for Data Science',
-        imageUrl: 'assets/img4.jpg',
-        price: 70,
-        rating: 4.8
-      }
-    ],
-    quizzes: [
-      {
-        question: 'What is the output of 2 + 2?',
-        options: ['3', '4', '5', '6'],
-        correctAnswer: 1
-      },
-      {
-        question: 'Which algorithm is used for classification?',
-        options: ['Linear Regression', 'K-Means', 'Decision Tree', 'PCA'],
-        correctAnswer: 2
-      }
-    ]
-  };
+  course: Course | null = null;
+  loading = true;
+  errorMessage = '';
+  courseId: number = 0;
+  userName = '';
 
-
-
-  ngOnInit() {
-    // Ici, tu chargerais les données via un service (ex: this.courseService.getById(this.route.snapshot.paramMap.get('id')))
-    // Pour l’instant, données statiques.
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private coursService: CoursService,
+    private quizService: QuizService,
+    private questionService: QuestionService,
+    private authService: AuthService
+  ) {
+    this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
+    const user = this.authService.getUser();
+    if (user) {
+      this.userName = user.username || 'User';
+    }
   }
 
-  // 👇 Gestion des quiz (ajout/suppression)
-  addQuiz() {
-    this.course.quizzes.push({
-      question: '',
-      options: ['', '', '', ''],
-      correctAnswer: 0
+  // Safe getters for template
+  get quizzes() {
+    return this.course?.quizzes || [];
+  }
+
+  get instructor() {
+    return this.course?.instructor || { name: 'Instructor', avatarUrl: 'https://i.pravatar.cc/150?u=instructor', bio: 'Experienced educator.', rating: 4.8 };
+  }
+
+  get relatedCourses() {
+    return this.course?.relatedCourses || [];
+  }
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.courseId = parseInt(id, 10);
+      this.loadCourse();
+      this.loadQuizzes();
+    } else {
+      this.errorMessage = 'Course ID not found';
+      this.loading = false;
+    }
+  }
+
+  loadCourse() {
+    this.loading = true;
+    this.coursService.getCoursById(this.courseId).subscribe({
+      next: (apiCourse) => {
+        // Transform API course to display format
+        this.course = {
+          id: apiCourse.id || 0,
+          title: apiCourse.titre,
+          subtitle: `Learn ${apiCourse.titre} — from basics to expert level.`,
+          duration: '1 hour',
+          imageUrl: 'assets/img11.jpg',
+          videoUrl: 'https://www.youtube.com/embed/ukzFI9rgwfU',
+          description: apiCourse.description || 'No description available.',
+          targetAudience: 'Students interested in this subject.',
+          prerequisites: 'Basic knowledge recommended.',
+          instructor: {
+            name: 'Instructor',
+            avatarUrl: 'https://i.pravatar.cc/150?u=instructor',
+            bio: 'Experienced educator.',
+            rating: 4.8
+          },
+          relatedCourses: [],
+          quizzes: []
+        };
+        this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.course.videoUrl);
+        this.loadRelatedCourses();
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading course:', error);
+        this.errorMessage = 'Failed to load course';
+        this.loading = false;
+      }
     });
   }
 
-  removeQuiz(index: number) {
-    this.course.quizzes.splice(index, 1);
+  loadRelatedCourses() {
+    this.coursService.getAllCours().subscribe({
+      next: (courses) => {
+        if (this.course) {
+          // Get 3 random related courses (excluding current)
+          const related = courses
+            .filter(c => c.id !== this.courseId)
+            .slice(0, 3)
+            .map(c => ({
+              title: c.titre,
+              imageUrl: 'assets/img5.jpg',
+              price: Math.floor(Math.random() * 50) + 50,
+              rating: 4.5 + Math.random() * 0.5
+            }));
+          if (this.course) {
+            this.course.relatedCourses = related;
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error loading related courses:', error);
+      }
+    });
   }
- navigate(url: string) {
-  this.router.navigateByUrl(url);
-}
 
- 
+  loadQuizzes() {
+    // Quizzes will be loaded separately using QuizService
+    // For now, using empty array
+  }
 
-  userName = 'èlè ammar '; // À remplacer par les données réelles plus tard
 
-  constructor(
-    private router: Router, private sanitizer: DomSanitizer
-  ) {
-    this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.course.videoUrl);
+  navigate(url: string) {
+    this.router.navigateByUrl(url);
   }
 
   logout() {
-    localStorage.removeItem('authToken');
-    sessionStorage.clear();
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 }

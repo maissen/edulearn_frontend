@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { Router, RouterModule } from '@angular/router';
+import { ProfileService } from '../../../services/profile.service';
+import { CoursService, Cours } from '../../../services/cours.service';
+import { AuthService } from '../../../services/auth.service';
+
 interface Course {
   id: number;
   title: string;
@@ -21,86 +24,115 @@ interface Course {
   templateUrl: './student-profile.html',
   styleUrls: ['./student-profile.css']
 })
-export class StudentProfileComponent {
+export class StudentProfileComponent implements OnInit {
+  studentName = '';
+  studentEmail = '';
+  initial = '';
+  avatarUrl = 'https://i.pravatar.cc/150?u=student';
+  overallProgress = 0;
+  loading = true;
+  errorMessage = '';
 
+  coursesInProgress: Course[] = [];
+  completedCourses: Course[] = [];
+  recommendedCourses: Course[] = [];
+  allCourses: Cours[] = [];
 
-  
-
-  studentName = 'amira';
-  studentEmail = 'amira200@gmail.com';
-  
-  initial = this.studentName.charAt(0).toUpperCase();
-  avatarUrl = 'https://i.pravatar.cc/150?u=amira-student';
-  overallProgress = 68;
-
-  coursesInProgress: Course[] = [
-    {
-      id: 1,
-      title: 'Introduction à Python',
-      category: 'Programmation',
-      progress: 75,
-      lastLesson: 'Les fonctions',
-      completed: false,
-      imageUrl: 'assets/img5.jpg'
-    },
-    {
-      id: 2,
-      title: 'UI/UX Design Fundamentals',
-      category: 'Design',
-      progress: 40,
-      lastLesson: 'Wireframing',
-      completed: false,
-      imageUrl: 'assets/img12.jpg'
-    }
-  ];
-
-  completedCourses: Course[] = [
-    {
-      id: 3,
-      title: 'HTML & CSS Basics',
-      category: 'Programmation',
-      progress: 100,
-      completed: true,
-      completionDate: '15 nov. 2025',
-      grade: 92,
-      imageUrl: 'assets/img8.jpg'
-    }
-  ];
-
-  recommendedCourses: Course[] = [
-    {
-      id: 4,
-      title: 'JavaScript pour débutants',
-      category: 'Programmation',
-      progress: 0,
-      completed: false,
-      imageUrl: 'assets/img11.jpg'
-    },
-    {
-      id: 5,
-      title: 'Data Visualization avec D3.js',
-      category: 'Data Science',
-      progress: 0,
-      completed: false,
-      imageUrl: 'assets/img14.jpg'
-    }
-  ];
-
-   constructor(
-    private router: Router
+  constructor(
+    private router: Router,
+    private profileService: ProfileService,
+    private coursService: CoursService,
+    private authService: AuthService
   ) {}
 
-  logout() { // ← Doit être DÉCLARÉ ici
-    localStorage.removeItem('authToken');
-    sessionStorage.clear();
+  ngOnInit() {
+    this.loadProfile();
+    this.loadCourses();
+  }
+
+  loadProfile() {
+    this.profileService.getProfile().subscribe({
+      next: (profile) => {
+        this.studentName = profile.username || 'Student';
+        this.studentEmail = profile.email || '';
+        this.initial = this.studentName.charAt(0).toUpperCase();
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading profile:', error);
+        this.errorMessage = 'Failed to load profile';
+        this.loading = false;
+        // Fallback to auth service user data
+        const user = this.authService.getUser();
+        if (user) {
+          this.studentName = user.username || 'Student';
+          this.studentEmail = user.email || '';
+          this.initial = this.studentName.charAt(0).toUpperCase();
+        }
+      }
+    });
+  }
+
+  loadCourses() {
+    this.coursService.getAllCours().subscribe({
+      next: (courses) => {
+        this.allCourses = courses;
+        // Transform API courses to display format
+        this.coursesInProgress = courses.slice(0, 2).map(c => ({
+          id: c.id || 0,
+          title: c.titre,
+          category: 'General',
+          progress: Math.floor(Math.random() * 80) + 10, // Mock progress
+          completed: false,
+          imageUrl: 'assets/img8.jpg'
+        }));
+        
+        // Mock completed courses (in real app, this would come from API)
+        this.completedCourses = courses.slice(2, 3).map(c => ({
+          id: c.id || 0,
+          title: c.titre,
+          category: 'General',
+          progress: 100,
+          completed: true,
+          completionDate: new Date().toLocaleDateString('fr-FR'),
+          grade: Math.floor(Math.random() * 20) + 80,
+          imageUrl: 'assets/img8.jpg'
+        }));
+
+        // Recommended courses
+        this.recommendedCourses = courses.slice(3, 5).map(c => ({
+          id: c.id || 0,
+          title: c.titre,
+          category: 'General',
+          progress: 0,
+          completed: false,
+          imageUrl: 'assets/img11.jpg'
+        }));
+
+        // Calculate overall progress
+        if (this.coursesInProgress.length > 0) {
+          this.overallProgress = Math.round(
+            this.coursesInProgress.reduce((sum, c) => sum + c.progress, 0) / this.coursesInProgress.length
+          );
+        }
+      },
+      error: (error) => {
+        console.error('Error loading courses:', error);
+        this.errorMessage = 'Failed to load courses';
+      }
+    });
+  }
+
+  logout() {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
   navigate(url: string) {
-  this.router.navigateByUrl(url);
-}
+    this.router.navigateByUrl(url);
+  }
 
-  userName = 'èlè ammar '; // À remplacer par les données réelles plus tard
-
- 
+  get userName() {
+    return this.studentName;
+  }
 }

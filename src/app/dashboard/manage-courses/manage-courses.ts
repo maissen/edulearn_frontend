@@ -1,15 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { CoursService, Cours } from '../../../services/cours.service';
+import { AuthService } from '../../../services/auth.service';
+import { ProfileService } from '../../../services/profile.service';
+
 interface Quiz {
   question: string;
   options: string[];
   correctAnswer: number;
 }
 
-interface Course {
-  id: number;
+interface CourseTemplate {
+  id?: number;
   title: string;
   description: string;
   category: string;
@@ -26,15 +30,25 @@ interface Course {
   templateUrl: './manage-courses.html',
   styleUrls: ['./manage-courses.css']
 })
-export class ManageCoursesComponent {
-  userName = 'Souhir'; // ← Doit être DÉCLARÉ ici
+export class ManageCoursesComponent implements OnInit {
+  userName = '';
+  loading = false;
+  errorMessage = '';
+  successMessage = '';
 
   // Mode: 'create' ou 'edit'
   mode: 'create' | 'edit' = 'create';
 
   // Données du formulaire
-  newCourse: Course = {
-    id: 0,
+  newCourse: Partial<Cours> = {
+    titre: '',
+    description: '',
+    enseignant_id: 0
+  };
+
+  // Template-compatible course data
+  oldCourse: CourseTemplate = {
+    id: undefined,
     title: '',
     description: '',
     category: '',
@@ -45,63 +59,128 @@ export class ManageCoursesComponent {
   };
 
   // Liste des cours
-  courses: Course[] = [
-    {
-      id: 1,
-      title: 'Introduction à Python',
-      description: 'Apprenez les bases de la programmation avec Python.',
-      category: 'programming',
-      duration: 8,
-      imageUrl: 'assets/img8.jpg',
-      videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      quizzes: [
-        { question: 'Quel mot-clé déclare une fonction ?', options: ['func', 'def', 'function'], correctAnswer: 1 }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Design UX/UI',
-      description: 'Principes fondamentaux de l’expérience utilisateur.',
-      category: 'design',
-      duration: 6,
-      imageUrl: 'assets/img9.jpg',
-      videoUrl: '',
-      quizzes: [
-        { question: 'Qu’est-ce qu’un wireframe ?', options: ['Maquette basse fidélité', 'Code final', 'Logo'], correctAnswer: 0 }
-      ]
-    }
-  ];
+  courses: Cours[] = [];
 
-  // --- CRUD METHODS ---
+  constructor(
+    private router: Router,
+    private coursService: CoursService,
+    private authService: AuthService,
+    private profileService: ProfileService
+  ) {}
+
+  ngOnInit() {
+    this.loadUserData();
+    this.loadCourses();
+  }
+
+  loadUserData() {
+    this.profileService.getProfile().subscribe({
+      next: (profile) => {
+        this.userName = profile.username || 'Teacher';
+        if (profile.id) {
+          this.newCourse.enseignant_id = profile.id;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading profile:', error);
+        const user = this.authService.getUser();
+        if (user) {
+          this.userName = user.username || 'Teacher';
+          if (user.id) {
+            this.newCourse.enseignant_id = user.id;
+          }
+        }
+      }
+    });
+  }
+
+  loadCourses() {
+    this.loading = true;
+    this.coursService.getAllCours().subscribe({
+      next: (apiCourses) => {
+        const user = this.authService.getUser();
+        if (user && user.id) {
+          // Filter courses by current teacher
+          this.courses = apiCourses.filter(c => c.enseignant_id === user.id);
+        } else {
+          this.courses = apiCourses;
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading courses:', error);
+        this.errorMessage = 'Failed to load courses';
+        this.loading = false;
+      }
+    });
+  }
 
   // ✅ CREATE
   onCreateCourse() {
+    if (!this.newCourse.titre || !this.newCourse.description || !this.newCourse.enseignant_id) {
+      this.errorMessage = 'Please fill in all required fields';
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
     if (this.mode === 'create') {
-      const newId = this.courses.length > 0 ? Math.max(...this.courses.map(c => c.id)) + 1 : 1;
-      this.courses.push({ ...this.newCourse, id: newId });
-      console.log('✅ Cours créé');
+      this.coursService.createCours(this.newCourse as Cours).subscribe({
+        next: (response) => {
+          this.successMessage = response.message || 'Course created successfully';
+          this.loadCourses();
+          this.resetForm();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error creating course:', error);
+          this.errorMessage = error.error?.message || 'Failed to create course';
+          this.loading = false;
+        }
+      });
     } else {
       // ✅ UPDATE
-      const index = this.courses.findIndex(c => c.id === this.newCourse.id);
-      if (index !== -1) {
-        this.courses[index] = { ...this.newCourse };
-        console.log('✅ Cours mis à jour');
+      if (!this.newCourse.id) {
+        this.errorMessage = 'Course ID is required for update';
+        this.loading = false;
+        return;
       }
+      this.coursService.updateCours(this.newCourse.id, this.newCourse).subscribe({
+        next: (response) => {
+          this.successMessage = response.message || 'Course updated successfully';
+          this.loadCourses();
+          this.resetForm();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error updating course:', error);
+          this.errorMessage = error.error?.message || 'Failed to update course';
+          this.loading = false;
+        }
+      });
     }
-    this.resetForm();
   }
 
   // ✏️ EDIT (pré-remplissage)
-  onEditCourse(course: Course) {
+  onEditCourse(course: Cours) {
     this.newCourse = {
       id: course.id,
-      title: course.title,
+      titre: course.titre,
       description: course.description,
-      category: course.category,
-      duration: course.duration,
-      imageUrl: course.imageUrl || '',
-      videoUrl: course.videoUrl || '',
-      quizzes: course.quizzes.map(q => ({ ...q }))
+      enseignant_id: course.enseignant_id
+    };
+    // Also update old interface for template compatibility
+    this.oldCourse = {
+      id: course.id,
+      title: course.titre,
+      description: course.description,
+      category: 'general',
+      duration: 1,
+      imageUrl: '',
+      videoUrl: '',
+      quizzes: []
     };
     this.mode = 'edit';
     // Scroll to form
@@ -111,19 +190,35 @@ export class ManageCoursesComponent {
   // 🗑️ DELETE
   onDeleteCourse(courseId: number) {
     if (confirm('⚠️ Voulez-vous vraiment supprimer ce cours ? Cette action est irréversible.')) {
-      this.courses = this.courses.filter(c => c.id !== courseId);
-      console.log('🗑️ Cours supprimé');
-      if (this.mode === 'edit' && this.newCourse.id === courseId) {
-        this.resetForm();
-      }
+      this.loading = true;
+      this.coursService.deleteCours(courseId).subscribe({
+        next: (response) => {
+          this.successMessage = response.message || 'Course deleted successfully';
+          this.loadCourses();
+          if (this.mode === 'edit' && this.newCourse.id === courseId) {
+            this.resetForm();
+          }
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error deleting course:', error);
+          this.errorMessage = error.error?.message || 'Failed to delete course';
+          this.loading = false;
+        }
+      });
     }
   }
 
   // 🔄 RÉINITIALISER LE FORMULAIRE
   resetForm() {
     this.mode = 'create';
+    const user = this.authService.getUser();
     this.newCourse = {
-      id: 0,
+      titre: '',
+      description: '',
+      enseignant_id: user?.id || 0
+    };
+    this.oldCourse = {
       title: '',
       description: '',
       category: '',
@@ -132,12 +227,14 @@ export class ManageCoursesComponent {
       videoUrl: '',
       quizzes: []
     };
+    this.errorMessage = '';
+    this.successMessage = '';
   }
 
-  // --- GESTION DES QUIZ ---
-
+  // Gestion des quiz (méthodes manquantes)
   addQuiz() {
-    this.newCourse.quizzes.push({
+    if (!this.oldCourse.quizzes) this.oldCourse.quizzes = [];
+    this.oldCourse.quizzes.push({
       question: '',
       options: ['', '', '', ''],
       correctAnswer: 0
@@ -145,28 +242,22 @@ export class ManageCoursesComponent {
   }
 
   removeQuiz(index: number) {
-    this.newCourse.quizzes.splice(index, 1);
+    if (this.oldCourse.quizzes) {
+      this.oldCourse.quizzes.splice(index, 1);
+    }
   }
 
   // --- AFFICHAGE ---
-
   viewCourse(id: number) {
-    alert(`👁️ Affichage du cours ID ${id} (à implémenter dans une page dédiée)`);
+    this.router.navigate(['/course', id]);
   }
 
-
-
-  constructor(
-    private router: Router
-  ) {}
-
-  logout() { // ← Doit être DÉCLARÉ ici
-    localStorage.removeItem('authToken');
-    sessionStorage.clear();
+  logout() {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
   navigate(url: string) {
-  this.router.navigateByUrl(url);
-}
+    this.router.navigateByUrl(url);
+  }
 }

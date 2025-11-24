@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';      // ✅ Pour *ngFor, *ngIf, SlicePipe
-import { FormsModule } from '@angular/forms';        // ✅ Si tu as des [(ngModel)] dans ce composant
-import { Router, RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { CoursService } from '../../../services/cours.service';
+import { AuthService } from '../../../services/auth.service';
+
 interface Course {
   id: number;
   title: string;
@@ -18,84 +21,69 @@ interface Course {
   selector: 'app-category-page',
   standalone: true,
   imports: [
-    CommonModule,    // ✅ Obligatoire pour *ngFor
-    FormsModule      // ✅ Si tu utilises [(ngModel)] ici
+    CommonModule,
+    FormsModule,
+    RouterModule
   ],
   templateUrl: './category-page.html',
   styleUrls: ['./category-page.css']
 })
-export class CategoryPageComponent {
-
-
-  userName = 'èlè ammar '; // À remplacer par les données réelles plus tard
+export class CategoryPageComponent implements OnInit {
+  userName = '';
+  categoryName = 'Programmation';
+  courses: Course[] = [];
+  loading = true;
+  errorMessage = '';
 
   constructor(
-    private router: Router
-  ) {}
-
-  logout() {
-    localStorage.removeItem('authToken');
-    sessionStorage.clear();
-    this.router.navigate(['/login']);
+    private router: Router,
+    private route: ActivatedRoute,
+    private coursService: CoursService,
+    private authService: AuthService
+  ) {
+    const user = this.authService.getUser();
+    if (user) {
+      this.userName = user.username || 'User';
+    }
   }
 
-  categoryName = 'Programmation';
+  ngOnInit() {
+    const slug = this.route.snapshot.paramMap.get('slug');
+    if (slug) {
+      this.categoryName = this.formatCategoryName(slug);
+    }
+    this.loadCourses();
+  }
 
-  courses: Course[] = [
-    {
-      id: 1,
-      title: ' Machine Learning Basics',
-      description: ' From data to prediction — start here.',
-      category: 'programming',
-      imageUrl: 'assets/img14.jpg',
-      price: 80,
-      rating: 4.5,
-      instructor: 'John Doe',
-       avatarUrl: 'assets/prof1.jpg'
-    },
-    {
-      id: 2,
-      title: 'AWS Certified Solutions Architect',
-      description: 'Learn AWS cloud architecture and deployment.',
-      category: 'programming',
-      imageUrl: 'assets/img12.jpg',
-      price: 60,
-      rating: 4.7,
-      instructor: 'Jane Smith',
-       avatarUrl: 'assets/prof2.jpg'
-    },
+  formatCategoryName(slug: string): string {
+    return slug.charAt(0).toUpperCase() + slug.slice(1);
+  }
 
-    {
-      id:3,
-      title: 'python Learning Basics',
-      description: 'From data to prediction — start here.',
-      category: 'programming',
-      imageUrl: 'assets/img8.jpg',
-      price: 60,
-      rating: 4.7,
-      instructor: 'Jane Smith',
-       avatarUrl: 'https://i.pravatar.cc/150?u=john-doe'
-    },
-    {
-      id:4,
-      title: 'matlab Learning Basics',
-      description: 'From data to prediction — start here.',
-      category: 'programming',
-      imageUrl: 'assets/img11.jpg',
-      price: 60,
-      rating: 4.7,
-      instructor: 'Jane Smith',
-       avatarUrl: 'https://i.pravatar.cc/150?u=john-doe'
-    },
-
-
-
-
-
-
-
-
-  ];
+  loadCourses() {
+    this.loading = true;
+    this.coursService.getAllCours().subscribe({
+      next: (apiCourses) => {
+        // Transform API courses to display format
+        this.courses = apiCourses.map((c, index) => ({
+          id: c.id || index + 1,
+          title: c.titre,
+          description: c.description || 'No description available',
+          category: 'programming', // Default category
+          imageUrl: `assets/img${(index % 6) + 8}.jpg`,
+          price: Math.floor(Math.random() * 50) + 50,
+          rating: 4.5 + Math.random() * 0.5,
+          instructor: 'Instructor',
+          avatarUrl: 'https://i.pravatar.cc/150?u=instructor'
+        }));
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading courses:', error);
+        this.errorMessage = 'Failed to load courses';
+        this.loading = false;
+      }
+    });
+  }
 
   get uniqueInstructors() {
     const seen = new Set<string>();
@@ -107,8 +95,12 @@ export class CategoryPageComponent {
     });
   }
 
+  navigate(url: string) {
+    this.router.navigateByUrl(url);
+  }
 
-   navigate(url: string) {
-  this.router.navigateByUrl(url);
-}
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }
