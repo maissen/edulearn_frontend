@@ -31,6 +31,20 @@ export interface CourseContent {
     bio: string;
     rating: number;
   };
+  test?: {
+    id: number;
+    title: string;
+    cours_id: number;
+    quizzes: Array<{
+      question: string;
+      options: {
+        a: string;
+        b: string;
+        c: string;
+        d: string;
+      };
+    }>;
+  };
 }
 
 export interface RelatedCourse {

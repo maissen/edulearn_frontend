@@ -12,9 +12,38 @@ import { EnseignantService } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
 interface Quiz {
+  id?: number;
   question: string;
   options: string[];
   correctAnswer: number;
+}
+
+interface TestQuestion {
+  question: string;
+  option_a: string;
+  option_b: string;
+  option_c: string;
+  option_d: string;
+  correct: string;
+}
+
+interface Test {
+  title: string;
+  questions: TestQuestion[];
+}
+
+interface TestQuestion {
+  question: string;
+  option_a: string;
+  option_b: string;
+  option_c: string;
+  option_d: string;
+  correct: string;
+}
+
+interface Test {
+  title: string;
+  questions: TestQuestion[];
 }
 
 interface Course {
@@ -36,6 +65,20 @@ interface Course {
   };
   relatedCourses: RelatedCourse[];
   quizzes: Quiz[];
+  test?: {
+    id: number;
+    title: string;
+    cours_id: number;
+    quizzes: Array<{
+      question: string;
+      options: {
+        a: string;
+        b: string;
+        c: string;
+        d: string;
+      };
+    }>;
+  };
 }
 
 @Component({
@@ -58,10 +101,16 @@ export class CourseDetailComponent implements OnInit {
   // Quiz modal state
   showQuizModal = false;
   editingQuizIndex: number | null = null;
-  currentQuiz: Quiz = {
-    question: '',
-    options: ['', '', '', ''],
-    correctAnswer: 0
+  currentTest: Test = {
+    title: '',
+    questions: [{
+      question: '',
+      option_a: '',
+      option_b: '',
+      option_c: '',
+      option_d: '',
+      correct: 'a'
+    }]
   };
 
   // Student quiz taking state
@@ -116,8 +165,7 @@ export class CourseDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.courseId = parseInt(id, 10);
-      this.loadCourse();
-      this.loadQuizzes();
+      this.loadCourse(); // loadQuizzes is now called after course loads
     } else {
       this.errorMessage = 'Course ID not found';
       this.loading = false;
@@ -143,13 +191,18 @@ export class CourseDetailComponent implements OnInit {
           learningObjectives: courseContent.learningObjectives,
           instructor: courseContent.instructor,
           relatedCourses: [],
-          quizzes: []
+          quizzes: [],
+          test: (courseContent as any).test // Include test data from API response
         };
         console.log('Course description:', this.course.description); // Debug log
 
         // Convert YouTube URL to embed format if needed
         const embedUrl = this.convertToEmbedUrl(this.course.videoUrl);
         this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+
+        // Load quiz data (now part of course content)
+        this.loadQuizzes();
+
         this.loadRelatedCourses();
         this.loading = false;
       },
@@ -179,137 +232,149 @@ export class CourseDetailComponent implements OnInit {
   }
 
   loadQuizzes() {
-    if (this.courseId) {
-      this.quizService.getQuizzesByCourse(this.courseId).subscribe({
-        next: (quizzes) => {
-          if (this.course) {
-            // For teachers, we show quiz management interface
-            // For students, we prepare quiz data for taking
-            this.course.quizzes = quizzes.map(quiz => ({
-              id: quiz.id,
-              question: quiz.titre,
-              options: ['Loading questions...'], // Will be replaced when questions are loaded
-              correctAnswer: 0
-            }));
+    // Quiz data is now included in the course content API response
+    // No separate API call needed - data comes from this.course.test.quizzes
+    if (this.course && this.course.test && this.course.test.quizzes) {
+      // Transform the quiz data from course content to our component format
+      this.quizQuestions = this.course.test.quizzes.map((q: any, index: number) => ({
+        id: index + 1, // Generate sequential IDs
+        quiz_id: this.course?.test?.id || this.courseId,
+        question: q.question,
+        options: [
+          { key: 'a', text: q.options.a, value: 'a' },
+          { key: 'b', text: q.options.b, value: 'b' },
+          { key: 'c', text: q.options.c, value: 'c' },
+          { key: 'd', text: q.options.d, value: 'd' }
+        ],
+        correct: 'a' // Default - actual correct answers will be validated server-side
+      }));
 
-            // Load questions for each quiz
-            this.loadQuizQuestions(quizzes);
-          }
-        },
-        error: (error) => {
-          console.error('Error loading quizzes:', error);
-          if (this.course) {
-            this.course.quizzes = [];
-          }
-        }
-      });
+      // For teacher interface, create a single quiz object representing the test
+      this.course.quizzes = [{
+        id: this.course.test.id,
+        question: this.course.test.title,
+        options: [], // Teachers don't need individual question options in the list view
+        correctAnswer: 0
+      }];
+    } else {
+      // No quiz data available
+      this.quizQuestions = [];
+      if (this.course) {
+        this.course.quizzes = [];
+      }
     }
   }
 
-  loadQuizQuestions(quizzes: any[]) {
-    // Load questions for all quizzes in this course
-    const questionPromises = quizzes.map(quiz =>
-      this.questionService.getQuestionsByQuiz(quiz.id).toPromise()
-    );
-
-    Promise.all(questionPromises).then((questionsArrays) => {
-      // Flatten all questions from all quizzes
-      this.quizQuestions = questionsArrays.flat().map((q: any) => ({
-        id: q.id,
-        quiz_id: q.quiz_id,
-        question: q.question,
-        options: [
-          { key: 'a', text: q.option_a, value: 'a' },
-          { key: 'b', text: q.option_b, value: 'b' },
-          { key: 'c', text: q.option_c, value: 'c' },
-          { key: 'd', text: q.option_d, value: 'd' }
-        ],
-        correct: q.correct
-      }));
-      console.log('Loaded quiz questions:', this.quizQuestions);
-    }).catch((error) => {
-      console.error('Error loading quiz questions:', error);
-      this.quizQuestions = [];
-    });
-  }
 
   // Quiz Modal Methods
   openAddQuizModal() {
     this.editingQuizIndex = null;
-    this.currentQuiz = {
-      question: '',
-      options: ['', '', '', ''],
-      correctAnswer: 0
+    this.currentTest = {
+      title: '',
+      questions: [{
+        question: '',
+        option_a: '',
+        option_b: '',
+        option_c: '',
+        option_d: '',
+        correct: 'a'
+      }]
     };
     this.showQuizModal = true;
   }
 
   editQuiz(index: number) {
-    if (this.course && this.course.quizzes[index]) {
-      this.editingQuizIndex = index;
-      this.currentQuiz = { ...this.course.quizzes[index] };
-      this.showQuizModal = true;
-    }
+    // For now, editing is not implemented - teachers would need to delete and recreate
+    alert('Editing tests is not currently supported. Please delete and create a new test.');
   }
 
   closeQuizModal() {
     this.showQuizModal = false;
     this.editingQuizIndex = null;
-    this.currentQuiz = {
-      question: '',
-      options: ['', '', '', ''],
-      correctAnswer: 0
+    this.currentTest = {
+      title: '',
+      questions: [{
+        question: '',
+        option_a: '',
+        option_b: '',
+        option_c: '',
+        option_d: '',
+        correct: 'a'
+      }]
     };
   }
 
-  addOption() {
-    if (this.currentQuiz.options.length < 6) {
-      this.currentQuiz.options.push('');
+  addQuestion() {
+    this.currentTest.questions.push({
+      question: '',
+      option_a: '',
+      option_b: '',
+      option_c: '',
+      option_d: '',
+      correct: 'a'
+    });
+  }
+
+  removeQuestion(index: number) {
+    if (this.currentTest.questions.length > 1) {
+      this.currentTest.questions.splice(index, 1);
     }
   }
 
-  removeOption(index: number) {
-    if (this.currentQuiz.options.length > 2) {
-      this.currentQuiz.options.splice(index, 1);
-      // Adjust correct answer if it was pointing to a removed option
-      if (this.currentQuiz.correctAnswer >= this.currentQuiz.options.length) {
-        this.currentQuiz.correctAnswer = this.currentQuiz.options.length - 1;
-      }
-    }
-  }
-
-  isQuizFormValid(): boolean {
+  isTestFormValid(): boolean {
     return !!(
-      this.currentQuiz.question.trim() &&
-      this.currentQuiz.options.every(opt => opt.trim()) &&
-      this.currentQuiz.correctAnswer >= 0 &&
-      this.currentQuiz.correctAnswer < this.currentQuiz.options.length
+      this.currentTest.title.trim() &&
+      this.currentTest.questions.length > 0 &&
+      this.currentTest.questions.every(q =>
+        q.question.trim() &&
+        q.option_a.trim() &&
+        q.option_b.trim() &&
+        q.option_c.trim() &&
+        q.option_d.trim() &&
+        q.correct
+      )
     );
   }
 
   saveQuiz() {
-    if (!this.isQuizFormValid()) return;
-
-    if (!this.course) return;
-
-    if (this.editingQuizIndex !== null) {
-      // Update existing quiz
-      this.course.quizzes[this.editingQuizIndex] = { ...this.currentQuiz };
-    } else {
-      // Add new quiz
-      this.course.quizzes.push({ ...this.currentQuiz });
+    if (!this.isTestFormValid()) {
+      alert('Please fill in all required fields for the test and questions.');
+      return;
     }
 
-    // Here you would typically save to the backend
-    // For now, we'll just close the modal
-    this.closeQuizModal();
+    if (!this.courseId) {
+      alert('Course ID not available.');
+      return;
+    }
+
+    // Create the test data in the API format
+    const testData = {
+      titre: this.currentTest.title,
+      cours_id: this.courseId,
+      questions: this.currentTest.questions
+    };
+
+    // Call the QuizService to create the test
+    this.quizService.createTest(testData).subscribe({
+      next: (result) => {
+        console.log('Test created successfully:', result);
+        alert('Test created successfully!');
+        this.closeQuizModal();
+        // Reload course data to get the updated test
+        this.loadCourse();
+      },
+      error: (error) => {
+        console.error('Error creating test:', error);
+        alert('Failed to create test. Please try again.');
+      }
+    });
   }
 
   deleteQuiz(index: number) {
-    if (confirm('Are you sure you want to delete this quiz? This action cannot be undone.')) {
-      if (this.course) {
-        this.course.quizzes.splice(index, 1);
-      }
+    if (confirm('Are you sure you want to delete this test? This action cannot be undone.')) {
+      // For now, we can't actually delete tests through the API
+      // This would need to be implemented in the backend
+      alert('Test deletion is not currently implemented in the backend.');
     }
   }
 
@@ -379,15 +444,15 @@ export class CourseDetailComponent implements OnInit {
       return;
     }
 
-    // Find the quiz ID (assuming all questions belong to the same quiz for now)
-    const quizId = this.quizQuestions[0]?.quiz_id;
-    if (!quizId) {
-      alert('Unable to submit quiz. Quiz ID not found.');
+    // Use the test ID from the course data
+    const testId = this.course?.test?.id;
+    if (!testId) {
+      alert('Unable to submit quiz. Test data not found.');
       return;
     }
 
-    // Submit quiz via API
-    this.quizService.submitQuiz(quizId, this.selectedAnswers).subscribe({
+    // Submit quiz via API - the server will validate answers
+    this.quizService.submitQuiz(testId, this.selectedAnswers).subscribe({
       next: (result) => {
         this.quizSubmissionResult = result.result;
         console.log('Quiz submitted successfully:', result);

@@ -55,6 +55,26 @@ export class QuizService {
   }
 
   /**
+   * Create a complete test for a course.
+   * @param testData Test data including title, course_id, and questions array
+   * @returns Observable of the response message
+   */
+  createTest(testData: {
+    titre: string;
+    cours_id: number;
+    questions: Array<{
+      question: string;
+      option_a: string;
+      option_b: string;
+      option_c: string;
+      option_d: string;
+      correct: string;
+    }>
+  }): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(this.apiUrl, testData);
+  }
+
+  /**
    * Submit quiz responses and get results.
    * @param quizId Quiz ID
    * @param responses Object mapping question IDs to selected answers
