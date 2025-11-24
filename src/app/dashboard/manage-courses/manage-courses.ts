@@ -9,7 +9,8 @@ import { QuizService, Quiz } from '../../../services/quiz.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
 
-interface Quiz {
+interface QuizTemplate {
+  id?: number;
   question: string;
   options: string[];
   correctAnswer: number;
@@ -23,7 +24,7 @@ interface CourseTemplate {
   duration: number;
   imageUrl?: string;
   videoUrl?: string;
-  quizzes: Quiz[];
+  quizzes: QuizTemplate[];
 }
 
 @Component({
