@@ -41,7 +41,7 @@ export class StudentProfileComponent implements OnInit {
   editForm = {
     username: '',
     email: '',
-    bio: ''
+    biography: ''
   };
 
   coursesInProgress: Course[] = [];
@@ -66,6 +66,9 @@ export class StudentProfileComponent implements OnInit {
       next: (profile) => {
         this.studentName = profile.username || 'Student';
         this.studentEmail = profile.email || '';
+        this.editForm.username = profile.username || '';
+        this.editForm.email = profile.email || '';
+        this.editForm.biography = profile.biography || '';
         this.initial = this.studentName.charAt(0).toUpperCase();
         this.loading = false;
       },
@@ -78,6 +81,8 @@ export class StudentProfileComponent implements OnInit {
         if (user) {
           this.studentName = user.username || 'Student';
           this.studentEmail = user.email || '';
+          this.editForm.username = user.username || '';
+          this.editForm.email = user.email || '';
           this.initial = this.studentName.charAt(0).toUpperCase();
         }
       }
@@ -139,7 +144,7 @@ export class StudentProfileComponent implements OnInit {
     this.editForm = {
       username: this.studentName,
       email: this.studentEmail,
-      bio: this.editForm.bio || ''
+      biography: this.editForm.biography || ''
     };
     this.showProfileModal = true;
   }
@@ -149,25 +154,28 @@ export class StudentProfileComponent implements OnInit {
     this.editForm = {
       username: '',
       email: '',
-      bio: ''
+      biography: ''
     };
   }
 
   isProfileFormValid(): boolean {
-    return !!(
-      this.editForm.username?.trim() &&
-      this.editForm.email?.trim() &&
-      this.editForm.email.includes('@')
-    );
+    return !!this.editForm.username?.trim();
   }
 
   saveProfile() {
     if (!this.isProfileFormValid()) return;
 
-    this.profileService.updateProfile(this.editForm).subscribe({
+    // According to API contract, both username and biography can be updated
+    const updateData: any = { username: this.editForm.username };
+    if (this.editForm.biography !== undefined) {
+      updateData.biography = this.editForm.biography;
+    }
+
+    this.profileService.updateProfile(updateData).subscribe({
       next: (response: any) => {
         this.studentName = this.editForm.username;
-        this.studentEmail = this.editForm.email;
+        // Update local biography
+        this.editForm.biography = this.editForm.biography || '';
         this.closeProfileModal();
         alert('Profil mis à jour avec succès !');
       },

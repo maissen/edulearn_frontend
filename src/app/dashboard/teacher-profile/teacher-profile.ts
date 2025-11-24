@@ -33,8 +33,7 @@ export class TeacherProfileComponent implements OnInit {
   editForm = {
     username: '',
     email: '',
-    bio: '',
-    specialization: ''
+    biography: ''
   };
 
   constructor(
@@ -56,8 +55,7 @@ export class TeacherProfileComponent implements OnInit {
         this.teacherEmail = profile.email || '';
         this.editForm.username = profile.username || '';
         this.editForm.email = profile.email || '';
-        this.editForm.bio = profile.bio || '';
-        this.editForm.specialization = profile.specialization || '';
+        this.editForm.biography = profile.biography || '';
       },
       error: (error) => {
         console.error('Error loading profile:', error);
@@ -103,8 +101,7 @@ export class TeacherProfileComponent implements OnInit {
     this.editForm = {
       username: this.teacherName,
       email: this.teacherEmail,
-      bio: this.editForm.bio || '',
-      specialization: this.editForm.specialization || ''
+      biography: this.editForm.biography || ''
     };
     this.showProfileModal = true;
   }
@@ -114,26 +111,28 @@ export class TeacherProfileComponent implements OnInit {
     this.editForm = {
       username: '',
       email: '',
-      bio: '',
-      specialization: ''
+      biography: ''
     };
   }
 
   isProfileFormValid(): boolean {
-    return !!(
-      this.editForm.username?.trim() &&
-      this.editForm.email?.trim() &&
-      this.editForm.email.includes('@')
-    );
+    return !!this.editForm.username?.trim();
   }
 
   saveProfile() {
     if (!this.isProfileFormValid()) return;
 
-    this.profileService.updateProfile(this.editForm).subscribe({
+    // According to API contract, both username and biography can be updated
+    const updateData: any = { username: this.editForm.username };
+    if (this.editForm.biography !== undefined) {
+      updateData.biography = this.editForm.biography;
+    }
+
+    this.profileService.updateProfile(updateData).subscribe({
       next: (response: any) => {
         this.teacherName = this.editForm.username;
-        this.teacherEmail = this.editForm.email;
+        // Update local biography
+        this.editForm.biography = this.editForm.biography || '';
         this.closeProfileModal();
         alert('Profil mis à jour avec succès !');
       },

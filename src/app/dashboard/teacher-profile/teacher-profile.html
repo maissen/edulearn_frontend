@@ -35,7 +35,7 @@
     </div>
     <div class="info-item">
       <label>Biographie</label>
-      <p>{{ editForm.bio || 'Aucune biographie' }}</p>
+      <p>{{ editForm.biography || 'Aucune biographie' }}</p>
     </div>
   </div>
 </section>
@@ -77,31 +77,27 @@
       <form (ngSubmit)="saveProfile()" class="profile-form">
         <div class="form-section">
           <h4>Informations de base</h4>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="profileUsername">Nom complet *</label>
-              <input type="text" id="profileUsername" [(ngModel)]="editForm.username"
-                     name="username" placeholder="Votre nom complet" required>
-            </div>
-            <div class="form-group">
-              <label for="profileEmail">Email *</label>
-              <input type="email" id="profileEmail" [(ngModel)]="editForm.email"
-                     name="email" placeholder="votre.email@example.com" required>
-            </div>
+          <div class="form-group">
+            <label for="profileUsername">Nom d'utilisateur *</label>
+            <input type="text" id="profileUsername" [(ngModel)]="editForm.username"
+                   name="username" placeholder="Votre nom d'utilisateur" required>
+          </div>
+          <div class="form-group">
+            <label for="profileEmail">Email</label>
+            <input type="email" id="profileEmail" [(ngModel)]="editForm.email"
+                   name="email" placeholder="votre.email@example.com" readonly disabled
+                   style="background: #f5f5f5; cursor: not-allowed;">
+            <small style="color: #6b7280; font-size: 0.875rem;">L'email ne peut pas être modifié</small>
           </div>
         </div>
 
         <div class="form-section">
-          <h4>Informations professionnelles</h4>
+          <h4>Informations personnelles</h4>
           <div class="form-group">
-            <label for="profileSpecialization">Spécialisation</label>
-            <input type="text" id="profileSpecialization" [(ngModel)]="editForm.specialization"
-                   name="specialization" placeholder="Ex: Mathématiques, Informatique, Physique...">
-          </div>
-          <div class="form-group">
-            <label for="profileBio">Biographie</label>
-            <textarea id="profileBio" [(ngModel)]="editForm.bio" name="bio"
+            <label for="profileBiography">Biographie</label>
+            <textarea id="profileBiography" [(ngModel)]="editForm.biography" name="biography"
                       rows="4" placeholder="Parlez de votre expérience, vos méthodes d'enseignement, vos centres d'intérêt..."></textarea>
+            <small style="color: #6b7280; font-size: 0.875rem;">Laissez vide pour supprimer la biographie</small>
           </div>
         </div>
 
