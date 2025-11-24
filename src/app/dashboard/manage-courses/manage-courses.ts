@@ -72,6 +72,14 @@ export class ManageCoursesComponent implements OnInit {
   // Course quizzes for editing
   courseQuizzes: Quiz[] = [];
 
+  // Quiz modal
+  showAddQuizModal = false;
+  currentQuiz: QuizTemplate = {
+    question: '',
+    options: ['', '', '', ''],
+    correctAnswer: 0
+  };
+
   constructor(
     private router: Router,
     private coursService: CoursService,
@@ -296,17 +304,61 @@ export class ManageCoursesComponent implements OnInit {
 
   // Gestion des quiz (méthodes manquantes)
   addQuiz() {
-    if (!this.oldCourse.quizzes) this.oldCourse.quizzes = [];
-    this.oldCourse.quizzes.push({
+    // Reset the current quiz form
+    this.currentQuiz = {
       question: '',
       options: ['', '', '', ''],
       correctAnswer: 0
-    });
+    };
+    this.showAddQuizModal = true;
   }
 
   removeQuiz(index: number) {
     if (this.oldCourse.quizzes) {
       this.oldCourse.quizzes.splice(index, 1);
+    }
+  }
+
+  // Quiz Modal Methods
+  closeAddQuizModal() {
+    this.showAddQuizModal = false;
+    this.currentQuiz = {
+      question: '',
+      options: ['', '', '', ''],
+      correctAnswer: 0
+    };
+  }
+
+  saveQuiz() {
+    if (!this.isQuizValid()) return;
+
+    if (!this.oldCourse.quizzes) this.oldCourse.quizzes = [];
+    this.oldCourse.quizzes.push({ ...this.currentQuiz });
+    this.closeAddQuizModal();
+  }
+
+  isQuizValid(): boolean {
+    return !!(
+      this.currentQuiz.question.trim() &&
+      this.currentQuiz.options.every(opt => opt.trim()) &&
+      this.currentQuiz.correctAnswer >= 0 &&
+      this.currentQuiz.correctAnswer < this.currentQuiz.options.length
+    );
+  }
+
+  addQuizOption() {
+    if (this.currentQuiz.options.length < 6) {
+      this.currentQuiz.options.push('');
+    }
+  }
+
+  removeQuizOption(index: number) {
+    if (this.currentQuiz.options.length > 2) {
+      this.currentQuiz.options.splice(index, 1);
+      // Adjust correct answer if it was pointing to a removed option
+      if (this.currentQuiz.correctAnswer >= this.currentQuiz.options.length) {
+        this.currentQuiz.correctAnswer = this.currentQuiz.options.length - 1;
+      }
     }
   }
 

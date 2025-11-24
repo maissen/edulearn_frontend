@@ -123,26 +123,32 @@
           </div>
 
           <!-- Existing Course Quizzes (when editing) -->
-          @if (mode === 'edit' && courseQuizzes.length > 0) {
+          @if (mode === 'edit') {
             <div class="existing-quizzes">
-              <h4>Existing Quizzes for this Course</h4>
-              <div class="quiz-list existing">
-                <div class="quiz-item existing" *ngFor="let quiz of courseQuizzes">
-                  <div class="quiz-header">
-                    <h4>{{ quiz.titre }}</h4>
-                    <button type="button" class="btn-delete-quiz"
-                            (click)="deleteQuiz(quiz.id!)"
-                            title="Delete quiz"
-                            [disabled]="loading">
-                      <i class="icon-trash"></i> Delete
-                    </button>
-                  </div>
-                  <div class="quiz-meta">
-                    <span class="meta-item">Quiz ID: {{ quiz.id }}</span>
-                    <span class="meta-item">Course ID: {{ quiz.cours_id }}</span>
+              <h4>📚 Current Quizzes for this Course</h4>
+              @if (courseQuizzes.length === 0) {
+                <div class="empty-quizzes">
+                  <div class="empty-icon">🧠</div>
+                  <p>No quizzes found for this course. Add some quizzes below!</p>
+                </div>
+              } @else {
+                <div class="quiz-list existing">
+                  <div class="quiz-item existing" *ngFor="let quiz of courseQuizzes">
+                    <div class="quiz-header">
+                      <h4>{{ quiz.titre }}</h4>
+                      <button type="button" class="btn-delete-quiz"
+                              (click)="deleteQuiz(quiz.id!)"
+                              title="Delete quiz"
+                              [disabled]="loading">
+                        <i class="icon-trash"></i> Delete
+                      </button>
+                    </div>
+                    <div class="quiz-meta">
+                      <span class="meta-item">Quiz ID: {{ quiz.id }}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              }
             </div>
           }
 
@@ -303,6 +309,64 @@
     }
   </section>
 </div>
+
+<!-- Add Quiz Modal -->
+@if (showAddQuizModal) {
+  <div class="modal-overlay" (click)="closeAddQuizModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add New Quiz</h3>
+        <button type="button" class="modal-close" (click)="closeAddQuizModal()">
+          <i class="icon-close"></i>
+        </button>
+      </div>
+
+      <form class="quiz-form" (ngSubmit)="saveQuiz()">
+        <div class="form-group">
+          <label for="quizQuestion">Question *</label>
+          <input type="text" id="quizQuestion" [(ngModel)]="currentQuiz.question"
+                 name="question" placeholder="Enter your quiz question" required>
+        </div>
+
+        <div class="options-section">
+          <label>Options</label>
+          <div class="options-list">
+            <div class="option-input" *ngFor="let option of currentQuiz.options; let j = index">
+              <input type="text" [(ngModel)]="currentQuiz.options[j]"
+                     [name]="'option_' + j"
+                     [placeholder]="'Option ' + (j + 1)"
+                     required>
+              <button type="button" class="btn-remove-option"
+                      (click)="removeQuizOption(j)"
+                      [disabled]="currentQuiz.options.length <= 2">
+                <i class="icon-minus"></i>
+              </button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-option" (click)="addQuizOption()">
+            <i class="icon-plus"></i> Add Option
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="correctAnswer">Correct Answer *</label>
+          <select id="correctAnswer" [(ngModel)]="currentQuiz.correctAnswer" name="correctAnswer" required>
+            <option [value]="j" *ngFor="let option of currentQuiz.options; let j = index">
+              Option {{ j + 1 }}: {{ option || 'Option ' + (j + 1) }}
+            </option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeAddQuizModal()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="!isQuizValid()">
+            Add Quiz
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
 
 <!-- 🏁 Footer (identique au template) -->
 <footer class="footer">
