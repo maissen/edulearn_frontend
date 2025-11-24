@@ -10,6 +10,41 @@ export interface Cours {
   enseignant_id: number;
 }
 
+export interface CourseContent {
+  id: number;
+  titre: string;
+  description: string;
+  duration: string;
+  videoUrl: string;
+  imageUrl: string;
+  targetAudience: string;
+  prerequisites: string;
+  learningObjectives: string[];
+  instructor: {
+    name: string;
+    avatarUrl: string;
+    bio: string;
+    rating: number;
+  };
+}
+
+export interface RelatedCourse {
+  id: number;
+  titre: string;
+  imageUrl: string;
+  price: number;
+  rating: number;
+  instructor: string;
+}
+
+export interface CourseEnrollment {
+  totalEnrolled: number;
+  activeStudents: number;
+  completionRate: number;
+  averageRating: number;
+  lastActivity: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -63,5 +98,32 @@ export class CoursService {
    */
   deleteCours(id: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Get full course content including video, duration, and detailed information.
+   * @param id Course ID
+   * @returns Observable of CourseContent
+   */
+  getCourseContent(id: number): Observable<CourseContent> {
+    return this.http.get<CourseContent>(`${this.apiUrl}/${id}/content`);
+  }
+
+  /**
+   * Get related courses for recommendations.
+   * @param id Course ID
+   * @returns Observable array of RelatedCourse
+   */
+  getRelatedCourses(id: number): Observable<RelatedCourse[]> {
+    return this.http.get<RelatedCourse[]>(`${this.apiUrl}/${id}/related`);
+  }
+
+  /**
+   * Get enrollment statistics for a course.
+   * @param id Course ID
+   * @returns Observable of CourseEnrollment
+   */
+  getCourseEnrollments(id: number): Observable<CourseEnrollment> {
+    return this.http.get<CourseEnrollment>(`${this.apiUrl}/${id}/enrollments`);
   }
 }

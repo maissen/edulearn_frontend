@@ -5,148 +5,265 @@
 <div class="manage-courses-page">
 
   <header class="page-header">
-    <h1>📚 Gérer mes cours</h1>
-    <p>Créez, éditez et supprimez vos contenus pédagogiques.</p>
+    <div class="header-content">
+      <h1>📚 Manage My Courses</h1>
+      <p>Create, edit and organize your educational content</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-item">
+        <span class="stat-number">{{ courses.length }}</span>
+        <span class="stat-label">Courses</span>
+      </div>
+    </div>
   </header>
+
+  <!-- Messages -->
+  @if (successMessage) {
+    <div class="alert alert-success">
+      <div class="alert-icon">✅</div>
+      <div class="alert-content">
+        <strong>Success!</strong> {{ successMessage }}
+      </div>
+      <button class="alert-close" (click)="successMessage = ''">&times;</button>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      <div class="alert-icon">❌</div>
+      <div class="alert-content">
+        <strong>Error:</strong> {{ errorMessage }}
+      </div>
+      <button class="alert-close" (click)="errorMessage = ''">&times;</button>
+    </div>
+  }
 
   <!-- Formulaire -->
   <section class="create-course-form">
     <div class="form-card">
-      <h2>
-        @if (mode === 'create') {
-          ➕ Créer un nouveau cours
-        } @else {
-          ✏️ Modifier le cours "{{ oldCourse.title }}"
-        }
-      </h2>
+      <div class="form-header">
+        <h2>
+          @if (mode === 'create') {
+            <i class="icon-add"></i> Create New Course
+          } @else {
+            <i class="icon-edit"></i> Edit Course: {{ oldCourse.title }}
+          }
+        </h2>
+        <div class="form-mode-indicator" [class.mode-create]="mode === 'create'" [class.mode-edit]="mode === 'edit'">
+          {{ mode === 'create' ? 'Creating' : 'Editing' }}
+        </div>
+      </div>
 
-      <form (ngSubmit)="onCreateCourse()">
+      <form (ngSubmit)="onCreateCourse()" novalidate>
         <!-- Titre -->
-        <div class="form-group">
-          <label>Titre du cours</label>
-          <input type="text" [(ngModel)]="oldCourse.title" name="title" required>
+        <div class="form-group" [class.error]="formErrors['title']">
+          <label for="courseTitle">Course Title *</label>
+          <input type="text" id="courseTitle" [(ngModel)]="oldCourse.title" name="title"
+                 placeholder="Enter course title" [class.error]="formErrors['title']" required>
+          @if (formErrors['title']) {
+            <div class="error-message">{{ formErrors['title'] }}</div>
+          }
         </div>
 
-        <div class="form-group">
-          <label>Description</label>
-          <textarea [(ngModel)]="newCourse.description" name="description" rows="3"></textarea>
+        <div class="form-group" [class.error]="formErrors['description']">
+          <label for="courseDescription">Description *</label>
+          <textarea id="courseDescription" [(ngModel)]="newCourse.description" name="description"
+                    rows="4" placeholder="Describe what students will learn in this course"
+                    [class.error]="formErrors['description']" required></textarea>
+          @if (formErrors['description']) {
+            <div class="error-message">{{ formErrors['description'] }}</div>
+          }
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Catégorie</label>
-            <select [(ngModel)]="oldCourse.category" name="category">
-              <option value="">Sélectionner...</option>
-              <option value="programming">💻 Programmation</option>
-              <option value="math">📐 Mathématiques</option>
-              <option value="design">🎨 Design UX/UI</option>
+            <label for="courseCategory">Category</label>
+            <select id="courseCategory" [(ngModel)]="oldCourse.category" name="category">
+              <option value="">Select category...</option>
+              <option value="programming">💻 Programming</option>
+              <option value="math">📐 Mathematics</option>
+              <option value="design">🎨 Design & UX/UI</option>
               <option value="science">🔬 Sciences</option>
+              <option value="business">💼 Business</option>
+              <option value="language">🌐 Languages</option>
+              <option value="other">📚 Other</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Durée (heures)</label>
-            <input type="number" [(ngModel)]="oldCourse.duration" name="duration" min="1">
+            <label for="courseDuration">Duration (hours)</label>
+            <input type="number" id="courseDuration" [(ngModel)]="oldCourse.duration"
+                   name="duration" min="1" max="100" placeholder="e.g., 10">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Image de couverture (URL)</label>
-            <input type="text" [(ngModel)]="oldCourse.imageUrl" name="imageUrl">
+            <label for="courseImage">Cover Image URL</label>
+            <input type="url" id="courseImage" [(ngModel)]="oldCourse.imageUrl" name="imageUrl"
+                   placeholder="https://example.com/image.jpg">
+            <small>Optional: URL to course thumbnail image</small>
           </div>
           <div class="form-group">
-            <label>URL vidéo (YouTube/Vimeo)</label>
-            <input type="text" [(ngModel)]="oldCourse.videoUrl" name="videoUrl"
+            <label for="courseVideo">Video URL</label>
+            <input type="url" id="courseVideo" [(ngModel)]="oldCourse.videoUrl" name="videoUrl"
                    placeholder="https://www.youtube.com/embed/...">
+            <small>Optional: YouTube or Vimeo embed URL</small>
           </div>
         </div>
 
-        <!-- Quiz -->
+        <!-- Quiz Section -->
         <div class="quiz-section">
-          <h3>🧠 Practice Quiz</h3>
-          <div *ngIf="oldCourse.quizzes.length === 0" class="empty-quiz">
-            Aucun quiz. Cliquez sur "+ Ajouter un quiz".
+          <div class="quiz-header">
+            <h3><i class="icon-quiz"></i> Practice Quiz</h3>
+            <button type="button" class="btn-add-quiz" (click)="addQuiz()">
+              <i class="icon-plus"></i> Add Quiz
+            </button>
           </div>
-          <div class="quiz-list">
-            <div class="quiz-item" *ngFor="let quiz of oldCourse.quizzes; let i = index">
-              <div class="quiz-header">
-                <h4>Quiz {{ i + 1 }}</h4>
-                <button type="button" class="btn-delete" (click)="removeQuiz(i)">🗑️</button>
-              </div>
-              <div class="quiz-body">
-                <div class="form-group">
-                  <label>Question</label>
-                  <input type="text" 
-                         [(ngModel)]="oldCourse.quizzes[i].question" 
-                         [name]="'quiz_' + i + '_question'" required>
+
+          @if (oldCourse.quizzes.length === 0) {
+            <div class="empty-quiz">
+              <div class="empty-icon">🧠</div>
+              <p>No quizzes yet. Add your first quiz to engage students!</p>
+            </div>
+          } @else {
+            <div class="quiz-list">
+              <div class="quiz-item" *ngFor="let quiz of oldCourse.quizzes; let i = index">
+                <div class="quiz-header">
+                  <h4>Quiz {{ i + 1 }}</h4>
+                  <button type="button" class="btn-remove-quiz" (click)="removeQuiz(i)"
+                          title="Remove quiz">
+                    <i class="icon-trash"></i>
+                  </button>
                 </div>
-                <div class="options">
-                  <div *ngFor="let opt of quiz.options; let j = index" class="option-row">
-                    <label>Option {{ j + 1 }}</label>
-                    <input type="text" 
-                           [(ngModel)]="oldCourse.quizzes[i].options[j]" 
-                           [name]="'quiz_' + i + '_opt_' + j">
+                <div class="quiz-body">
+                  <div class="form-group">
+                    <label>Question</label>
+                    <input type="text"
+                           [(ngModel)]="oldCourse.quizzes[i].question"
+                           [name]="'quiz_' + i + '_question'"
+                           placeholder="Enter quiz question" required>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label>Bonne réponse (indice 0 à {{ quiz.options.length - 1 }})</label>
-                  <input type="number" 
-                         [(ngModel)]="oldCourse.quizzes[i].correctAnswer" 
-                         [name]="'quiz_' + i + '_correct'" 
-                         [min]="0" 
-                         [max]="quiz.options.length - 1">
+                  <div class="options-grid">
+                    <div *ngFor="let opt of quiz.options; let j = index" class="option-group">
+                      <label>Option {{ j + 1 }}</label>
+                      <input type="text"
+                             [(ngModel)]="oldCourse.quizzes[i].options[j]"
+                             [name]="'quiz_' + i + '_opt_' + j"
+                             placeholder="Enter option {{ j + 1 }}">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Correct Answer (0-3)</label>
+                    <select [(ngModel)]="oldCourse.quizzes[i].correctAnswer"
+                            [name]="'quiz_' + i + '_correct'">
+                      <option [value]="0">Option A (0)</option>
+                      <option [value]="1">Option B (1)</option>
+                      <option [value]="2">Option C (2)</option>
+                      <option [value]="3">Option D (3)</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <button type="button" class="btn-add-quiz" (click)="addQuiz()">+ Ajouter un quiz</button>
+          }
         </div>
 
+        <!-- Form Actions -->
         <div class="form-actions">
-          <button type="submit" class="btn-create">
-            @if (mode === 'create') {
-              🚀 Créer le cours
+          <button type="submit" class="btn-submit" [disabled]="isSubmitting || loading">
+            @if (loading || isSubmitting) {
+              <span class="loading-spinner"></span>
+              @if (mode === 'create') {
+                Creating Course...
+              } @else {
+                Updating Course...
+              }
             } @else {
-              ✅ Mettre à jour
+              @if (mode === 'create') {
+                <i class="icon-rocket"></i> Create Course
+              } @else {
+                <i class="icon-check"></i> Update Course
+              }
             }
           </button>
           @if (mode === 'edit') {
-            <button type="button" class="btn-cancel" (click)="resetForm()">❌ Annuler</button>
+            <button type="button" class="btn-secondary" (click)="resetForm()"
+                    [disabled]="isSubmitting || loading">
+              <i class="icon-cancel"></i> Cancel
+            </button>
           }
         </div>
       </form>
     </div>
   </section>
 
-  <!-- Liste des cours -->
+  <!-- Courses List -->
   <section class="courses-list">
-    <h2>📌 Mes cours ({{ courses.length }})</h2>
-    <div *ngIf="courses.length === 0" class="empty-state">
-      Aucun cours. Créez-en un !
+    <div class="section-header">
+      <h2><i class="icon-courses"></i> My Courses</h2>
+      <div class="courses-count">{{ courses.length }} course{{ courses.length !== 1 ? 's' : '' }}</div>
     </div>
-    <div class="course-grid">
-      <div class="course-card" *ngFor="let course of courses">
-        <div class="course-media">
-          <img [src]="'https://via.placeholder.com/300x180/F5F7FA/555?text=No+Image'" 
-                [alt]="course.titre">
-          <div class="badge-video">🎥</div>
-          <div class="badge-quiz">🧠 0</div>
-        </div>
-        <div class="course-info">
-          <h3>{{ course.titre }}</h3>
-          <p>{{ course.description | slice:0:80 }}…</p>
-          <div class="course-meta">
-            <span class="category">General</span>
-            <span class="duration">1h</span>
+
+    @if (loading && courses.length === 0) {
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading your courses...</p>
+      </div>
+    } @else if (courses.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📚</div>
+        <h3>No courses yet</h3>
+        <p>Start by creating your first course above!</p>
+      </div>
+    } @else {
+      <div class="course-grid">
+        <div class="course-card" *ngFor="let course of courses">
+          <div class="course-media">
+            <img [src]="course.imageUrl || 'https://via.placeholder.com/300x180/667eea/ffffff?text=No+Image'"
+                  [alt]="course.titre" loading="lazy">
+            <div class="course-badges">
+              <span class="badge badge-video" *ngIf="course.videoUrl">🎥 Video</span>
+              <span class="badge badge-quiz">🧠 Quiz</span>
+            </div>
+            <div class="course-overlay">
+              <button (click)="viewCourse(course.id!)" class="btn-overlay">
+                <i class="icon-eye"></i> View Course
+              </button>
+            </div>
           </div>
-          <div class="course-actions">
-            <button (click)="onEditCourse(course)" class="btn-edit">✏️ Modifier</button>
-            <button (click)="onDeleteCourse(course.id!)" class="btn-delete">🗑️ Supprimer</button>
-            <button (click)="viewCourse(course.id!)" class="btn-view">👁️ Voir</button>
+          <div class="course-content">
+            <div class="course-header">
+              <h3>{{ course.titre }}</h3>
+              <div class="course-status">
+                <span class="status-dot status-active"></span>
+                Active
+              </div>
+            </div>
+            <p class="course-description">{{ course.description | slice:0:100 }}...</p>
+            <div class="course-meta">
+              <span class="meta-item">
+                <i class="icon-calendar"></i>
+                Created recently
+              </span>
+              <span class="meta-item">
+                <i class="icon-users"></i>
+                0 students
+              </span>
+            </div>
+            <div class="course-actions">
+              <button (click)="onEditCourse(course)" class="btn-action btn-edit"
+                      title="Edit course">
+                <i class="icon-edit"></i> Edit
+              </button>
+              <button (click)="onDeleteCourse(course.id!)" class="btn-action btn-delete"
+                      title="Delete course">
+                <i class="icon-trash"></i> Delete
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    }
   </section>
 </div>
 

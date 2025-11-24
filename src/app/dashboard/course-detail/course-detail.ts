@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { CoursService } from '../../../services/cours.service';
+import { CoursService, CourseContent, RelatedCourse } from '../../../services/cours.service';
 import { QuizService } from '../../../services/quiz.service';
 import { QuestionService, Question } from '../../../services/question.service';
 import { AuthService } from '../../../services/auth.service';
+import { EnseignantService } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 interface Quiz {
   question: string;
@@ -25,19 +26,15 @@ interface Course {
   description: string;
   targetAudience: string;
   prerequisites: string;
+  learningObjectives: string[];
   instructor: {
     name: string;
     avatarUrl: string;
     bio: string;
-    rating: number; // ✅ Ajouté pour résoudre l'erreur NGTSC
-  };
-  relatedCourses: {
-    title: string;
-    imageUrl: string;
-    price: number;
     rating: number;
-  }[];
-  quizzes: Quiz[]; // ✅ Nouveau champ pour les quiz
+  };
+  relatedCourses: RelatedCourse[];
+  quizzes: Quiz[];
 }
 
 @Component({
@@ -64,7 +61,8 @@ export class CourseDetailComponent implements OnInit {
     private coursService: CoursService,
     private quizService: QuizService,
     private questionService: QuestionService,
-    private authService: AuthService
+    private authService: AuthService,
+    private enseignantService: EnseignantService
   ) {
     this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
     const user = this.authService.getUser();
@@ -101,25 +99,21 @@ export class CourseDetailComponent implements OnInit {
 
   loadCourse() {
     this.loading = true;
-    this.coursService.getCoursById(this.courseId).subscribe({
-      next: (apiCourse) => {
-        // Transform API course to display format
+    this.coursService.getCourseContent(this.courseId).subscribe({
+      next: (courseContent: CourseContent) => {
+        // Transform API course content to display format
         this.course = {
-          id: apiCourse.id || 0,
-          title: apiCourse.titre,
-          subtitle: `Learn ${apiCourse.titre} — from basics to expert level.`,
-          duration: '1 hour',
-          imageUrl: 'assets/img11.jpg',
-          videoUrl: 'https://www.youtube.com/embed/ukzFI9rgwfU',
-          description: apiCourse.description || 'No description available.',
-          targetAudience: 'Students interested in this subject.',
-          prerequisites: 'Basic knowledge recommended.',
-          instructor: {
-            name: 'Instructor',
-            avatarUrl: 'https://i.pravatar.cc/150?u=instructor',
-            bio: 'Experienced educator.',
-            rating: 4.8
-          },
+          id: courseContent.id,
+          title: courseContent.titre,
+          subtitle: `Learn ${courseContent.titre} — from basics to expert level.`,
+          duration: courseContent.duration,
+          imageUrl: courseContent.imageUrl,
+          videoUrl: courseContent.videoUrl,
+          description: courseContent.description,
+          targetAudience: courseContent.targetAudience,
+          prerequisites: courseContent.prerequisites,
+          learningObjectives: courseContent.learningObjectives,
+          instructor: courseContent.instructor,
           relatedCourses: [],
           quizzes: []
         };
@@ -136,26 +130,18 @@ export class CourseDetailComponent implements OnInit {
   }
 
   loadRelatedCourses() {
-    this.coursService.getAllCours().subscribe({
-      next: (courses) => {
+    this.coursService.getRelatedCourses(this.courseId).subscribe({
+      next: (relatedCourses: RelatedCourse[]) => {
         if (this.course) {
-          // Get 3 random related courses (excluding current)
-          const related = courses
-            .filter(c => c.id !== this.courseId)
-            .slice(0, 3)
-            .map(c => ({
-              title: c.titre,
-              imageUrl: 'assets/img5.jpg',
-              price: Math.floor(Math.random() * 50) + 50,
-              rating: 4.5 + Math.random() * 0.5
-            }));
-          if (this.course) {
-            this.course.relatedCourses = related;
-          }
+          this.course.relatedCourses = relatedCourses;
         }
       },
       error: (error) => {
         console.error('Error loading related courses:', error);
+        // Fallback to empty array if API fails
+        if (this.course) {
+          this.course.relatedCourses = [];
+        }
       }
     });
   }

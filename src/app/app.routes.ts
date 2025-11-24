@@ -1,24 +1,25 @@
 import { Routes } from '@angular/router';
+import { TeacherGuard } from '../guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   {
-    path: 'home', 
+    path: 'home',
     loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)
   },
-  { 
-    path: 'login', 
+  {
+    path: 'login',
     loadComponent: () => import('./auth/login/login').then(m => m.Login)
   },
-  { 
-    path: 'signup', 
+  {
+    path: 'signup',
     loadComponent: () => import('./auth/signup/signup').then(m => m.Signup)
   },
   {
-    path: 'student', 
+    path: 'student',
     loadComponent: () => import('./dashboard/student/student').then(m => m.Student)
   },
-  { 
+  {
     path: 'teacher',
     loadComponent: () => import('./dashboard/teacher/teacher').then(m => m.Teacher)
   },
@@ -26,13 +27,14 @@ export const routes: Routes = [
     path: 'admin',
     loadComponent: () => import('./dashboard/admin/admin').then(m => m.AdminComponent)
   },
-  { 
-    path: 'courses', 
+  {
+    path: 'courses',
     loadComponent: () => import('./courses/courses').then(m => m.CoursesComponent)
   },
-  { 
-    path: 'coursesManage', 
-    loadComponent: () => import('./dashboard/manage-courses/manage-courses').then(m => m.ManageCoursesComponent)
+  {
+    path: 'coursesManage',
+    loadComponent: () => import('./dashboard/manage-courses/manage-courses').then(m => m.ManageCoursesComponent),
+    canActivate: [TeacherGuard]
   },
   {
     path: 'category/:slug',

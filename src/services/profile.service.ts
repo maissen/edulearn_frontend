@@ -10,6 +10,7 @@ export interface Profile {
   role: string;
   bio?: string;
   specialization?: string;
+  avatarUrl?: string;
 }
 
 @Injectable({

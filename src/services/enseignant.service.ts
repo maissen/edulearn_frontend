@@ -10,6 +10,26 @@ export interface Enseignant {
   module: string;
 }
 
+export interface TeacherStats {
+  totalStudents: number;
+  successRate: number;
+  activeCourses: number;
+  totalCourses: number;
+  averageRating: number;
+  satisfactionRate: number;
+  totalEnrollments: number;
+}
+
+export interface TeacherCourse {
+  id: number;
+  titre: string;
+  description: string;
+  status: string;
+  enrolledStudents: number;
+  completionRate: number;
+  averageRating: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -54,5 +74,23 @@ export class EnseignantService {
    */
   deleteEnseignant(id: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Get comprehensive statistics for a specific teacher.
+   * @param teacherId Teacher ID
+   * @returns Observable of TeacherStats
+   */
+  getTeacherStats(teacherId: number): Observable<TeacherStats> {
+    return this.http.get<TeacherStats>(`${this.apiUrl}/stats/${teacherId}`);
+  }
+
+  /**
+   * Get detailed courses for a specific teacher.
+   * @param teacherId Teacher ID
+   * @returns Observable array of TeacherCourse
+   */
+  getTeacherCourses(teacherId: number): Observable<TeacherCourse[]> {
+    return this.http.get<TeacherCourse[]>(`${this.apiUrl}/${teacherId}/courses`);
   }
 }

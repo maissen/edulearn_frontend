@@ -59,6 +59,10 @@ export class ManageCoursesComponent implements OnInit {
     quizzes: []
   };
 
+  // Form validation
+  formErrors: { [key: string]: string } = {};
+  isSubmitting = false;
+
   // Liste des cours
   courses: Cours[] = [];
 
@@ -116,10 +120,29 @@ export class ManageCoursesComponent implements OnInit {
     });
   }
 
-  // ✅ CREATE
+  // ✅ CREATE/UPDATE
   onCreateCourse() {
-    if (!this.newCourse.titre || !this.newCourse.description || !this.newCourse.enseignant_id) {
-      this.errorMessage = 'Please fill in all required fields';
+    this.formErrors = {};
+    this.isSubmitting = true;
+
+    // Sync form data
+    this.newCourse.titre = this.oldCourse.title;
+    this.newCourse.description = this.oldCourse.description;
+
+    // Validation
+    if (!this.newCourse.titre?.trim()) {
+      this.formErrors['title'] = 'Course title is required';
+      this.isSubmitting = false;
+      return;
+    }
+    if (!this.newCourse.description?.trim()) {
+      this.formErrors['description'] = 'Course description is required';
+      this.isSubmitting = false;
+      return;
+    }
+    if (!this.newCourse.enseignant_id) {
+      this.errorMessage = 'Teacher ID is required';
+      this.isSubmitting = false;
       return;
     }
 
@@ -134,11 +157,13 @@ export class ManageCoursesComponent implements OnInit {
           this.loadCourses();
           this.resetForm();
           this.loading = false;
+          this.isSubmitting = false;
         },
         error: (error) => {
           console.error('Error creating course:', error);
-          this.errorMessage = error.error?.message || 'Failed to create course';
+          this.errorMessage = error.error?.message || 'Failed to create course. Please check your authentication.';
           this.loading = false;
+          this.isSubmitting = false;
         }
       });
     } else {
@@ -146,6 +171,7 @@ export class ManageCoursesComponent implements OnInit {
       if (!this.newCourse.id) {
         this.errorMessage = 'Course ID is required for update';
         this.loading = false;
+        this.isSubmitting = false;
         return;
       }
       this.coursService.updateCours(this.newCourse.id, this.newCourse).subscribe({
@@ -154,11 +180,13 @@ export class ManageCoursesComponent implements OnInit {
           this.loadCourses();
           this.resetForm();
           this.loading = false;
+          this.isSubmitting = false;
         },
         error: (error) => {
           console.error('Error updating course:', error);
-          this.errorMessage = error.error?.message || 'Failed to update course';
+          this.errorMessage = error.error?.message || 'Failed to update course. Please check your authentication.';
           this.loading = false;
+          this.isSubmitting = false;
         }
       });
     }
@@ -184,14 +212,23 @@ export class ManageCoursesComponent implements OnInit {
       quizzes: []
     };
     this.mode = 'edit';
+    this.formErrors = {};
     // Scroll to form
-    document.querySelector('.form-card')?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      document.querySelector('.form-card')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   }
 
   // 🗑️ DELETE
   onDeleteCourse(courseId: number) {
-    if (confirm('⚠️ Voulez-vous vraiment supprimer ce cours ? Cette action est irréversible.')) {
+    const course = this.courses.find(c => c.id === courseId);
+    const courseTitle = course?.titre || 'this course';
+
+    if (confirm(`⚠️ Are you sure you want to delete "${courseTitle}"?\n\nThis action cannot be undone.`)) {
       this.loading = true;
+      this.errorMessage = '';
+      this.successMessage = '';
+
       this.coursService.deleteCours(courseId).subscribe({
         next: (response) => {
           this.successMessage = response.message || 'Course deleted successfully';
@@ -203,7 +240,7 @@ export class ManageCoursesComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error deleting course:', error);
-          this.errorMessage = error.error?.message || 'Failed to delete course';
+          this.errorMessage = error.error?.message || 'Failed to delete course. Please check your authentication.';
           this.loading = false;
         }
       });
@@ -228,8 +265,10 @@ export class ManageCoursesComponent implements OnInit {
       videoUrl: '',
       quizzes: []
     };
+    this.formErrors = {};
     this.errorMessage = '';
     this.successMessage = '';
+    this.isSubmitting = false;
   }
 
   // Gestion des quiz (méthodes manquantes)
