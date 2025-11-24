@@ -102,6 +102,10 @@ export class CourseDetailComponent implements OnInit {
     return this.course?.relatedCourses || [];
   }
 
+  get hasDescription(): boolean {
+    return !!(this.course?.description && this.course.description.trim());
+  }
+
   getTotalQuestions(): number {
     // For now, assuming each quiz has 4 questions (a, b, c, d options)
     // In a real implementation, this would come from the questions API

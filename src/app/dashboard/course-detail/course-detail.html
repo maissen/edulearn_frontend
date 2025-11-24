@@ -31,7 +31,7 @@
   <!-- Course Description -->
   <section class="course-description-section">
     <h2>📖 Course Description</h2>
-    <p *ngIf="course?.description && course.description.trim(); else noDescription">
+    <p *ngIf="hasDescription; else noDescription">
       {{ course?.description }}
     </p>
     <ng-template #noDescription>
