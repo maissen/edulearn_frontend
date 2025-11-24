@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CoursService, Cours } from '../../../services/cours.service';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 
 interface Quiz {
   question: string;
@@ -26,7 +27,7 @@ interface CourseTemplate {
 @Component({
   selector: 'app-manage-courses',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NavbarComponent],
   templateUrl: './manage-courses.html',
   styleUrls: ['./manage-courses.css']
 })

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { CoursService } from '../../../services/cours.service';
 import { AuthService } from '../../../services/auth.service';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 
 interface Course {
   id: number;
@@ -23,7 +24,8 @@ interface Course {
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    NavbarComponent
   ],
   templateUrl: './category-page.html',
   styleUrls: ['./category-page.css']

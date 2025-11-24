@@ -2,20 +2,7 @@
 
 
 <!-- Barre de navigation -->
-  <nav class="top-nav">
-    <div class="nav-logo">EduLearn</div>
-    <div class="nav-menu">
-      <a href="/student" (click)="navigate('/student'); $event.preventDefault()">Accueil</a>
-      <a href="/courses" (click)="navigate('/courses'); $event.preventDefault()">courses</a>
-      <a href="/Forum" (click)="navigate('/Forum'); $event.preventDefault()">Forum</a>
-      <a href="/profile" (click)="navigate('/profile'); $event.preventDefault()">profile</a>
-    </div>
-    
-     <div class="nav-actions">
-      <div class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
-      <button class="logout-btn" (click)="logout()">Déconnecter</button>
-    </div>
-  </nav>
+<app-navbar></app-navbar>
 <div class="category-page">
 
   

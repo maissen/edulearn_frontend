@@ -1,19 +1,5 @@
 <!-- 🌐 Navbar -->
-<nav class="top-nav">
-  <div class="nav-logo">EduLearn</div>
-    <div class="nav-menu">
-
-      <a href="/teacher" (click)="navigate('/teacher'); $event.preventDefault()">Accueil</a>
-          <a href="/coursesManage" (click)="navigate('/coursesManage'); $event.preventDefault()">Gérer mes cours</a>
-
-      <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
-      <a href="/teacher/profile" (click)="navigate('/teacher/profile'); $event.preventDefault()">Profil</a>
-  </div>
-  <div class="nav-actions">
-     <div class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
-      <button class="logout-btn" (click)="logout()">Déconnecter</button>
-  </div>
-</nav>
+<app-navbar></app-navbar>
 
 <!-- Contenu principal -->
 <div class="course-detail-page">

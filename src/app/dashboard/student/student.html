@@ -1,20 +1,6 @@
 <div class="student-dashboard">
   <!-- Barre de navigation -->
-  <nav class="top-nav">
-    <div class="nav-logo">EduLearn</div>
-    <div class="nav-menu">
-      <a routerLink="/student" routerLinkActive="active">Accueil</a>
-      <a routerLink="/courses" routerLinkActive="active">Courses</a>
-      <a routerLink="/forum" routerLinkActive="active">Forum</a>
-      <a routerLink="/profile" routerLinkActive="active">Profil</a>
-      
-
-    </div>
-     <div class="nav-actions">
-      <div class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
-      <button class="logout-btn" (click)="logout()">Déconnecter</button>
-    </div>
-  </nav>
+  <app-navbar></app-navbar>
 
   <!-- Bannière d'accueil -->
 <div class="hero-banner">

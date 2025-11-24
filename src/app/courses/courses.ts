@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CoursService, Cours } from '../../services/cours.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../shared/navbar/navbar';
 
 interface Course {
   id: number;
@@ -19,7 +20,7 @@ interface Course {
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [FormsModule, RouterModule, CommonModule],
+  imports: [FormsModule, RouterModule, CommonModule, NavbarComponent],
   templateUrl: './courses.html',
   styleUrls: ['./courses.css']
 })

@@ -7,11 +7,12 @@ import { EtudiantService } from '../../../services/etudiant.service';
 import { ClasseService } from '../../../services/classe.service';
 import { CoursService } from '../../../services/cours.service';
 import { ExamenService } from '../../../services/examen.service';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NavbarComponent],
   templateUrl: './admin.html',
   styleUrl: './admin.css'
 })

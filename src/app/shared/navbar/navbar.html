@@ -1,0 +1,35 @@
+<nav class="top-nav">
+  <div class="nav-logo">EduLearn</div>
+  <div class="nav-menu">
+    <!-- Student Links -->
+    <ng-container *ngIf="isStudent()">
+      <a routerLink="/student" routerLinkActive="active">Accueil</a>
+      <a routerLink="/courses" routerLinkActive="active">Courses</a>
+      <a routerLink="/forum" routerLinkActive="active">Forum</a>
+      <a routerLink="/profile" routerLinkActive="active">Profil</a>
+    </ng-container>
+
+    <!-- Teacher Links -->
+    <ng-container *ngIf="isTeacher()">
+      <a routerLink="/teacher" routerLinkActive="active">Accueil</a>
+      <a routerLink="/coursesManage" routerLinkActive="active">Gérer mes cours</a>
+      <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
+      <a routerLink="/teacher/profile" routerLinkActive="active">Profil</a>
+    </ng-container>
+
+    <!-- Admin Links -->
+    <ng-container *ngIf="isAdmin()">
+      <a routerLink="/admin" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/admin/teachers" routerLinkActive="active">Teachers</a>
+      <a routerLink="/admin/students" routerLinkActive="active">Students</a>
+      <a routerLink="/admin/classes" routerLinkActive="active">Classes</a>
+      <a routerLink="/admin/courses" routerLinkActive="active">Courses</a>
+      <a routerLink="/admin/exams" routerLinkActive="active">Exams</a>
+      <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
+    </ng-container>
+  </div>
+  <div class="nav-actions">
+    <div class="user-avatar" *ngIf="userName">{{ userName.charAt(0).toUpperCase() }}</div>
+    <button class="logout-btn" (click)="logout()">Déconnecter</button>
+  </div>
+</nav>

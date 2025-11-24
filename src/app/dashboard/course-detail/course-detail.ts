@@ -8,6 +8,7 @@ import { CoursService } from '../../../services/cours.service';
 import { QuizService } from '../../../services/quiz.service';
 import { QuestionService, Question } from '../../../services/question.service';
 import { AuthService } from '../../../services/auth.service';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 interface Quiz {
   question: string;
   options: string[];
@@ -42,7 +43,7 @@ interface Course {
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule ],
+  imports: [CommonModule, FormsModule, NavbarComponent],
   templateUrl: './course-detail.html',
   styleUrls: ['./course-detail.css']
 })

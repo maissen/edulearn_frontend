@@ -1,17 +1,6 @@
 <div class="analytics-dashboard">
   <!-- Barre de navigation -->
-  <nav class="top-nav">
-    <div class="nav-logo">EduLearn</div>
-    <div class="nav-menu">
-      <a routerLink="/teacher" routerLinkActive="active">Accueil</a>
-      <a routerLink="/coursesManage" routerLinkActive="active">Gérer mes cours</a>
-      <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
-    </div>
-    <div class="nav-actions">
-      <div class="user-avatar">T</div>
-      <button class="logout-btn" (click)="logout()">Déconnecter</button>
-    </div>
-  </nav>
+  <app-navbar></app-navbar>
 
   <!-- Contenu principal -->
   <div class="analytics-content">

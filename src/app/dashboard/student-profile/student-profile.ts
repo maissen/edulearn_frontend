@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ProfileService } from '../../../services/profile.service';
 import { CoursService, Cours } from '../../../services/cours.service';
 import { AuthService } from '../../../services/auth.service';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 
 interface Course {
   id: number;
@@ -20,7 +21,7 @@ interface Course {
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NavbarComponent],
   templateUrl: './student-profile.html',
   styleUrls: ['./student-profile.css']
 })
