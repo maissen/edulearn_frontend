@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { CoursService, Cours } from '../../../services/cours.service';
+import { EnseignantService, TeacherStats } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
 
@@ -18,10 +19,10 @@ export class Teacher implements OnInit {
   userName = 'Teacher';
   courses: Cours[] = [];
   stats = {
-    students: 0,
-    successRate: 0,
+    totalEnrollments: 0,
+    satisfactionRate: 0,
     activeCourses: 0,
-    experts: 0
+    averageRating: 0
   };
   loading = false;
 
@@ -29,7 +30,8 @@ export class Teacher implements OnInit {
     private router: Router,
     private authService: AuthService,
     private profileService: ProfileService,
-    private coursService: CoursService
+    private coursService: CoursService,
+    private enseignantService: EnseignantService
   ) {}
 
   ngOnInit() {
@@ -75,13 +77,29 @@ export class Teacher implements OnInit {
   }
 
   loadStats() {
-    // Mock stats - in real app, these would come from API
-    this.stats = {
-      students: 15000,
-      successRate: 75,
-      activeCourses: this.courses.length,
-      experts: 26
-    };
+    const user = this.authService.getUser();
+    if (user && user.id) {
+      this.enseignantService.getTeacherStats(user.id).subscribe({
+        next: (apiStats: TeacherStats) => {
+          this.stats = {
+            totalEnrollments: apiStats.totalEnrollments,
+            satisfactionRate: apiStats.satisfactionRate,
+            activeCourses: apiStats.activeCourses,
+            averageRating: apiStats.averageRating
+          };
+        },
+        error: (error) => {
+          console.error('Error loading teacher stats:', error);
+          // Fallback to basic stats if API fails
+          this.stats = {
+            totalEnrollments: 0,
+            satisfactionRate: 0,
+            activeCourses: this.courses.length,
+            averageRating: 0
+          };
+        }
+      });
+    }
   }
 
   logout() {

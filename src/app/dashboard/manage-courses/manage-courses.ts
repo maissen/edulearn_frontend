@@ -123,12 +123,20 @@ export class ManageCoursesComponent implements OnInit {
 
   // ✅ CREATE/UPDATE
   onCreateCourse() {
+    console.log('onCreateCourse called');
     this.formErrors = {};
     this.isSubmitting = true;
 
     // Sync form data
     this.newCourse.titre = this.oldCourse.title;
-    this.newCourse.description = this.oldCourse.description;
+    // Description is already bound to newCourse.description in template
+
+    console.log('Form data:', {
+      titre: this.newCourse.titre,
+      description: this.newCourse.description,
+      enseignant_id: this.newCourse.enseignant_id,
+      oldCourse: this.oldCourse
+    });
 
     // Validation
     if (!this.newCourse.titre?.trim()) {
@@ -150,6 +158,8 @@ export class ManageCoursesComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
     this.successMessage = '';
+
+    console.log('Sending course data to API:', this.newCourse);
 
     if (this.mode === 'create') {
       this.coursService.createCours(this.newCourse as Cours).subscribe({

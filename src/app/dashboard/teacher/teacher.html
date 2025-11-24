@@ -23,20 +23,20 @@
     <h2>Vos statistiques clés</h2>
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-number">15K+</div>
-        <div class="stat-label">Élèves inscrits</div>
+        <div class="stat-number">{{ stats.activeCourses }}</div>
+        <div class="stat-label">Cours créés</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">75%</div>
-        <div class="stat-label">Taux de réussite</div>
+        <div class="stat-number">{{ stats.totalEnrollments }}</div>
+        <div class="stat-label">Étudiants inscrits</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">35</div>
-        <div class="stat-label">Cours actifs</div>
+        <div class="stat-number">{{ stats.averageRating | number:'1.1-1' }}</div>
+        <div class="stat-label">Note moyenne</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">26</div>
-        <div class="stat-label">Experts</div>
+        <div class="stat-number">{{ stats.satisfactionRate }}%</div>
+        <div class="stat-label">Taux de satisfaction</div>
       </div>
     </div>
   </section>

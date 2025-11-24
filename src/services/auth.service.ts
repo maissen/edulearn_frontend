@@ -121,7 +121,9 @@ export class AuthService {
    * @returns JWT token string or null
    */
   getToken(): string | null {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    console.log('AuthService.getToken():', token ? 'Token exists' : 'No token found');
+    return token;
   }
 
   /**
@@ -161,7 +163,15 @@ export class AuthService {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const expirationDate = payload.exp * 1000; // Convert to milliseconds
-      return Date.now() >= expirationDate;
+      const now = Date.now();
+      const isExpired = now >= expirationDate;
+      console.log('Token expiration check:', {
+        exp: expirationDate,
+        now,
+        isExpired,
+        timeLeft: expirationDate - now
+      });
+      return isExpired;
     } catch (error) {
       console.error('Error parsing token:', error);
       return true;
@@ -173,7 +183,11 @@ export class AuthService {
    * @returns boolean
    */
   isAuthenticated(): boolean {
-    return !!this.getToken() && !this.isTokenExpired();
+    const hasToken = !!this.getToken();
+    const isExpired = this.isTokenExpired();
+    const result = hasToken && !isExpired;
+    console.log('AuthService.isAuthenticated():', { hasToken, isExpired, result });
+    return result;
   }
 
   /**
