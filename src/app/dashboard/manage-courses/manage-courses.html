@@ -115,55 +115,92 @@
         <div class="quiz-section">
           <div class="quiz-header">
             <h3><i class="icon-quiz"></i> Practice Quiz</h3>
-            <button type="button" class="btn-add-quiz" (click)="addQuiz()">
-              <i class="icon-plus"></i> Add Quiz
-            </button>
+            @if (mode === 'create') {
+              <button type="button" class="btn-add-quiz" (click)="addQuiz()">
+                <i class="icon-plus"></i> Add Quiz
+              </button>
+            }
           </div>
 
-          @if (oldCourse.quizzes.length === 0) {
-            <div class="empty-quiz">
-              <div class="empty-icon">🧠</div>
-              <p>No quizzes yet. Add your first quiz to engage students!</p>
-            </div>
-          } @else {
-            <div class="quiz-list">
-              <div class="quiz-item" *ngFor="let quiz of oldCourse.quizzes; let i = index">
-                <div class="quiz-header">
-                  <h4>Quiz {{ i + 1 }}</h4>
-                  <button type="button" class="btn-remove-quiz" (click)="removeQuiz(i)"
-                          title="Remove quiz">
-                    <i class="icon-trash"></i>
-                  </button>
-                </div>
-                <div class="quiz-body">
-                  <div class="form-group">
-                    <label>Question</label>
-                    <input type="text"
-                           [(ngModel)]="oldCourse.quizzes[i].question"
-                           [name]="'quiz_' + i + '_question'"
-                           placeholder="Enter quiz question" required>
+          <!-- Existing Course Quizzes (when editing) -->
+          @if (mode === 'edit' && courseQuizzes.length > 0) {
+            <div class="existing-quizzes">
+              <h4>Existing Quizzes for this Course</h4>
+              <div class="quiz-list existing">
+                <div class="quiz-item existing" *ngFor="let quiz of courseQuizzes">
+                  <div class="quiz-header">
+                    <h4>{{ quiz.titre }}</h4>
+                    <button type="button" class="btn-delete-quiz"
+                            (click)="deleteQuiz(quiz.id!)"
+                            title="Delete quiz"
+                            [disabled]="loading">
+                      <i class="icon-trash"></i> Delete
+                    </button>
                   </div>
-                  <div class="options-grid">
-                    <div *ngFor="let opt of quiz.options; let j = index" class="option-group">
-                      <label>Option {{ j + 1 }}</label>
-                      <input type="text"
-                             [(ngModel)]="oldCourse.quizzes[i].options[j]"
-                             [name]="'quiz_' + i + '_opt_' + j"
-                             placeholder="Enter option {{ j + 1 }}">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label>Correct Answer (0-3)</label>
-                    <select [(ngModel)]="oldCourse.quizzes[i].correctAnswer"
-                            [name]="'quiz_' + i + '_correct'">
-                      <option [value]="0">Option A (0)</option>
-                      <option [value]="1">Option B (1)</option>
-                      <option [value]="2">Option C (2)</option>
-                      <option [value]="3">Option D (3)</option>
-                    </select>
+                  <div class="quiz-meta">
+                    <span class="meta-item">Quiz ID: {{ quiz.id }}</span>
+                    <span class="meta-item">Course ID: {{ quiz.cours_id }}</span>
                   </div>
                 </div>
               </div>
+            </div>
+          }
+
+          <!-- New Quizzes (when creating or editing) -->
+          @if (mode === 'create' || (mode === 'edit' && oldCourse.quizzes.length > 0)) {
+            <div class="new-quizzes">
+              @if (mode === 'create') {
+                <h4>Add Quizzes to your Course</h4>
+              } @else {
+                <h4>Add More Quizzes</h4>
+              }
+
+              @if (oldCourse.quizzes.length === 0) {
+                <div class="empty-quiz">
+                  <div class="empty-icon">🧠</div>
+                  <p>No quizzes added yet. Add your first quiz to engage students!</p>
+                </div>
+              } @else {
+                <div class="quiz-list">
+                  <div class="quiz-item" *ngFor="let quiz of oldCourse.quizzes; let i = index">
+                    <div class="quiz-header">
+                      <h4>Quiz {{ i + 1 }}</h4>
+                      <button type="button" class="btn-remove-quiz" (click)="removeQuiz(i)"
+                              title="Remove quiz">
+                        <i class="icon-trash"></i>
+                      </button>
+                    </div>
+                    <div class="quiz-body">
+                      <div class="form-group">
+                        <label>Question</label>
+                        <input type="text"
+                               [(ngModel)]="oldCourse.quizzes[i].question"
+                               [name]="'quiz_' + i + '_question'"
+                               placeholder="Enter quiz question" required>
+                      </div>
+                      <div class="options-grid">
+                        <div *ngFor="let opt of quiz.options; let j = index" class="option-group">
+                          <label>Option {{ j + 1 }}</label>
+                          <input type="text"
+                                 [(ngModel)]="oldCourse.quizzes[i].options[j]"
+                                 [name]="'quiz_' + i + '_opt_' + j"
+                                 placeholder="Enter option {{ j + 1 }}">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Correct Answer (0-3)</label>
+                        <select [(ngModel)]="oldCourse.quizzes[i].correctAnswer"
+                                [name]="'quiz_' + i + '_correct'">
+                          <option [value]="0">Option A (0)</option>
+                          <option [value]="1">Option B (1)</option>
+                          <option [value]="2">Option C (2)</option>
+                          <option [value]="3">Option D (3)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
           }
         </div>

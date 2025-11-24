@@ -28,6 +28,15 @@ export class QuizService {
   }
 
   /**
+   * Fetch all quizzes for a specific course.
+   * @param courseId Course ID
+   * @returns Observable of Quiz array
+   */
+  getQuizzesByCourse(courseId: number): Observable<Quiz[]> {
+    return this.http.get<Quiz[]>(`${this.apiUrl}/course/${courseId}`);
+  }
+
+  /**
    * Create a new quiz.
    * @param quiz Quiz object containing title and course id
    * @returns Observable of the response message

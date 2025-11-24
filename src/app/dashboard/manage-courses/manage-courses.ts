@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CoursService, Cours } from '../../../services/cours.service';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
+import { QuizService, Quiz } from '../../../services/quiz.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
 
@@ -67,11 +68,15 @@ export class ManageCoursesComponent implements OnInit {
   // Liste des cours
   courses: Cours[] = [];
 
+  // Course quizzes for editing
+  courseQuizzes: Quiz[] = [];
+
   constructor(
     private router: Router,
     private coursService: CoursService,
     private authService: AuthService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private quizService: QuizService
   ) {}
 
   ngOnInit() {
@@ -222,6 +227,12 @@ export class ManageCoursesComponent implements OnInit {
       videoUrl: '',
       quizzes: []
     };
+
+    // Load quizzes for this course
+    if (course.id) {
+      this.loadCourseQuizzes(course.id);
+    }
+
     this.mode = 'edit';
     this.formErrors = {};
     // Scroll to form
@@ -295,6 +306,48 @@ export class ManageCoursesComponent implements OnInit {
   removeQuiz(index: number) {
     if (this.oldCourse.quizzes) {
       this.oldCourse.quizzes.splice(index, 1);
+    }
+  }
+
+  // Load quizzes for a specific course (for editing)
+  loadCourseQuizzes(courseId: number) {
+    this.quizService.getQuizzesByCourse(courseId).subscribe({
+      next: (quizzes) => {
+        this.courseQuizzes = quizzes;
+        console.log('Loaded quizzes for course:', quizzes);
+      },
+      error: (error) => {
+        console.error('Error loading course quizzes:', error);
+        this.courseQuizzes = [];
+      }
+    });
+  }
+
+  // Delete a quiz with confirmation
+  deleteQuiz(quizId: number) {
+    const quiz = this.courseQuizzes.find(q => q.id === quizId);
+    const quizTitle = quiz?.titre || 'this quiz';
+
+    if (confirm(`⚠️ Are you sure you want to delete "${quizTitle}"?\n\nThis action cannot be undone.`)) {
+      this.loading = true;
+      this.errorMessage = '';
+      this.successMessage = '';
+
+      this.quizService.deleteQuiz(quizId).subscribe({
+        next: (response) => {
+          this.successMessage = response.message || 'Quiz deleted successfully';
+          // Reload quizzes for current course if we're editing
+          if (this.mode === 'edit' && this.newCourse.id) {
+            this.loadCourseQuizzes(this.newCourse.id);
+          }
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error deleting quiz:', error);
+          this.errorMessage = error.error?.message || 'Failed to delete quiz. Please check your authentication.';
+          this.loading = false;
+        }
+      });
     }
   }
 
