@@ -72,7 +72,16 @@ export class Signup {
       },
       error: (error) => {
         this.loading = false;
-        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+
+        // Handle specific error cases
+        if (error.error?.error?.includes('foreign key constraint') ||
+            error.error?.error?.includes('class') ||
+            error.status === 500) {
+          this.errorMessage = 'Service temporairement indisponible. Veuillez contacter l\'administrateur.';
+        } else {
+          this.errorMessage = error.error?.message || 'Erreur lors de l\'inscription. Veuillez réessayer.';
+        }
+
         console.error('Signup error:', error);
       }
     });

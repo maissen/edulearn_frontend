@@ -50,6 +50,19 @@ export interface CourseEnrollment {
   lastActivity: string;
 }
 
+export interface GroupedCourse {
+  id: number;
+  titre: string;
+  description: string;
+  enseignant_id: number;
+  teacher_username: string;
+  teacher_email: string;
+}
+
+export interface GroupedCourses {
+  [category: string]: GroupedCourse[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -130,5 +143,21 @@ export class CoursService {
    */
   getCourseEnrollments(id: number): Observable<CourseEnrollment> {
     return this.http.get<CourseEnrollment>(`${this.apiUrl}/${id}/enrollments`);
+  }
+
+  /**
+   * Get all unique course categories.
+   * @returns Observable of string array
+   */
+  getCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/categories`);
+  }
+
+  /**
+   * Get all courses grouped by their categories.
+   * @returns Observable of GroupedCourses object
+   */
+  getGroupedByCategory(): Observable<GroupedCourses> {
+    return this.http.get<GroupedCourses>(`${this.apiUrl}/grouped-by-category`);
   }
 }

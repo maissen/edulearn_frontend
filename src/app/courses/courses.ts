@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { CoursService, Cours } from '../../services/cours.service';
+import { CoursService, Cours, GroupedCourses } from '../../services/cours.service';
+import { EtudiantService, CourseEnrollmentStatus } from '../../services/etudiant.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../shared/navbar/navbar';
@@ -15,6 +16,7 @@ interface Course {
   totalLessons: number;
   rating: number;
   progress: number;
+  enrollmentStatus?: CourseEnrollmentStatus;
 }
 
 @Component({
@@ -29,15 +31,17 @@ export class CoursesComponent implements OnInit {
   loading = true;
   errorMessage = '';
 
-  courses: Course[] = [];
-  categories: string[] = ['All'];
+  groupedCourses: GroupedCourses = {};
+  categories: string[] = [];
   searchTerm: string = '';
   selectedCategory: string = 'All';
   filteredCourses: Course[] = [];
+  enrollmentStatuses: Map<number, CourseEnrollmentStatus> = new Map();
 
   constructor(
     private router: Router,
     private coursService: CoursService,
+    private etudiantService: EtudiantService,
     private authService: AuthService
   ) {
     const user = this.authService.getUser();
@@ -50,27 +54,62 @@ export class CoursesComponent implements OnInit {
     this.loadCourses();
   }
 
+  loadEnrollmentStatuses(): void {
+    const allCourses: any[] = [];
+    Object.keys(this.groupedCourses).forEach(category => {
+      this.groupedCourses[category].forEach(course => {
+        allCourses.push(course);
+      });
+    });
+
+    // Check enrollment status for each course
+    const enrollmentChecks = allCourses.map(course =>
+      this.etudiantService.getCourseEnrollmentStatus(course.id).toPromise()
+        .then(status => {
+          this.enrollmentStatuses.set(course.id, status);
+          return status;
+        })
+        .catch(error => {
+          console.error(`Error checking enrollment for course ${course.id}:`, error);
+          const defaultStatus: CourseEnrollmentStatus = {
+            isEnrolled: false,
+            status: null,
+            enrollmentId: null,
+            progressPercentage: 0,
+            startedAt: null,
+            completedAt: null
+          };
+          this.enrollmentStatuses.set(course.id, defaultStatus);
+          return defaultStatus;
+        })
+    );
+
+    Promise.all(enrollmentChecks).then(() => {
+      this.loading = false;
+    }).catch(() => {
+      this.loading = false;
+    });
+  }
+
+  onCategoryChange(): void {
+    this.filterCourses();
+  }
+
   loadCourses() {
-    this.coursService.getAllCours().subscribe({
-      next: (apiCourses) => {
-        // Transform API courses to display format
-        this.courses = apiCourses.map((c, index) => ({
-          id: c.id || index + 1,
-          title: c.titre,
-          category: 'Informatique', // Default category, can be enhanced
-          image: `https://picsum.photos/300/180?random=${index + 1}`, // Use placeholder images
-          currentLesson: Math.floor(Math.random() * 5) + 1,
-          totalLessons: 7,
-          rating: 4.5 + Math.random() * 0.5, // Random rating between 4.5-5.0
-          progress: Math.floor(Math.random() * 100)
-        }));
+    this.coursService.getGroupedByCategory().subscribe({
+      next: (groupedCourses) => {
+        this.groupedCourses = groupedCourses;
+        this.categories = ['All', ...Object.keys(groupedCourses)];
+        this.selectedCategory = 'All';
+        this.filterCourses();
 
-        // Extract unique categories
-        const uniqueCategories = new Set(this.courses.map(c => c.category));
-        this.categories = ['All', ...Array.from(uniqueCategories)];
-
-        this.filteredCourses = this.courses;
-        this.loading = false;
+        // Check enrollment status for each course if user is a student
+        const user = this.authService.getUser();
+        if (user && user.role === 'etudiant') {
+          this.loadEnrollmentStatuses();
+        } else {
+          this.loading = false;
+        }
       },
       error: (error) => {
         console.error('Error loading courses:', error);
@@ -81,11 +120,43 @@ export class CoursesComponent implements OnInit {
   }
 
   filterCourses(): void {
-    this.filteredCourses = this.courses.filter(course => {
-      const matchesCategory = this.selectedCategory === 'All' || course.category === this.selectedCategory;
-      const matchesSearch = course.title.toLowerCase().includes(this.searchTerm.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
+    if (this.selectedCategory === 'All') {
+      // Show all courses from all categories
+      const allCourses: Course[] = [];
+      let index = 0;
+      Object.keys(this.groupedCourses).forEach(category => {
+        this.groupedCourses[category].forEach(course => {
+          allCourses.push({
+            id: course.id,
+            title: course.titre,
+            category: category,
+            image: `https://picsum.photos/300/180?random=${index++}`,
+            currentLesson: Math.floor(Math.random() * 5) + 1,
+            totalLessons: 7,
+            rating: 4.5 + Math.random() * 0.5,
+            progress: Math.floor(Math.random() * 100)
+          });
+        });
+      });
+      this.filteredCourses = allCourses.filter(course =>
+        course.title.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    } else {
+      // Show courses from selected category
+      const categoryCourses = this.groupedCourses[this.selectedCategory] || [];
+      this.filteredCourses = categoryCourses.map((course, index) => ({
+        id: course.id,
+        title: course.titre,
+        category: this.selectedCategory,
+        image: `https://picsum.photos/300/180?random=${index + 100}`,
+        currentLesson: Math.floor(Math.random() * 5) + 1,
+        totalLessons: 7,
+        rating: 4.5 + Math.random() * 0.5,
+        progress: Math.floor(Math.random() * 100)
+      })).filter(course =>
+        course.title.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    }
   }
 
   openCourse(id: number): void {
@@ -95,6 +166,15 @@ export class CoursesComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  getEnrollmentStatus(courseId: number): CourseEnrollmentStatus | undefined {
+    return this.enrollmentStatuses.get(courseId);
+  }
+
+  onImageError(event: any): void {
+    // Fallback to a default image if the image fails to load
+    event.target.src = 'https://picsum.photos/300/180?random=999';
   }
 
   navigate(url: string) {

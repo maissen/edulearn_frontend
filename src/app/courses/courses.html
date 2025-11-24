@@ -1,624 +1,161 @@
-
-
- <!-- Barre de navigation -->
+<!-- Barre de navigation -->
 <app-navbar></app-navbar>
-  
-    <section class="domain-section">
-  <h2 class="domain-title">Cours Informatique</h2>
-  <div class="course-slider">
 
-<div class="course-card">
-  <img src="assets/img8.jpg" alt="Java Course" class="course-image">
-  <h3 class="course-title">Java course</h3>
-  <div class="course-meta">
-    <span>Lesson 5 of 7</span>
-    <span>⭐ 4.8</span>
+<!-- Hero Section -->
+<div class="hero-section" *ngIf="!loading && !errorMessage">
+  <div class="hero-content">
+    <h1>Discover Amazing Courses</h1>
+    <p>Explore our wide range of courses organized by category</p>
+    <div class="category-filter">
+      <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="category-select">
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category === 'All' ? 'All Categories' : category }}
+        </option>
+      </select>
+    </div>
   </div>
-  <div class="progress-bar">
-    <div class="progress-fill" style="width: 70%;"></div>
-  </div>
-  <div class="tooltip">Apprenez les bases de Java et créez vos premières applications.</div>
 </div>
 
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <div class="loading-spinner"></div>
+  <p>Loading courses...</p>
+</div>
 
-
-    <div class="course-card">
-      <img src="assets/img7.jpg" alt="Kotlin Course" class="course-image">
-      <h3 class="course-title">Kotlin course</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 7</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 40%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img9.jpg" alt="PHP Course" class="course-image">
-      <h3 class="course-title">PHP course</h3>
-      <div class="course-meta">
-        <span>Lesson 6 of 7</span>
-        <span>⭐ 4.9</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 85%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img10.jpg" alt="Angular Course" class="course-image">
-      <h3 class="course-title">Angular course</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 7</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 30%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img11.jpg" alt="Python Course" class="course-image">
-      <h3 class="course-title">Python course</h3>
-      <div class="course-meta">
-        <span>Lesson 4 of 7</span>
-        <span>⭐ 4.5</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 55%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img12.jpg" alt="JavaScript Course" class="course-image">
-      <h3 class="course-title">JavaScript course</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 7</span>
-        <span>⭐ 4.3</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 15%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img13.jpg" alt="C++ Course" class="course-image">
-      <h3 class="course-title">C++ course</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 10</span>
-        <span>⭐ 4.4</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 20%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img14.jpg" alt="React Course" class="course-image">
-      <h3 class="course-title">React course</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 7</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 30%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img15.jpg" alt="Vue.js Course" class="course-image">
-      <h3 class="course-title">Vue.js course</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 5</span>
-        <span>⭐ 4.2</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 20%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img16.jpg" alt="SQL Course" class="course-image">
-      <h3 class="course-title">SQL course</h3>
-      <div class="course-meta">
-        <span>Lesson 4 of 6</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 60%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img17.jpg" alt="Node.js Course" class="course-image">
-      <h3 class="course-title">Node.js course</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 6</span>
-        <span>⭐ 4.5</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 35%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img18.jpg" alt="Django Course" class="course-image">
-      <h3 class="course-title">Django course</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 5</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 40%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img19.jpg" alt="Flutter Course" class="course-image">
-      <h3 class="course-title">Flutter course</h3>
-      <div class="course-meta">
-        <span>Lesson 5 of 8</span>
-        <span>⭐ 4.8</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 65%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img20.jpg" alt="Swift Course" class="course-image">
-      <h3 class="course-title">Swift course</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 6</span>
-        <span>⭐ 4.4</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 30%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img21.jpg" alt="Ruby Course" class="course-image">
-      <h3 class="course-title">Ruby course</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 7</span>
-        <span>⭐ 4.3</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 40%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img22.jpg" alt="Go Course" class="course-image">
-      <h3 class="course-title">Go course</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 5</span>
-        <span>⭐ 4.1</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 15%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img23.jpg" alt="C# Course" class="course-image">
-      <h3 class="course-title">C# course</h3>
-      <div class="course-meta">
-        <span>Lesson 4 of 7</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 50%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img24.jpg" alt="Machine Learning Course" class="course-image">
-      <h3 class="course-title">Machine Learning course</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 6</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 35%;"></div>
-      </div>
-    </div>
-
-    <div class="course-card">
-      <img src="assets/img25.jpg" alt="AI Course" class="course-image">
-      <h3 class="course-title">AI course</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 6</span>
-        <span>⭐ 4.8</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 45%;"></div>
-      </div>
-    </div>
-
+<!-- Error State -->
+<div class="error-container" *ngIf="errorMessage && !loading">
+  <div class="error-message">
+    <h3>Oops! Something went wrong</h3>
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadCourses()" class="retry-btn">Try Again</button>
   </div>
+</div>
 
-  <section class="domain-section">
-  <h2 class="domain-title">Cours Cuisine</h2>
-  <div class="course-slider">
-    <div class="course-card">
-      <img src="assets/img_cuisine1.jpg" alt="Pâtisserie" class="course-image">
-      <h3 class="course-title">Pâtisserie</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 5</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+<!-- Courses Content -->
+<div class="courses-container" *ngIf="!loading && !errorMessage">
+
+  <!-- Display filtered courses when a specific category is selected -->
+  <section class="filtered-courses" *ngIf="selectedCategory !== 'All'">
+    <div class="section-header">
+      <h2 class="section-title">{{ selectedCategory }} Courses</h2>
+      <p class="section-subtitle">Discover all courses in {{ selectedCategory }}</p>
     </div>
-    <div class="course-card">
-      <img src="assets/img_cuisine2.jpg" alt="Cuisine Italienne" class="course-image">
-      <h3 class="course-title">Cuisine Italienne</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 5</span>
-        <span>⭐ 4.5</span>
+    <div class="course-grid">
+      <div class="course-card" *ngFor="let course of filteredCourses" (click)="openCourse(course.id)">
+        <div class="course-image-container">
+          <img [src]="course.image" [alt]="course.title" class="course-image" (error)="onImageError($event)">
+          <div class="course-category-badge">{{ course.category }}</div>
+        </div>
+        <div class="course-content">
+          <h3 class="course-title">{{ course.title }}</h3>
+          <p class="course-description">{{ course.title }} - Learn the fundamentals and advanced concepts</p>
+          <div class="course-meta">
+            <span class="lesson-info">Lesson {{ course.currentLesson }} of {{ course.totalLessons }}</span>
+            <span class="rating">⭐ {{ course.rating.toFixed(1) }}</span>
+          </div>
+          <div class="enrollment-status" *ngIf="getEnrollmentStatus(course.id)">
+            <span class="status-badge" [ngClass]="{
+              'not-enrolled': !getEnrollmentStatus(course.id)?.isEnrolled,
+              'in-progress': getEnrollmentStatus(course.id)?.status === 'in_progress',
+              'completed': getEnrollmentStatus(course.id)?.status === 'completed'
+            }">
+              <span class="status-icon">
+                <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
+                  <span *ngSwitchCase="'in_progress'">⏳</span>
+                  <span *ngSwitchCase="'completed'">✅</span>
+                  <span *ngSwitchDefault>📚</span>
+                </ng-container>
+              </span>
+              <span class="status-text">
+                <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
+                  <span *ngSwitchCase="'in_progress'">In Progress ({{ getEnrollmentStatus(course.id)?.progressPercentage }}%)</span>
+                  <span *ngSwitchCase="'completed'">Completed</span>
+                  <span *ngSwitchDefault>Not Enrolled</span>
+                </ng-container>
+              </span>
+            </span>
+          </div>
+          <div class="course-footer">
+            <span class="progress-text" *ngIf="getEnrollmentStatus(course.id)?.isEnrolled && getEnrollmentStatus(course.id)?.status === 'in_progress'">
+              {{ getEnrollmentStatus(course.id)?.progressPercentage }}% Complete
+            </span>
+            <span class="enrollment-count" *ngIf="!getEnrollmentStatus(course.id)?.isEnrolled || getEnrollmentStatus(course.id)?.status !== 'in_progress'">
+              {{ Math.floor(Math.random() * 500) + 50 }} students enrolled
+            </span>
+          </div>
+        </div>
       </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
     </div>
-    <div class="course-card">
-      <img src="assets/img_cuisine3.jpg" alt="Cuisine Asiatique" class="course-image">
-      <h3 class="course-title">Cuisine Asiatique</h3>
-      <div class="course-meta">
-        <span>Lesson 4 of 5</span>
-        <span>⭐ 4.8</span>
+  </section>
+
+  <!-- Display all categories when "All" is selected -->
+  <div *ngIf="selectedCategory === 'All'">
+    <section class="category-section" *ngFor="let category of Object.keys(groupedCourses)">
+      <div class="section-header">
+        <h2 class="section-title">{{ category }}</h2>
+        <p class="section-subtitle">Explore {{ groupedCourses[category].length }} course{{ groupedCourses[category].length !== 1 ? 's' : '' }} in {{ category }}</p>
       </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_cuisine4.jpg" alt="Cuisine Végétarienne" class="course-image">
-      <h3 class="course-title">Cuisine Végétarienne</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 5</span>
-        <span>⭐ 4.4</span>
+      <div class="course-grid">
+        <div class="course-card" *ngFor="let course of groupedCourses[category]; let i = index" (click)="openCourse(course.id)">
+          <div class="course-image-container">
+            <img [src]="'https://picsum.photos/300/180?random=' + (i + 100)" [alt]="course.titre" class="course-image" (error)="onImageError($event)">
+            <div class="course-category-badge">{{ category }}</div>
+          </div>
+        <div class="course-content">
+          <h3 class="course-title">{{ course.titre }}</h3>
+          <p class="course-description">{{ course.description || course.titre + ' - Learn the fundamentals and advanced concepts' }}</p>
+          <div class="course-meta">
+            <span class="teacher-info">By {{ course.teacher_username }}</span>
+            <span class="rating">⭐ 4.{{ Math.floor(Math.random() * 9) + 1 }}</span>
+          </div>
+          <div class="enrollment-status" *ngIf="getEnrollmentStatus(course.id)">
+            <span class="status-badge" [ngClass]="{
+              'not-enrolled': !getEnrollmentStatus(course.id)?.isEnrolled,
+              'in-progress': getEnrollmentStatus(course.id)?.status === 'in_progress',
+              'completed': getEnrollmentStatus(course.id)?.status === 'completed'
+            }">
+              <span class="status-icon">
+                <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
+                  <span *ngSwitchCase="'in_progress'">⏳</span>
+                  <span *ngSwitchCase="'completed'">✅</span>
+                  <span *ngSwitchDefault>📚</span>
+                </ng-container>
+              </span>
+              <span class="status-text">
+                <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
+                  <span *ngSwitchCase="'in_progress'">In Progress ({{ getEnrollmentStatus(course.id)?.progressPercentage }}%)</span>
+                  <span *ngSwitchCase="'completed'">Completed</span>
+                  <span *ngSwitchDefault>Not Enrolled</span>
+                </ng-container>
+              </span>
+            </span>
+          </div>
+          <div class="course-footer">
+            <span class="enrollment-count">{{ Math.floor(Math.random() * 500) + 50 }} students enrolled</span>
+          </div>
+        </div>
+        </div>
       </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_cuisine5.jpg" alt="Cocktails" class="course-image">
-      <h3 class="course-title">Cocktails</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 5</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
-    </div>
+    </section>
   </div>
-</section>
-
-<section class="domain-section">
-  <h2 class="domain-title">Cours Langues</h2>
-  <div class="course-slider">
-    <div class="course-card">
-      <img src="assets/img_langue1.jpg" alt="Anglais" class="course-image">
-      <h3 class="course-title">Anglais</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 6</span>
-        <span>⭐ 4.8</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_langue2.jpg" alt="Espagnol" class="course-image">
-      <h3 class="course-title">Espagnol</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 6</span>
-        <span>⭐ 4.5</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 35%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_langue3.jpg" alt="Allemand" class="course-image">
-      <h3 class="course-title">Allemand</h3>
-      <div class="course-meta">
-        <span>Lesson 4 of 6</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_langue4.jpg" alt="Français" class="course-image">
-      <h3 class="course-title">Français</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 6</span>
-        <span>⭐ 4.3</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_langue5.jpg" alt="Italien" class="course-image">
-      <h3 class="course-title">Italien</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 6</span>
-        <span>⭐ 4.4</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="domain-section">
-  <h2 class="domain-title">Cours Développement Personnel</h2>
-  <div class="course-slider">
-    <div class="course-card">
-      <img src="assets/img_devperso1.jpg" alt="Gestion du stress" class="course-image">
-      <h3 class="course-title">Gestion du stress</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 5</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 35%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_devperso2.jpg" alt="Productivité" class="course-image">
-      <h3 class="course-title">Productivité</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 5</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_devperso3.jpg" alt="Mindfulness" class="course-image">
-      <h3 class="course-title">Mindfulness</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 5</span>
-        <span>⭐ 4.5</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_devperso4.jpg" alt="Communication" class="course-image">
-      <h3 class="course-title">Communication</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 5</span>
-        <span>⭐ 4.4</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_devperso5.jpg" alt="Leadership" class="course-image">
-      <h3 class="course-title">Leadership</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 5</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
-    </div>
-  </div>
-</section>
-<!-- Domaine Enfants & Adolescents -->
-<section class="domain-section">
-  <h2 class="domain-title">Cours pour Enfants & Adolescents</h2>
-  <div class="course-slider">
-    <div class="course-card">
-      <img src="assets/img_kids1.jpg" alt="Dessins pour enfants" class="course-image">
-      <h3 class="course-title">Dessins pour enfants</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 5</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 10%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_kids2.jpg" alt="Mathématiques ludiques" class="course-image">
-      <h3 class="course-title">Mathématiques ludiques</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 6</span>
-        <span>⭐ 4.8</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_kids3.jpg" alt="Programmation pour ados" class="course-image">
-      <h3 class="course-title">Programmation pour ados</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 7</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_kids4.jpg" alt="Chansons pour enfants" class="course-image">
-      <h3 class="course-title">Chansons pour enfants</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 4</span>
-        <span>⭐ 4.5</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 15%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_kids5.jpg" alt="Sciences amusantes" class="course-image">
-      <h3 class="course-title">Sciences amusantes</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 5</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 25%;"></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- Domaine Arts & Loisirs Créatifs -->
-<section class="domain-section">
-  <h2 class="domain-title">Arts & Loisirs Créatifs</h2>
-  <div class="course-slider">
-    <div class="course-card">
-      <img src="assets/img_arts1.jpg" alt="Peinture à l'huile" class="course-image">
-      <h3 class="course-title">Peinture à l'huile</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 6</span>
-        <span>⭐ 4.8</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 10%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_arts2.jpg" alt="Aquarelle" class="course-image">
-      <h3 class="course-title">Aquarelle</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 5</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_arts3.jpg" alt="DIY déco" class="course-image">
-      <h3 class="course-title">DIY déco</h3>
-      <div class="course-meta">
-        <span>Lesson 3 of 5</span>
-        <span>⭐ 4.5</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_arts4.jpg" alt="Sculpture" class="course-image">
-      <h3 class="course-title">Sculpture</h3>
-      <div class="course-meta">
-        <span>Lesson 1 of 4</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 15%;"></div></div>
-    </div>
-    <div class="course-card">
-      <img src="assets/img_arts5.jpg" alt="Calligraphie" class="course-image">
-      <h3 class="course-title">Calligraphie</h3>
-      <div class="course-meta">
-        <span>Lesson 2 of 5</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 25%;"></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="domain-section">
-  <h2 class="domain-title">Cours Physique & Chimie</h2>
-
-  <div class="course-slider">
-
-    <!-- Physique – Mécanique -->
-    <div class="course-card">
-      <span class="tooltip">Introduction aux lois du mouvement, forces, énergie et dynamique.</span>
-      <img src="assets/physique1.jpg" class="course-image">
-      <h3 class="course-title">Mécanique</h3>
-      <div class="course-meta">
-        <span>Leçon 2/10</span>
-        <span>⭐ 4.8</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 25%;"></div></div>
-    </div>
-
-    <!-- Physique – Optique -->
-    <div class="course-card">
-      <span class="tooltip">Lumière, lentilles, réfraction, diffusion et instruments optiques.</span>
-      <img src="assets/physique2jpg.jpg" class="course-image">
-      <h3 class="course-title">Optique</h3>
-      <div class="course-meta">
-        <span>Leçon 4/12</span>
-        <span>⭐ 4.9</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
-    </div>
-
-    <!-- Physique – Électricité -->
-    <div class="course-card">
-      <span class="tooltip">Courant électrique, tension, circuits, résistances, condensateurs.</span>
-      <img src="assets/physique3jpg.png" class="course-image">
-      <h3 class="course-title">Électricité – Circuits</h3>
-      <div class="course-meta">
-        <span>Leçon 5/10</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
-    </div>
-
-    <!-- Physique – Ondes -->
-    <div class="course-card">
-      <span class="tooltip">Étude des ondes sonores, mécaniques et électromagnétiques.</span>
-      <img src="assets/physique4.jpg" class="course-image">
-      <h3 class="course-title">Ondes et vibrations</h3>
-      <div class="course-meta">
-        <span>Leçon 3/9</span>
-        <span>⭐ 4.8</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
-    </div>
-
-    <!-- Chimie – Atomes et Molécules -->
-    <div class="course-card">
-      <span class="tooltip">Structure de l’atome, ions, molécules, tableau périodique.</span>
-      <img src="assets/chimie1.jpg" class="course-image">
-      <h3 class="course-title">Chimie : Atomes & Molécules</h3>
-      <div class="course-meta">
-        <span>Leçon 6/12</span>
-        <span>⭐ 4.9</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 55%;"></div></div>
-    </div>
-
-    <!-- Chimie – Réactions chimiques -->
-    <div class="course-card">
-      <span class="tooltip">Types de réactions, équations chimiques, bilans, énergie.</span>
-      <img src="assets/chimie2.jpg" class="course-image">
-      <h3 class="course-title">Réactions chimiques</h3>
-      <div class="course-meta">
-        <span>Leçon 4/10</span>
-        <span>⭐ 4.7</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
-    </div>
-
-    <!-- Chimie – Acides & Bases -->
-    <div class="course-card">
-      <span class="tooltip">pH, neutralisation, forces acides/bases, titrage.</span>
-      <img src="assets/chimie3.jpg" class="course-image">
-      <h3 class="course-title">Acides & Bases</h3>
-      <div class="course-meta">
-        <span>Leçon 2/8</span>
-        <span>⭐ 4.6</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
-    </div>
-
-    <!-- Chimie – Thermochimie -->
-    <div class="course-card">
-      <span class="tooltip">Énergie dans les réactions, enthalpie, calorimétrie.</span>
-      <img src="assets/chimie4.jpg" class="course-image">
-      <h3 class="course-title">Thermochimie</h3>
-      <div class="course-meta">
-        <span>Leçon 3/10</span>
-        <span>⭐ 4.8</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width: 25%;"></div></div>
-    </div>
-
-  </div>
-</section>
-
-
-</section>
+</div>
 
 <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-logo">
-      <img src="assets/images/logo-white.png" alt="EduLearn Logo">
-      <span>EduLearn</span>
-    </div>
-    <p class="footer-subtitle">Virtual Class for Zoom</p>
-    <p>Subscribe to get our Newsletter</p>
-    <form class="newsletter-form">
-      <input type="email" placeholder="Your Email" class="newsletter-input">
-      <button type="submit" class="newsletter-btn">Subscribe</button>
-    </form>
-    <div class="footer-links">
-      <a href="#">Careers</a>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms & Conditions</a>
-    </div>
-    <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
-  </footer>
+<footer class="footer">
+  <div class="footer-logo">
+    <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+    <span>EduLearn</span>
+  </div>
+  <p class="footer-subtitle">Virtual Class for Zoom</p>
+  <p>Subscribe to get our Newsletter</p>
+  <form class="newsletter-form">
+    <input type="email" placeholder="Your Email" class="newsletter-input">
+    <button type="submit" class="newsletter-btn">Subscribe</button>
+  </form>
+  <div class="footer-links">
+    <a href="#">Careers</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms & Conditions</a>
+  </div>
+  <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
+</footer>
