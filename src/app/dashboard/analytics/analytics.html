@@ -1,0 +1,41 @@
+<div class="analytics-dashboard">
+  <!-- Barre de navigation -->
+  <nav class="top-nav">
+    <div class="nav-logo">EduLearn</div>
+    <div class="nav-menu">
+      <a routerLink="/teacher" routerLinkActive="active">Accueil</a>
+      <a routerLink="/coursesManage" routerLinkActive="active">Gérer mes cours</a>
+      <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
+    </div>
+    <div class="nav-actions">
+      <div class="user-avatar">T</div>
+      <button class="logout-btn" (click)="logout()">Déconnecter</button>
+    </div>
+  </nav>
+
+  <!-- Contenu principal -->
+  <div class="analytics-content">
+    <h1>Analytics Dashboard</h1>
+    <p>This page is under development. Analytics features will be available soon.</p>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+      <span>EduLearn</span>
+    </div>
+    <p class="footer-subtitle">Virtual Class for Zoom</p>
+    <p>Subscribe to get our Newsletter</p>
+    <form class="newsletter-form">
+      <input type="email" placeholder="Your Email" class="newsletter-input">
+      <button type="submit" class="newsletter-btn">Subscribe</button>
+    </form>
+    <div class="footer-links">
+      <a href="#">Careers</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms & Conditions</a>
+    </div>
+    <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
+  </footer>
+</div>

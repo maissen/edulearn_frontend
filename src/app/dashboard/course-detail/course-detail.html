@@ -1,13 +1,13 @@
 <!-- 🌐 Navbar -->
 <nav class="top-nav">
   <div class="nav-logo">EduLearn</div>
-  <div class="nav-menu">
-    
+    <div class="nav-menu">
+
       <a href="/teacher" (click)="navigate('/teacher'); $event.preventDefault()">Accueil</a>
           <a href="/coursesManage" (click)="navigate('/coursesManage'); $event.preventDefault()">Gérer mes cours</a>
 
-      <a href="/student" (click)="navigate('/student'); $event.preventDefault()">Élèves</a>
       <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
+      <a href="/teacher/profile" (click)="navigate('/teacher/profile'); $event.preventDefault()">Profil</a>
   </div>
   <div class="nav-actions">
      <div class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
@@ -115,7 +115,7 @@
   </div>
 
   <!-- Recommandations -->
-  <section class="related-section">
+  <section class="related-section" *ngIf="!isTeacher">
     <h2>🎓 Student also bought</h2>
     <div class="related-grid">
       <div class="related-card" *ngFor="let c of relatedCourses">

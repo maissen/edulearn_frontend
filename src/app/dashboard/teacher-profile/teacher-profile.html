@@ -1,0 +1,106 @@
+<!-- Barre de navigation -->
+<nav class="top-nav">
+  <div class="nav-logo">EduLearn</div>
+  <div class="nav-menu">
+    <a href="/teacher" (click)="navigate('/teacher'); $event.preventDefault()">Accueil</a>
+    <a href="/coursesManage" (click)="navigate('/coursesManage'); $event.preventDefault()">Gérer mes cours</a>
+    <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
+    <a href="/teacher/profile" (click)="navigate('/teacher/profile'); $event.preventDefault()">Profil</a>
+  </div>
+
+  <div class="nav-actions">
+    <div class="user-avatar">{{ teacherName.charAt(0).toUpperCase() }}</div>
+    <button class="logout-btn" (click)="logout()">Déconnecter</button>
+  </div>
+</nav>
+
+<!-- Profil header -->
+<div class="profile-header">
+  <div class="profile-avatar">
+    <img [src]="avatarUrl" [alt]="teacherName">
+    <div class="badge-teacher">Teacher</div>
+  </div>
+  <div class="profile-info">
+    <h1 *ngIf="!isEditing">{{ teacherName }}</h1>
+    <input *ngIf="isEditing" type="text" [(ngModel)]="editForm.username" class="edit-input" placeholder="Nom">
+
+    <p class="profile-email" *ngIf="!isEditing">{{ teacherEmail }}</p>
+    <input *ngIf="isEditing" type="email" [(ngModel)]="editForm.email" class="edit-input" placeholder="Email">
+
+    <div class="profile-actions">
+      <button *ngIf="!isEditing" class="btn-edit" (click)="toggleEdit()">Modifier le profil</button>
+      <button *ngIf="isEditing" class="btn-save" (click)="saveProfile()">Sauvegarder</button>
+      <button *ngIf="isEditing" class="btn-cancel" (click)="toggleEdit()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Informations personnelles -->
+<section class="section">
+  <h2>📋 Informations personnelles</h2>
+  <div class="info-grid">
+    <div class="info-item">
+      <label>Nom complet</label>
+      <p *ngIf="!isEditing">{{ teacherName }}</p>
+      <input *ngIf="isEditing" type="text" [(ngModel)]="editForm.username" class="edit-input">
+    </div>
+    <div class="info-item">
+      <label>Email</label>
+      <p *ngIf="!isEditing">{{ teacherEmail }}</p>
+      <input *ngIf="isEditing" type="email" [(ngModel)]="editForm.email" class="edit-input">
+    </div>
+    <div class="info-item">
+      <label>Spécialisation</label>
+      <p *ngIf="!isEditing">{{ editForm.specialization || 'Non spécifiée' }}</p>
+      <input *ngIf="isEditing" type="text" [(ngModel)]="editForm.specialization" class="edit-input" placeholder="Ex: Mathématiques, Informatique...">
+    </div>
+    <div class="info-item">
+      <label>Biographie</label>
+      <p *ngIf="!isEditing">{{ editForm.bio || 'Aucune biographie' }}</p>
+      <textarea *ngIf="isEditing" [(ngModel)]="editForm.bio" class="edit-textarea" placeholder="Parlez de vous..."></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- Statistiques -->
+<section class="section">
+  <h2>📊 Mes statistiques</h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">15</div>
+      <div class="stat-label">Cours créés</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">1.2K</div>
+      <div class="stat-label">Étudiants inscrits</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">4.8</div>
+      <div class="stat-label">Note moyenne</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">95%</div>
+      <div class="stat-label">Taux de satisfaction</div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo">
+    <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+    <span>EduLearn</span>
+  </div>
+  <p class="footer-subtitle">Virtual Class for Zoom</p>
+  <p>Subscribe to get our Newsletter</p>
+  <form class="newsletter-form">
+    <input type="email" placeholder="Your Email" class="newsletter-input">
+    <button type="submit" class="newsletter-btn">Subscribe</button>
+  </form>
+  <div class="footer-links">
+    <a href="#">Careers</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms & Conditions</a>
+  </div>
+  <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
+</footer>

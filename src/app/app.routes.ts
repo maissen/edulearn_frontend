@@ -45,5 +45,13 @@ export const routes: Routes = [
   {
     path: 'course/:id',
     loadComponent: () => import('./dashboard/course-detail/course-detail').then(c => c.CourseDetailComponent)
+  },
+  {
+    path: 'analytics',
+    loadComponent: () => import('./dashboard/analytics/analytics').then(c => c.AnalyticsComponent)
+  },
+  {
+    path: 'teacher/profile',
+    loadComponent: () => import('./dashboard/teacher-profile/teacher-profile').then(c => c.TeacherProfileComponent)
   }
 ];

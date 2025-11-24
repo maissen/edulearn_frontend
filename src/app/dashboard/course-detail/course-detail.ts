@@ -54,6 +54,7 @@ export class CourseDetailComponent implements OnInit {
   errorMessage = '';
   courseId: number = 0;
   userName = '';
+  isTeacher = false;
 
   constructor(
     private router: Router,
@@ -68,6 +69,7 @@ export class CourseDetailComponent implements OnInit {
     const user = this.authService.getUser();
     if (user) {
       this.userName = user.username || 'User';
+      this.isTeacher = this.authService.isTeacher();
     }
   }
 
