@@ -31,6 +31,19 @@ export interface CourseEnrollmentStatus {
   completedAt: string | null;
 }
 
+export interface QuizResult {
+  id: number;
+  etudiant_id: number;
+  quiz_id: number;
+  score: number;
+  total_questions: number;
+  correct_answers: number;
+  submitted_at: string;
+  quiz_title: string;
+  course_title: string;
+  course_category: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -92,6 +105,22 @@ export class EtudiantService {
    */
   getCourseEnrollmentStatus(courseId: number): Observable<CourseEnrollmentStatus> {
     return this.http.get<CourseEnrollmentStatus>(`${this.apiUrl}/is-enrolled/${courseId}`);
+  }
+
+  /**
+   * Get all quiz results for the authenticated student.
+   * @returns Observable of QuizResult array
+   */
+  getQuizResults(): Observable<QuizResult[]> {
+    return this.http.get<QuizResult[]>(`${this.apiUrl}/quiz-results`);
+  }
+
+  /**
+   * Get all completed courses for the authenticated student.
+   * @returns Observable of CompletedCourse array
+   */
+  getCompletedCourses(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/courses/completed`);
   }
 }
 

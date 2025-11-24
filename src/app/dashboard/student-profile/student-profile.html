@@ -36,37 +36,108 @@
 <!-- Cours en cours -->
 <section class="section">
   <h2>📚 Mes cours en cours</h2>
-  <div class="course-grid">
+  <div class="course-grid" *ngIf="coursesInProgress.length > 0; else noInProgressCourses">
     <div class="course-card" *ngFor="let c of coursesInProgress">
-      <img [src]="c.imageUrl" [alt]="c.title" class="course-image">
+      <div class="course-image-container">
+        <img [src]="'https://picsum.photos/300/180?random=' + c.id" [alt]="c.titre" class="course-image" (error)="onImageError($event)">
+        <div class="course-category-badge">{{ c.category }}</div>
+      </div>
       <div class="course-content">
-        <span class="course-category">{{ c.category }}</span>
-        <h3>{{ c.title }}</h3>
-        <div class="progress-bar">
-          <div class="progress-fill" [style.width.%]="c.progress"></div>
+        <h3>{{ c.titre }}</h3>
+        <p class="course-description">{{ c.description || 'Continuez votre apprentissage dans ce cours' }}</p>
+        <div class="course-meta">
+          <span class="teacher-info">By {{ c.teacher_username }}</span>
+          <span class="enrolled-date">Started: {{ c.started_at | date:'shortDate' }}</span>
         </div>
-        <p class="progress-text">{{ c.progress }}% • {{ c.lastLesson }}</p>
-        <button class="btn-continue">Continuer</button>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="c.progress_percentage"></div>
+        </div>
+        <div class="course-footer">
+          <span class="progress-text">{{ c.progress_percentage }}% Complete</span>
+        </div>
+        <button class="btn-continue" (click)="openCourse(c.id)">Continuer</button>
       </div>
     </div>
   </div>
+  <ng-template #noInProgressCourses>
+    <div class="empty-state">
+      <p>Vous n'avez aucun cours en cours pour le moment.</p>
+      <button class="btn-enroll" (click)="navigate('/courses')">Explorer les cours</button>
+    </div>
+  </ng-template>
 </section>
 
 <!-- Cours terminés -->
 <section class="section">
   <h2>🏆 Cours terminés</h2>
-  <div class="course-grid">
+  <div class="course-grid" *ngIf="completedCourses.length > 0; else noCompletedCourses">
     <div class="course-card completed" *ngFor="let c of completedCourses">
-      <img [src]="c.imageUrl" [alt]="c.title" class="course-image">
+      <div class="course-image-container">
+        <img [src]="'https://picsum.photos/300/180?random=' + c.id" [alt]="c.titre" class="course-image" (error)="onImageError($event)">
+        <div class="course-category-badge">{{ c.category }}</div>
+      </div>
       <div class="course-content">
-        <span class="course-category">{{ c.category }}</span>
-        <h3>{{ c.title }}</h3>
-        <div class="completion-badge">✅ Terminé</div>
-        <p class="completion-date">Le {{ c.completionDate }}</p>
-        <p class="course-grade">Note : <strong>{{ c.grade }}/100</strong></p>
+        <h3>{{ c.titre }}</h3>
+        <p class="course-description">{{ c.description || 'Cours terminé avec succès' }}</p>
+        <div class="course-meta">
+          <span class="teacher-info">By {{ c.teacher_username }}</span>
+          <span class="completion-date">Completed: {{ c.completed_at | date:'shortDate' }}</span>
+        </div>
+        <div class="completion-badge">✅ Completed</div>
+        <button class="btn-review" (click)="openCourse(c.id)">Review Course</button>
       </div>
     </div>
   </div>
+  <ng-template #noCompletedCourses>
+    <div class="empty-state">
+      <p>Vous n'avez terminé aucun cours pour le moment.</p>
+      <p>Continuez à apprendre pour voir vos accomplissements ici !</p>
+    </div>
+  </ng-template>
+</section>
+
+<!-- Quiz Results -->
+<section class="section">
+  <h2>🎯 Quiz réussis</h2>
+  <div class="quiz-results-grid" *ngIf="quizResults.length > 0; else noQuizResults">
+    <div class="quiz-card" *ngFor="let quiz of quizResults">
+      <div class="quiz-header">
+        <h4>{{ quiz.quiz_title }}</h4>
+        <span class="course-info">{{ quiz.course_title }} • {{ quiz.course_category }}</span>
+      </div>
+      <div class="quiz-stats">
+        <div class="stat">
+          <div class="stat-value">{{ quiz.score }}/20</div>
+          <div class="stat-label">Score</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">{{ quiz.correct_answers }}/{{ quiz.total_questions }}</div>
+          <div class="stat-label">Correct</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">{{ Math.round((quiz.correct_answers / quiz.total_questions) * 100) }}%</div>
+          <div class="stat-label">Accuracy</div>
+        </div>
+      </div>
+      <div class="quiz-footer">
+        <span class="submitted-date">Submitted: {{ quiz.submitted_at | date:'short' }}</span>
+        <span class="score-badge" [ngClass]="{
+          'excellent': quiz.score >= 16,
+          'good': quiz.score >= 12 && quiz.score < 16,
+          'average': quiz.score >= 8 && quiz.score < 12,
+          'poor': quiz.score < 8
+        }">
+          {{ quiz.score >= 12 ? '✅ Passed' : '❌ Failed' }}
+        </span>
+      </div>
+    </div>
+  </div>
+  <ng-template #noQuizResults>
+    <div class="empty-state">
+      <p>Vous n'avez passé aucun quiz pour le moment.</p>
+      <p>Terminez des cours pour accéder aux quiz !</p>
+    </div>
+  </ng-template>
 </section>
 
 <!-- Recommandations -->
@@ -153,4 +224,6 @@
     <a href="#">Terms & Conditions</a>
   </div>
   <p class="footer-copyright">© 2025 Class Technologies Inc.</p>
+</footer>
+</footer>
 </footer>

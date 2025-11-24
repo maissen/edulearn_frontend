@@ -4,20 +4,34 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ProfileService } from '../../../services/profile.service';
 import { CoursService, Cours } from '../../../services/cours.service';
+import { EtudiantService, QuizResult } from '../../../services/etudiant.service';
 import { AuthService } from '../../../services/auth.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
 
-interface Course {
+interface InProgressCourse {
+  enrollment_id: number;
+  progress_percentage: number;
+  started_at: string;
+  updated_at: string;
   id: number;
-  title: string;
+  titre: string;
+  description: string;
   category: string;
-  progress: number;
-  lastLesson?: string;
-  completed: boolean;
-  completionDate?: string;
-  grade?: number;
-  imageUrl: string;
+  teacher_username: string;
+}
+
+interface CompletedCourse {
+  enrollment_id: number;
+  progress_percentage: number;
+  started_at: string;
+  completed_at: string;
+  updated_at: string;
+  id: number;
+  titre: string;
+  description: string;
+  category: string;
+  teacher_username: string;
 }
 
 @Component({
@@ -44,8 +58,9 @@ export class StudentProfileComponent implements OnInit {
     biography: ''
   };
 
-  coursesInProgress: Course[] = [];
-  completedCourses: Course[] = [];
+  coursesInProgress: InProgressCourse[] = [];
+  completedCourses: CompletedCourse[] = [];
+  quizResults: QuizResult[] = [];
   recommendedCourses: Course[] = [];
   allCourses: Cours[] = [];
 
@@ -53,12 +68,15 @@ export class StudentProfileComponent implements OnInit {
     private router: Router,
     private profileService: ProfileService,
     private coursService: CoursService,
+    private etudiantService: EtudiantService,
     private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.loadProfile();
-    this.loadCourses();
+    this.loadInProgressCourses();
+    this.loadCompletedCourses();
+    this.loadQuizResults();
   }
 
   loadProfile() {
@@ -89,54 +107,51 @@ export class StudentProfileComponent implements OnInit {
     });
   }
 
-  loadCourses() {
-    this.coursService.getAllCours().subscribe({
+  loadInProgressCourses() {
+    this.etudiantService.getInProgressCourses().subscribe({
       next: (courses) => {
-        this.allCourses = courses;
-        // Transform API courses to display format
-        this.coursesInProgress = courses.slice(0, 2).map(c => ({
-          id: c.id || 0,
-          title: c.titre,
-          category: 'General',
-          progress: Math.floor(Math.random() * 80) + 10, // Mock progress
-          completed: false,
-          imageUrl: 'https://picsum.photos/300/180?random=8'
-        }));
-        
-        // Mock completed courses (in real app, this would come from API)
-        this.completedCourses = courses.slice(2, 3).map(c => ({
-          id: c.id || 0,
-          title: c.titre,
-          category: 'General',
-          progress: 100,
-          completed: true,
-          completionDate: new Date().toLocaleDateString('fr-FR'),
-          grade: Math.floor(Math.random() * 20) + 80,
-          imageUrl: 'https://picsum.photos/300/180?random=8'
-        }));
-
-        // Recommended courses
-        this.recommendedCourses = courses.slice(3, 5).map(c => ({
-          id: c.id || 0,
-          title: c.titre,
-          category: 'General',
-          progress: 0,
-          completed: false,
-          imageUrl: 'assets/img11.jpg'
-        }));
-
-        // Calculate overall progress
-        if (this.coursesInProgress.length > 0) {
-          this.overallProgress = Math.round(
-            this.coursesInProgress.reduce((sum, c) => sum + c.progress, 0) / this.coursesInProgress.length
-          );
-        }
+        this.coursesInProgress = courses;
+        this.calculateOverallProgress();
       },
       error: (error) => {
-        console.error('Error loading courses:', error);
-        this.errorMessage = 'Failed to load courses';
+        console.error('Error loading in-progress courses:', error);
+        this.coursesInProgress = [];
       }
     });
+  }
+
+  loadCompletedCourses() {
+    this.etudiantService.getCompletedCourses().subscribe({
+      next: (courses) => {
+        this.completedCourses = courses;
+      },
+      error: (error) => {
+        console.error('Error loading completed courses:', error);
+        this.completedCourses = [];
+      }
+    });
+  }
+
+  loadQuizResults() {
+    this.etudiantService.getQuizResults().subscribe({
+      next: (results) => {
+        this.quizResults = results;
+      },
+      error: (error) => {
+        console.error('Error loading quiz results:', error);
+        this.quizResults = [];
+      }
+    });
+  }
+
+  calculateOverallProgress() {
+    if (this.coursesInProgress.length > 0) {
+      this.overallProgress = Math.round(
+        this.coursesInProgress.reduce((sum, c) => sum + c.progress_percentage, 0) / this.coursesInProgress.length
+      );
+    } else {
+      this.overallProgress = 0;
+    }
   }
 
   openUpdateProfileModal() {
@@ -189,6 +204,15 @@ export class StudentProfileComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  openCourse(courseId: number) {
+    this.router.navigate(['/course', courseId]);
+  }
+
+  onImageError(event: any): void {
+    // Fallback to a default image if the image fails to load
+    event.target.src = 'https://picsum.photos/300/180?random=999';
   }
 
   navigate(url: string) {
