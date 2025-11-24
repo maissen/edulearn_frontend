@@ -59,8 +59,13 @@ export interface GroupedCourse {
   teacher_email: string;
 }
 
+export interface CategoryWithCourses {
+  courses: GroupedCourse[];
+  enrolledStudents: number;
+}
+
 export interface GroupedCourses {
-  [category: string]: GroupedCourse[];
+  [category: string]: CategoryWithCourses;
 }
 
 @Injectable({

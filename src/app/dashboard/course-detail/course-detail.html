@@ -31,7 +31,12 @@
   <!-- Course Description -->
   <section class="course-description-section">
     <h2>📖 Course Description</h2>
-    <p>{{ course?.description }}</p>
+    <p *ngIf="course?.description && course.description.trim(); else noDescription">
+      {{ course?.description }}
+    </p>
+    <ng-template #noDescription>
+      <p class="no-description">No description available for this course.</p>
+    </ng-template>
   </section>
 
   <!-- Quiz Section -->
@@ -56,21 +61,20 @@
           </button>
         }
       </div>
-    } @else {
+    } @else if (isTeacher) {
+      <!-- Teacher view: Quiz management -->
       <div class="quiz-gallery">
         <div class="quiz-card" *ngFor="let quiz of quizzes; let i = index">
           <div class="quiz-card-header">
             <div class="quiz-number">Quiz {{ i + 1 }}</div>
-            @if (isTeacher) {
-              <div class="quiz-actions">
-                <button class="btn-edit-quiz" (click)="editQuiz(i)" title="Edit quiz">
-                  <i class="icon-edit"></i>
-                </button>
-                <button class="btn-delete-quiz" (click)="deleteQuiz(i)" title="Delete quiz">
-                  <i class="icon-trash"></i>
-                </button>
-              </div>
-            }
+            <div class="quiz-actions">
+              <button class="btn-edit-quiz" (click)="editQuiz(i)" title="Edit quiz">
+                <i class="icon-edit"></i>
+              </button>
+              <button class="btn-delete-quiz" (click)="deleteQuiz(i)" title="Delete quiz">
+                <i class="icon-trash"></i>
+              </button>
+            </div>
           </div>
           <div class="quiz-card-content">
             <h3 class="quiz-question">{{ quiz.question }}</h3>
@@ -85,6 +89,25 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Student view: Quiz taking -->
+      <div class="student-quiz-section">
+        <div class="quiz-info">
+          <div class="quiz-stats">
+            <div class="stat-item">
+              <span class="stat-number">{{ quizzes.length }}</span>
+              <span class="stat-label">Quiz{{ quizzes.length > 1 ? 'zes' : '' }} Available</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">{{ getTotalQuestions() }}</span>
+              <span class="stat-label">Questions Total</span>
+            </div>
+          </div>
+          <button type="button" class="btn-start-quiz" (click)="startQuiz()">
+            🚀 Start Test Now
+          </button>
         </div>
       </div>
     }
@@ -109,7 +132,7 @@
     </div>
   </section>
 
-  <!-- Quiz Modal -->
+  <!-- Quiz Modal (Teacher) -->
   @if (showQuizModal) {
     <div class="modal-overlay" (click)="closeQuizModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
@@ -163,6 +186,117 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  }
+
+  <!-- Quiz Taking Modal (Student) -->
+  @if (showQuizTakingModal) {
+    <div class="modal-overlay" (click)="closeQuizTakingModal()">
+      <div class="modal-content quiz-taking-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>🧠 Course Quiz</h3>
+          <button type="button" class="modal-close" (click)="closeQuizTakingModal()">
+            <i class="icon-close"></i>
+          </button>
+        </div>
+
+        <div class="quiz-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="((currentQuestionIndex + 1) / quizQuestions.length) * 100"></div>
+          </div>
+          <span class="progress-text">Question {{ currentQuestionIndex + 1 }} of {{ quizQuestions.length }}</span>
+        </div>
+
+        @if (!quizSubmissionResult) {
+          <!-- Quiz Questions -->
+          <div class="quiz-question-section">
+            @if (getCurrentQuestion()) {
+              <div class="question-card">
+                <h4 class="question-text">{{ getCurrentQuestion().question }}</h4>
+                <div class="options-list">
+                  <div class="option-item"
+                       *ngFor="let option of getCurrentQuestion().options"
+                       [class.selected]="selectedAnswers[getCurrentQuestion().id] === option.value"
+                       (click)="selectAnswer(getCurrentQuestion().id, option.value)">
+                    <div class="option-radio">
+                      <div class="radio-circle" [class.checked]="selectedAnswers[getCurrentQuestion().id] === option.value"></div>
+                    </div>
+                    <div class="option-content">
+                      <span class="option-key">{{ option.key | uppercase }}.</span>
+                      <span class="option-text">{{ option.text }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <div class="quiz-navigation">
+              <button type="button"
+                      class="btn-secondary"
+                      [disabled]="currentQuestionIndex === 0"
+                      (click)="previousQuestion()">
+                ← Previous
+              </button>
+              <button type="button"
+                      class="btn-primary"
+                      [disabled]="!canProceed()"
+                      (click)="nextQuestion()">
+                {{ isLastQuestion() ? 'Check Your Score' : 'Next' }}
+              </button>
+            </div>
+          </div>
+        } @else {
+          <!-- Quiz Results -->
+          <div class="quiz-results">
+            <div class="results-header">
+              <div class="score-circle">
+                <span class="score-number">{{ quizSubmissionResult.score }}/20</span>
+                <span class="score-label">Your Score</span>
+              </div>
+            </div>
+
+            <div class="results-details">
+              <div class="result-stat">
+                <span class="stat-value">{{ quizSubmissionResult.correctAnswers }}</span>
+                <span class="stat-label">Correct Answers</span>
+              </div>
+              <div class="result-stat">
+                <span class="stat-value">{{ quizSubmissionResult.totalQuestions }}</span>
+                <span class="stat-label">Total Questions</span>
+              </div>
+              <div class="result-stat">
+                <span class="stat-value">{{ quizSubmissionResult.pointsPerQuestion }}</span>
+                <span class="stat-label">Points per Question</span>
+              </div>
+            </div>
+
+            <div class="results-message">
+              @if (quizSubmissionResult.score >= 16) {
+                <div class="success-message">
+                  🎉 Excellent! You've mastered this material!
+                </div>
+              } @else if (quizSubmissionResult.score >= 12) {
+                <div class="good-message">
+                  👍 Good job! Keep practicing to improve further.
+                </div>
+              } @else {
+                <div class="retry-message">
+                  📚 Don't worry! Review the material and try again.
+                </div>
+              }
+            </div>
+
+            <div class="results-actions">
+              <button type="button" class="btn-secondary" (click)="closeQuizTakingModal()">
+                Close
+              </button>
+              <button type="button" class="btn-primary" (click)="startQuiz()">
+                Retake Quiz
+              </button>
+            </div>
+          </div>
+        }
       </div>
     </div>
   }

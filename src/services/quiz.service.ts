@@ -53,4 +53,34 @@ export class QuizService {
   deleteQuiz(id: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
+
+  /**
+   * Submit quiz responses and get results.
+   * @param quizId Quiz ID
+   * @param responses Object mapping question IDs to selected answers
+   * @returns Observable of the submission result
+   */
+  submitQuiz(quizId: number, responses: { [questionId: string]: string }): Observable<{
+    message: string;
+    result: {
+      id: number;
+      score: number;
+      totalQuestions: number;
+      correctAnswers: number;
+      maxScore: number;
+      pointsPerQuestion: number;
+    }
+  }> {
+    return this.http.post<{
+      message: string;
+      result: {
+        id: number;
+        score: number;
+        totalQuestions: number;
+        correctAnswers: number;
+        maxScore: number;
+        pointsPerQuestion: number;
+      }
+    }>(`${this.apiUrl}/submit`, { quizId, responses });
+  }
 }

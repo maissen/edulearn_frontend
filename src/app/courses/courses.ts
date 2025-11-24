@@ -61,9 +61,11 @@ export class CoursesComponent implements OnInit {
   loadEnrollmentStatuses(): void {
     const allCourses: any[] = [];
     Object.keys(this.groupedCourses).forEach(category => {
-      this.groupedCourses[category].forEach(course => {
-        allCourses.push(course);
-      });
+      if (this.groupedCourses[category].courses) {
+        this.groupedCourses[category].courses.forEach(course => {
+          allCourses.push(course);
+        });
+      }
     });
 
     // Check enrollment status for each course
@@ -136,7 +138,7 @@ export class CoursesComponent implements OnInit {
       const allCourses: Course[] = [];
       let index = 0;
       Object.keys(this.groupedCourses).forEach(category => {
-        this.groupedCourses[category].forEach(course => {
+        this.groupedCourses[category].courses.forEach(course => {
           allCourses.push({
             id: course.id,
             title: course.titre,
@@ -154,19 +156,23 @@ export class CoursesComponent implements OnInit {
       );
     } else {
       // Show courses from selected category
-      const categoryCourses = this.groupedCourses[this.selectedCategory] || [];
-      this.filteredCourses = categoryCourses.map((course, index) => ({
-        id: course.id,
-        title: course.titre,
-        category: this.selectedCategory,
-        image: `https://picsum.photos/300/180?random=${index + 100}`,
-        currentLesson: Math.floor(Math.random() * 5) + 1,
-        totalLessons: 7,
-        rating: 4.5 + Math.random() * 0.5,
-        progress: Math.floor(Math.random() * 100)
-      })).filter(course =>
-        course.title.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
+      const categoryData = this.groupedCourses[this.selectedCategory];
+      if (categoryData && categoryData.courses) {
+        this.filteredCourses = categoryData.courses.map((course, index) => ({
+          id: course.id,
+          title: course.titre,
+          category: this.selectedCategory,
+          image: `https://picsum.photos/300/180?random=${index + 100}`,
+          currentLesson: Math.floor(Math.random() * 5) + 1,
+          totalLessons: 7,
+          rating: 4.5 + Math.random() * 0.5,
+          progress: Math.floor(Math.random() * 100)
+        })).filter(course =>
+          course.title.toLowerCase().includes(this.searchTerm.toLowerCase())
+        );
+      } else {
+        this.filteredCourses = [];
+      }
     }
   }
 

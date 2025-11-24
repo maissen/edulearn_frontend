@@ -64,6 +64,13 @@ export class CourseDetailComponent implements OnInit {
     correctAnswer: 0
   };
 
+  // Student quiz taking state
+  showQuizTakingModal = false;
+  currentQuestionIndex = 0;
+  selectedAnswers: { [questionId: string]: string } = {};
+  quizQuestions: any[] = [];
+  quizSubmissionResult: any = null;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -95,6 +102,12 @@ export class CourseDetailComponent implements OnInit {
     return this.course?.relatedCourses || [];
   }
 
+  getTotalQuestions(): number {
+    // For now, assuming each quiz has 4 questions (a, b, c, d options)
+    // In a real implementation, this would come from the questions API
+    return this.quizzes.length * 4;
+  }
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -111,6 +124,7 @@ export class CourseDetailComponent implements OnInit {
     this.loading = true;
     this.coursService.getCourseContent(this.courseId).subscribe({
       next: (courseContent: CourseContent) => {
+        console.log('Course content loaded:', courseContent); // Debug log
         // Transform API course content to display format
         this.course = {
           id: courseContent.id,
@@ -127,7 +141,11 @@ export class CourseDetailComponent implements OnInit {
           relatedCourses: [],
           quizzes: []
         };
-        this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.course.videoUrl);
+        console.log('Course description:', this.course.description); // Debug log
+
+        // Convert YouTube URL to embed format if needed
+        const embedUrl = this.convertToEmbedUrl(this.course.videoUrl);
+        this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
         this.loadRelatedCourses();
         this.loading = false;
       },
@@ -161,12 +179,17 @@ export class CourseDetailComponent implements OnInit {
       this.quizService.getQuizzesByCourse(this.courseId).subscribe({
         next: (quizzes) => {
           if (this.course) {
-            // Transform API quizzes to component format
+            // For teachers, we show quiz management interface
+            // For students, we prepare quiz data for taking
             this.course.quizzes = quizzes.map(quiz => ({
-              question: quiz.titre, // Assuming titre contains the question
-              options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'], // This should come from questions API
+              id: quiz.id,
+              question: quiz.titre,
+              options: ['Loading questions...'], // Will be replaced when questions are loaded
               correctAnswer: 0
             }));
+
+            // Load questions for each quiz
+            this.loadQuizQuestions(quizzes);
           }
         },
         error: (error) => {
@@ -177,6 +200,33 @@ export class CourseDetailComponent implements OnInit {
         }
       });
     }
+  }
+
+  loadQuizQuestions(quizzes: any[]) {
+    // Load questions for all quizzes in this course
+    const questionPromises = quizzes.map(quiz =>
+      this.questionService.getQuestionsByQuiz(quiz.id).toPromise()
+    );
+
+    Promise.all(questionPromises).then((questionsArrays) => {
+      // Flatten all questions from all quizzes
+      this.quizQuestions = questionsArrays.flat().map((q: any) => ({
+        id: q.id,
+        quiz_id: q.quiz_id,
+        question: q.question,
+        options: [
+          { key: 'a', text: q.option_a, value: 'a' },
+          { key: 'b', text: q.option_b, value: 'b' },
+          { key: 'c', text: q.option_c, value: 'c' },
+          { key: 'd', text: q.option_d, value: 'd' }
+        ],
+        correct: q.correct
+      }));
+      console.log('Loaded quiz questions:', this.quizQuestions);
+    }).catch((error) => {
+      console.error('Error loading quiz questions:', error);
+      this.quizQuestions = [];
+    });
   }
 
   // Quiz Modal Methods
@@ -259,8 +309,119 @@ export class CourseDetailComponent implements OnInit {
     }
   }
 
+  // Student Quiz Taking Methods
+  startQuiz() {
+    if (this.quizQuestions.length === 0) {
+      alert('No questions available for this quiz. Please try again later.');
+      return;
+    }
+
+    this.currentQuestionIndex = 0;
+    this.selectedAnswers = {};
+    this.quizSubmissionResult = null;
+    this.showQuizTakingModal = true;
+  }
+
+  closeQuizTakingModal() {
+    this.showQuizTakingModal = false;
+    this.currentQuestionIndex = 0;
+    this.selectedAnswers = {};
+    this.quizSubmissionResult = null;
+  }
+
+  selectAnswer(questionId: string, answer: string) {
+    this.selectedAnswers[questionId] = answer;
+  }
+
+  getCurrentQuestion() {
+    return this.quizQuestions[this.currentQuestionIndex];
+  }
+
+  nextQuestion() {
+    const currentQuestion = this.getCurrentQuestion();
+    if (!currentQuestion || !this.selectedAnswers[currentQuestion.id]) {
+      alert('Please select an answer before proceeding.');
+      return;
+    }
+
+    if (this.currentQuestionIndex < this.quizQuestions.length - 1) {
+      this.currentQuestionIndex++;
+    } else {
+      // Last question, submit quiz
+      this.submitQuiz();
+    }
+  }
+
+  previousQuestion() {
+    if (this.currentQuestionIndex > 0) {
+      this.currentQuestionIndex--;
+    }
+  }
+
+  isLastQuestion(): boolean {
+    return this.currentQuestionIndex === this.quizQuestions.length - 1;
+  }
+
+  canProceed(): boolean {
+    const currentQuestion = this.getCurrentQuestion();
+    return currentQuestion && !!this.selectedAnswers[currentQuestion.id];
+  }
+
+  submitQuiz() {
+    // Check if all questions have answers
+    const unanswered = this.quizQuestions.filter(q => !this.selectedAnswers[q.id]);
+    if (unanswered.length > 0) {
+      alert(`Please answer all questions before submitting. ${unanswered.length} question(s) remaining.`);
+      return;
+    }
+
+    // Find the quiz ID (assuming all questions belong to the same quiz for now)
+    const quizId = this.quizQuestions[0]?.quiz_id;
+    if (!quizId) {
+      alert('Unable to submit quiz. Quiz ID not found.');
+      return;
+    }
+
+    // Submit quiz via API
+    this.quizService.submitQuiz(quizId, this.selectedAnswers).subscribe({
+      next: (result) => {
+        this.quizSubmissionResult = result.result;
+        console.log('Quiz submitted successfully:', result);
+      },
+      error: (error) => {
+        console.error('Error submitting quiz:', error);
+        alert('Failed to submit quiz. Please try again.');
+      }
+    });
+  }
+
   navigate(url: string) {
     this.router.navigateByUrl(url);
+  }
+
+  convertToEmbedUrl(url: string): string {
+    if (!url) return '';
+
+    // If it's already an embed URL, return as is
+    if (url.includes('youtube.com/embed/') || url.includes('youtu.be/embed/')) {
+      return url;
+    }
+
+    // Extract video ID from various YouTube URL formats
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+      /youtube\.com\/v\/([^&\n?#]+)/
+    ];
+
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return `https://www.youtube.com/embed/${match[1]}`;
+      }
+    }
+
+    // If it's not a YouTube URL, return as is (assuming it's already embeddable)
+    return url;
   }
 
   logout() {

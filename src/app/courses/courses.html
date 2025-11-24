@@ -93,10 +93,10 @@
     <section class="category-section" *ngFor="let category of Object.keys(groupedCourses)">
       <div class="section-header">
         <h2 class="section-title">{{ category }}</h2>
-        <p class="section-subtitle">Explore {{ groupedCourses[category].length }} course{{ groupedCourses[category].length !== 1 ? 's' : '' }} in {{ category }}</p>
+        <p class="section-subtitle">Explore {{ groupedCourses[category].courses.length }} course{{ groupedCourses[category].courses.length !== 1 ? 's' : '' }} in {{ category }}</p>
       </div>
       <div class="course-grid">
-        <div class="course-card" *ngFor="let course of groupedCourses[category]; let i = index" (click)="openCourse(course.id)">
+        <div class="course-card" *ngFor="let course of groupedCourses[category].courses; let i = index" (click)="openCourse(course.id)">
           <div class="course-image-container">
             <img [src]="'https://picsum.photos/300/180?random=' + (i + 100)" [alt]="course.titre" class="course-image" (error)="onImageError($event)">
             <div class="course-category-badge">{{ category }}</div>
@@ -131,7 +131,7 @@
             </span>
           </div>
           <div class="course-footer">
-            <span class="enrollment-count">{{ Math.floor(Math.random() * 500) + 50 }} students enrolled</span>
+            <span class="enrollment-count">{{ groupedCourses[category].enrolledStudents }} students enrolled</span>
           </div>
         </div>
         </div>
