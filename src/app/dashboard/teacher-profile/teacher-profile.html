@@ -45,19 +45,19 @@
   <h2>📊 Mes statistiques</h2>
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-number">15</div>
+      <div class="stat-number">{{ stats.activeCourses }}</div>
       <div class="stat-label">Cours créés</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">1.2K</div>
+      <div class="stat-number">{{ stats.totalEnrollments }}</div>
       <div class="stat-label">Étudiants inscrits</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">4.8</div>
+      <div class="stat-number">{{ stats.averageRating | number:'1.1-1' }}</div>
       <div class="stat-label">Note moyenne</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">95%</div>
+      <div class="stat-number">{{ stats.satisfactionRate }}%</div>
       <div class="stat-label">Taux de satisfaction</div>
     </div>
   </div>
@@ -119,7 +119,7 @@
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-logo">
-    <img src="assets/images/logo-white.png" alt="EduLearn Logo">
+    <app-logo></app-logo>
     <span>EduLearn</span>
   </div>
   <p class="footer-subtitle">Virtual Class for Zoom</p>

@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
+import { EnseignantService, TeacherStats } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
+import { LogoComponent } from '../../shared/logo/logo.component';
 
 @Component({
   selector: 'app-teacher-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, LogoComponent],
   templateUrl: './teacher-profile.html',
   styleUrl: './teacher-profile.css'
 })
@@ -18,6 +20,14 @@ export class TeacherProfileComponent implements OnInit {
   teacherEmail = '';
   avatarUrl = 'https://i.pravatar.cc/150?u=teacher';
   showProfileModal = false;
+
+  // Statistics
+  stats = {
+    activeCourses: 0,
+    totalEnrollments: 0,
+    averageRating: 0,
+    satisfactionRate: 0
+  };
 
   // Form data for editing
   editForm = {
@@ -30,11 +40,13 @@ export class TeacherProfileComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private enseignantService: EnseignantService
   ) {}
 
   ngOnInit() {
     this.loadTeacherData();
+    this.loadTeacherStats();
   }
 
   loadTeacherData() {
@@ -58,6 +70,32 @@ export class TeacherProfileComponent implements OnInit {
         }
       }
     });
+  }
+
+  loadTeacherStats() {
+    const user = this.authService.getUser();
+    if (user && user.id) {
+      this.enseignantService.getTeacherStats(user.id).subscribe({
+        next: (apiStats: TeacherStats) => {
+          this.stats = {
+            activeCourses: apiStats.activeCourses,
+            totalEnrollments: apiStats.totalEnrollments,
+            averageRating: apiStats.averageRating,
+            satisfactionRate: apiStats.satisfactionRate
+          };
+        },
+        error: (error) => {
+          console.error('Error loading teacher stats:', error);
+          // Fallback to zeros if API fails
+          this.stats = {
+            activeCourses: 0,
+            totalEnrollments: 0,
+            averageRating: 0,
+            satisfactionRate: 0
+          };
+        }
+      });
+    }
   }
 
   openUpdateProfileModal() {

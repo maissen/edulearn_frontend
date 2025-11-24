@@ -6,6 +6,7 @@ import { ProfileService } from '../../../services/profile.service';
 import { CoursService, Cours } from '../../../services/cours.service';
 import { AuthService } from '../../../services/auth.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
+import { LogoComponent } from '../../shared/logo/logo.component';
 
 interface Course {
   id: number;
@@ -22,7 +23,7 @@ interface Course {
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, LogoComponent],
   templateUrl: './student-profile.html',
   styleUrls: ['./student-profile.css']
 })
