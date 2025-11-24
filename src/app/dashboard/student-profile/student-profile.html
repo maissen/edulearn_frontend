@@ -11,7 +11,11 @@
   <div class="profile-info">
     <h1>{{ studentName }}</h1>
     <p class="profile-email">{{ studentEmail }}</p>
-    
+
+    <div class="profile-actions">
+      <button class="btn-edit" (click)="openUpdateProfileModal()">Mettre à jour le profil</button>
+    </div>
+
     <div class="profile-stats">
       <div class="stat">
         <div class="stat-number">{{ coursesInProgress.length }}</div>
@@ -81,6 +85,54 @@
     </div>
   </div>
 </section>
+
+<!-- Update Profile Modal -->
+@if (showProfileModal) {
+  <div class="modal-overlay" (click)="closeProfileModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Mettre à jour le profil</h3>
+        <button type="button" class="modal-close" (click)="closeProfileModal()">
+          <i class="icon-close"></i>
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveProfile()" class="profile-form">
+        <div class="form-section">
+          <h4>Informations de base</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profileUsername">Nom complet *</label>
+              <input type="text" id="profileUsername" [(ngModel)]="editForm.username"
+                     name="username" placeholder="Votre nom complet" required>
+            </div>
+            <div class="form-group">
+              <label for="profileEmail">Email *</label>
+              <input type="email" id="profileEmail" [(ngModel)]="editForm.email"
+                     name="email" placeholder="votre.email@example.com" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Informations personnelles</h4>
+          <div class="form-group">
+            <label for="profileBio">Biographie</label>
+            <textarea id="profileBio" [(ngModel)]="editForm.bio" name="bio"
+                      rows="4" placeholder="Parlez de vos centres d'intérêt, vos objectifs d'apprentissage..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeProfileModal()">Annuler</button>
+          <button type="submit" class="btn-primary" [disabled]="!isProfileFormValid()">
+            Sauvegarder les modifications
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
 
 <!-- Footer -->
 <footer class="footer">

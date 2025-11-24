@@ -17,7 +17,7 @@ export class TeacherProfileComponent implements OnInit {
   teacherName = '';
   teacherEmail = '';
   avatarUrl = 'https://i.pravatar.cc/150?u=teacher';
-  isEditing = false;
+  showProfileModal = false;
 
   // Form data for editing
   editForm = {
@@ -60,25 +60,48 @@ export class TeacherProfileComponent implements OnInit {
     });
   }
 
-  toggleEdit() {
-    this.isEditing = !this.isEditing;
-    if (!this.isEditing) {
-      // Reset form data if canceling edit
-      this.loadTeacherData();
-    }
+  openUpdateProfileModal() {
+    // Load current data into form
+    this.editForm = {
+      username: this.teacherName,
+      email: this.teacherEmail,
+      bio: this.editForm.bio || '',
+      specialization: this.editForm.specialization || ''
+    };
+    this.showProfileModal = true;
+  }
+
+  closeProfileModal() {
+    this.showProfileModal = false;
+    this.editForm = {
+      username: '',
+      email: '',
+      bio: '',
+      specialization: ''
+    };
+  }
+
+  isProfileFormValid(): boolean {
+    return !!(
+      this.editForm.username?.trim() &&
+      this.editForm.email?.trim() &&
+      this.editForm.email.includes('@')
+    );
   }
 
   saveProfile() {
+    if (!this.isProfileFormValid()) return;
+
     this.profileService.updateProfile(this.editForm).subscribe({
       next: (response: any) => {
         this.teacherName = this.editForm.username;
         this.teacherEmail = this.editForm.email;
-        this.isEditing = false;
-        alert('Profile updated successfully!');
+        this.closeProfileModal();
+        alert('Profil mis à jour avec succès !');
       },
       error: (error: any) => {
         console.error('Error updating profile:', error);
-        alert('Error updating profile. Please try again.');
+        alert('Erreur lors de la mise à jour du profil. Veuillez réessayer.');
       }
     });
   }

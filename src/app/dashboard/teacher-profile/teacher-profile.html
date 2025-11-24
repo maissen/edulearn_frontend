@@ -8,16 +8,11 @@
     <div class="badge-teacher">Teacher</div>
   </div>
   <div class="profile-info">
-    <h1 *ngIf="!isEditing">{{ teacherName }}</h1>
-    <input *ngIf="isEditing" type="text" [(ngModel)]="editForm.username" class="edit-input" placeholder="Nom">
-
-    <p class="profile-email" *ngIf="!isEditing">{{ teacherEmail }}</p>
-    <input *ngIf="isEditing" type="email" [(ngModel)]="editForm.email" class="edit-input" placeholder="Email">
+    <h1>{{ teacherName }}</h1>
+    <p class="profile-email">{{ teacherEmail }}</p>
 
     <div class="profile-actions">
-      <button *ngIf="!isEditing" class="btn-edit" (click)="toggleEdit()">Modifier le profil</button>
-      <button *ngIf="isEditing" class="btn-save" (click)="saveProfile()">Sauvegarder</button>
-      <button *ngIf="isEditing" class="btn-cancel" (click)="toggleEdit()">Annuler</button>
+      <button class="btn-edit" (click)="openUpdateProfileModal()">Mettre à jour le profil</button>
     </div>
   </div>
 </div>
@@ -28,23 +23,19 @@
   <div class="info-grid">
     <div class="info-item">
       <label>Nom complet</label>
-      <p *ngIf="!isEditing">{{ teacherName }}</p>
-      <input *ngIf="isEditing" type="text" [(ngModel)]="editForm.username" class="edit-input">
+      <p>{{ teacherName }}</p>
     </div>
     <div class="info-item">
       <label>Email</label>
-      <p *ngIf="!isEditing">{{ teacherEmail }}</p>
-      <input *ngIf="isEditing" type="email" [(ngModel)]="editForm.email" class="edit-input">
+      <p>{{ teacherEmail }}</p>
     </div>
     <div class="info-item">
       <label>Spécialisation</label>
-      <p *ngIf="!isEditing">{{ editForm.specialization || 'Non spécifiée' }}</p>
-      <input *ngIf="isEditing" type="text" [(ngModel)]="editForm.specialization" class="edit-input" placeholder="Ex: Mathématiques, Informatique...">
+      <p>{{ editForm.specialization || 'Non spécifiée' }}</p>
     </div>
     <div class="info-item">
       <label>Biographie</label>
-      <p *ngIf="!isEditing">{{ editForm.bio || 'Aucune biographie' }}</p>
-      <textarea *ngIf="isEditing" [(ngModel)]="editForm.bio" class="edit-textarea" placeholder="Parlez de vous..."></textarea>
+      <p>{{ editForm.bio || 'Aucune biographie' }}</p>
     </div>
   </div>
 </section>
@@ -71,6 +62,59 @@
     </div>
   </div>
 </section>
+
+<!-- Update Profile Modal -->
+@if (showProfileModal) {
+  <div class="modal-overlay" (click)="closeProfileModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Mettre à jour le profil</h3>
+        <button type="button" class="modal-close" (click)="closeProfileModal()">
+          <i class="icon-close"></i>
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveProfile()" class="profile-form">
+        <div class="form-section">
+          <h4>Informations de base</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profileUsername">Nom complet *</label>
+              <input type="text" id="profileUsername" [(ngModel)]="editForm.username"
+                     name="username" placeholder="Votre nom complet" required>
+            </div>
+            <div class="form-group">
+              <label for="profileEmail">Email *</label>
+              <input type="email" id="profileEmail" [(ngModel)]="editForm.email"
+                     name="email" placeholder="votre.email@example.com" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Informations professionnelles</h4>
+          <div class="form-group">
+            <label for="profileSpecialization">Spécialisation</label>
+            <input type="text" id="profileSpecialization" [(ngModel)]="editForm.specialization"
+                   name="specialization" placeholder="Ex: Mathématiques, Informatique, Physique...">
+          </div>
+          <div class="form-group">
+            <label for="profileBio">Biographie</label>
+            <textarea id="profileBio" [(ngModel)]="editForm.bio" name="bio"
+                      rows="4" placeholder="Parlez de votre expérience, vos méthodes d'enseignement, vos centres d'intérêt..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeProfileModal()">Annuler</button>
+          <button type="submit" class="btn-primary" [disabled]="!isProfileFormValid()">
+            Sauvegarder les modifications
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
 
 <!-- Footer -->
 <footer class="footer">

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ProfileService } from '../../../services/profile.service';
 import { CoursService, Cours } from '../../../services/cours.service';
@@ -21,7 +22,7 @@ interface Course {
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent],
   templateUrl: './student-profile.html',
   styleUrls: ['./student-profile.css']
 })
@@ -33,6 +34,14 @@ export class StudentProfileComponent implements OnInit {
   overallProgress = 0;
   loading = true;
   errorMessage = '';
+  showProfileModal = false;
+
+  // Form data for editing
+  editForm = {
+    username: '',
+    email: '',
+    bio: ''
+  };
 
   coursesInProgress: Course[] = [];
   completedCourses: Course[] = [];
@@ -120,6 +129,50 @@ export class StudentProfileComponent implements OnInit {
       error: (error) => {
         console.error('Error loading courses:', error);
         this.errorMessage = 'Failed to load courses';
+      }
+    });
+  }
+
+  openUpdateProfileModal() {
+    // Load current data into form
+    this.editForm = {
+      username: this.studentName,
+      email: this.studentEmail,
+      bio: this.editForm.bio || ''
+    };
+    this.showProfileModal = true;
+  }
+
+  closeProfileModal() {
+    this.showProfileModal = false;
+    this.editForm = {
+      username: '',
+      email: '',
+      bio: ''
+    };
+  }
+
+  isProfileFormValid(): boolean {
+    return !!(
+      this.editForm.username?.trim() &&
+      this.editForm.email?.trim() &&
+      this.editForm.email.includes('@')
+    );
+  }
+
+  saveProfile() {
+    if (!this.isProfileFormValid()) return;
+
+    this.profileService.updateProfile(this.editForm).subscribe({
+      next: (response: any) => {
+        this.studentName = this.editForm.username;
+        this.studentEmail = this.editForm.email;
+        this.closeProfileModal();
+        alert('Profil mis à jour avec succès !');
+      },
+      error: (error: any) => {
+        console.error('Error updating profile:', error);
+        alert('Erreur lors de la mise à jour du profil. Veuillez réessayer.');
       }
     });
   }
