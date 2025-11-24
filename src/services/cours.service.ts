@@ -8,6 +8,11 @@ export interface Cours {
   titre: string;
   description: string;
   enseignant_id: number;
+  imageUrl?: string;
+  duration?: string;
+  videoUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CourseContent {
