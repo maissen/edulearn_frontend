@@ -7,11 +7,12 @@ import { CoursService, Cours } from '../../../services/cours.service';
 import { EtudiantService, InProgressCourse } from '../../../services/etudiant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
+import { FooterComponent } from '../../shared/footer/footer';
 
 @Component({
   selector: 'app-student',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent, LogoComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, LogoComponent, FooterComponent],
   templateUrl: './student.html',
   styleUrl: './student.css'
 })

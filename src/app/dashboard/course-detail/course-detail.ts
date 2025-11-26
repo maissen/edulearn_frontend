@@ -12,6 +12,7 @@ import { EnseignantService } from '../../../services/enseignant.service';
 import { EtudiantService, CourseEnrollmentStatus } from '../../../services/etudiant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
+import { FooterComponent } from '../../shared/footer/footer';
 import { ExamenService } from '../../../services/examen.service';
 
 interface Quiz {
@@ -82,7 +83,7 @@ interface Course {
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, LogoComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, LogoComponent, FooterComponent],
   templateUrl: './course-detail.html',
   styleUrls: ['./course-detail.css']
 })

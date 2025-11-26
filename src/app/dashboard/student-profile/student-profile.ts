@@ -8,6 +8,7 @@ import { EtudiantService, QuizResult, CompletedCourse, InProgressCourse } from '
 import { AuthService } from '../../../services/auth.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
+import { FooterComponent } from '../../shared/footer/footer';
 
 // Internal interface for quiz results with numeric score
 interface QuizResultDisplay extends Omit<QuizResult, 'score'> {
@@ -36,7 +37,7 @@ interface UserProfile {
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, LogoComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, LogoComponent, FooterComponent],
   templateUrl: './student-profile.html',
   styleUrls: ['./student-profile.css']
 })
@@ -213,5 +214,40 @@ export class StudentProfileComponent implements OnInit {
 
   onImageError(event: any): void {
     event.target.src = 'https://picsum.photos/300/180?random=999';
+  }
+
+  // Helper methods for score operations to avoid template type issues
+  getScoreValue(quiz: QuizResultDisplay): number {
+    return quiz.score || 0;
+  }
+
+  isScoreExcellent(quiz: QuizResultDisplay): boolean {
+    const score = this.getScoreValue(quiz);
+    return score >= 16;
+  }
+
+  isScoreGood(quiz: QuizResultDisplay): boolean {
+    const score = this.getScoreValue(quiz);
+    return score >= 12 && score < 16;
+  }
+
+  isScoreAverage(quiz: QuizResultDisplay): boolean {
+    const score = this.getScoreValue(quiz);
+    return score >= 8 && score < 12;
+  }
+
+  isScorePoor(quiz: QuizResultDisplay): boolean {
+    const score = this.getScoreValue(quiz);
+    return score < 8;
+  }
+
+  formatScore(quiz: QuizResultDisplay): string {
+    const score = this.getScoreValue(quiz);
+    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
+  }
+
+  isQuizPassed(quiz: QuizResultDisplay): boolean {
+    const score = this.getScoreValue(quiz);
+    return score >= 12;
   }
 }

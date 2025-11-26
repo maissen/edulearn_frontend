@@ -6,6 +6,7 @@ import { EtudiantService, CourseEnrollmentStatus } from '../../services/etudiant
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../shared/navbar/navbar';
+import { FooterComponent } from '../shared/footer/footer';
 
 interface Course {
   id: number;
@@ -22,7 +23,7 @@ interface Course {
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [FormsModule, RouterModule, CommonModule, NavbarComponent],
+  imports: [FormsModule, RouterModule, CommonModule, NavbarComponent, FooterComponent],
   templateUrl: './courses.html',
   styleUrls: ['./courses.css']
 })

@@ -7,11 +7,12 @@ import { CoursService, Cours } from '../../../services/cours.service';
 import { EnseignantService, TeacherStats } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
+import { FooterComponent } from '../../shared/footer/footer';
 
 @Component({
   selector: 'app-teacher',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent, LogoComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, LogoComponent, FooterComponent],
   templateUrl: './teacher.html',
   styleUrl: './teacher.css'
 })

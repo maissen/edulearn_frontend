@@ -7,11 +7,12 @@ import { ProfileService } from '../../../services/profile.service';
 import { EnseignantService, TeacherStats } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
+import { FooterComponent } from '../../shared/footer/footer';
 
 @Component({
   selector: 'app-teacher-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, LogoComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, LogoComponent, FooterComponent],
   templateUrl: './teacher-profile.html',
   styleUrl: './teacher-profile.css'
 })

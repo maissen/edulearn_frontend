@@ -8,6 +8,7 @@ import { ProfileService } from '../../../services/profile.service';
 import { QuizService, Quiz } from '../../../services/quiz.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
+import { FooterComponent } from '../../shared/footer/footer';
 
 interface QuizTemplate {
   id?: number;
@@ -30,7 +31,7 @@ interface CourseTemplate {
 @Component({
   selector: 'app-manage-courses',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, LogoComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, LogoComponent, FooterComponent],
   templateUrl: './manage-courses.html',
   styleUrls: ['./manage-courses.css']
 })
