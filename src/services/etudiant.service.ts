@@ -22,6 +22,18 @@ export interface InProgressCourse {
   teacher_username: string;
 }
 
+export interface CompletedCourse {
+  finished_course_id: number;
+  final_grade: number;
+  completed_at: string;
+  created_at: string;
+  id: number;
+  titre: string;
+  description: string;
+  category: string;
+  teacher_username: string;
+}
+
 export interface CourseEnrollmentStatus {
   isEnrolled: boolean;
   status: string | null; // "in_progress" or "completed" or null
@@ -120,8 +132,8 @@ export class EtudiantService {
    * Get all completed courses for the authenticated student.
    * @returns Observable of CompletedCourse array
    */
-  getCompletedCourses(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/courses/completed`);
+  getCompletedCourses(): Observable<CompletedCourse[]> {
+    return this.http.get<CompletedCourse[]>(`${this.apiUrl}/courses/completed`);
   }
 
   /**
@@ -142,4 +154,3 @@ export class EtudiantService {
     return this.http.post<{ message: string }>(`${this.apiUrl}/complete-course`, { coursId: courseId });
   }
 }
-

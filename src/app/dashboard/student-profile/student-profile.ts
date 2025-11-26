@@ -4,35 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ProfileService } from '../../../services/profile.service';
 import { CoursService, Cours } from '../../../services/cours.service';
-import { EtudiantService, QuizResult } from '../../../services/etudiant.service';
+import { EtudiantService, QuizResult, CompletedCourse, InProgressCourse } from '../../../services/etudiant.service';
 import { AuthService } from '../../../services/auth.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
-
-interface InProgressCourse {
-  enrollment_id: number;
-  progress_percentage: number;
-  started_at: string;
-  updated_at: string;
-  id: number;
-  titre: string;
-  description: string;
-  category: string;
-  teacher_username: string;
-}
-
-interface CompletedCourse {
-  enrollment_id: number;
-  progress_percentage: number;
-  started_at: string;
-  completed_at: string;
-  updated_at: string;
-  id: number;
-  titre: string;
-  description: string;
-  category: string;
-  teacher_username: string;
-}
 
 interface Course {
   id: number;
@@ -44,6 +19,13 @@ interface Course {
   completionDate?: string;
   grade?: number;
   imageUrl: string;
+}
+
+interface UserProfile {
+  id?: number;
+  username?: string;
+  email?: string;
+  biography?: string;
 }
 
 @Component({
@@ -94,7 +76,7 @@ export class StudentProfileComponent implements OnInit {
 
   loadProfile() {
     this.profileService.getProfile().subscribe({
-      next: (profile) => {
+      next: (profile: UserProfile) => {
         this.studentName = profile.username || 'Student';
         this.studentEmail = profile.email || '';
         this.editForm.username = profile.username || '';
@@ -103,7 +85,7 @@ export class StudentProfileComponent implements OnInit {
         this.initial = this.studentName.charAt(0).toUpperCase();
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading profile:', error);
         this.errorMessage = 'Failed to load profile';
         this.loading = false;
@@ -122,10 +104,10 @@ export class StudentProfileComponent implements OnInit {
 
   loadInProgressCourses() {
     this.etudiantService.getInProgressCourses().subscribe({
-      next: (courses) => {
+      next: (courses: InProgressCourse[]) => {
         this.coursesInProgress = courses;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading in-progress courses:', error);
         this.coursesInProgress = [];
       }
@@ -134,10 +116,10 @@ export class StudentProfileComponent implements OnInit {
 
   loadCompletedCourses() {
     this.etudiantService.getCompletedCourses().subscribe({
-      next: (courses) => {
+      next: (courses: CompletedCourse[]) => {
         this.completedCourses = courses;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading completed courses:', error);
         this.completedCourses = [];
       }
@@ -146,10 +128,10 @@ export class StudentProfileComponent implements OnInit {
 
   loadQuizResults() {
     this.etudiantService.getTestResults().subscribe({
-      next: (results) => {
+      next: (results: QuizResult[]) => {
         this.quizResults = results;
       },
-      error: (err) => {
+      error: (err: any) => {
         // handle error
       }
     });
