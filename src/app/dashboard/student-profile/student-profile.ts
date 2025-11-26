@@ -74,7 +74,7 @@ export class StudentProfileComponent implements OnInit {
 
   coursesInProgress: InProgressCourse[] = [];
   completedCourses: CompletedCourse[] = [];
-  testResults: QuizResult[] = [];
+  quizResults: QuizResult[] = [];
   allCourses: Cours[] = [];
 
   constructor(
@@ -147,7 +147,7 @@ export class StudentProfileComponent implements OnInit {
   loadQuizResults() {
     this.etudiantService.getTestResults().subscribe({
       next: (results) => {
-        this.testResults = results;
+        this.quizResults = results;
       },
       error: (err) => {
         // handle error

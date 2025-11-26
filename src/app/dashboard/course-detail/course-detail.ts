@@ -352,8 +352,16 @@ export class CourseDetailComponent implements OnInit {
     // Create the test data in the API format
     const testData = {
       titre: this.currentTest.title,
+      description: '', // Adding the required description field
       cours_id: this.courseId,
-      questions: this.currentTest.questions
+      questions: this.currentTest.questions.map(q => ({
+        question: q.question,
+        option_a: q.option_a,
+        option_b: q.option_b,
+        option_c: q.option_c,
+        option_d: q.option_d,
+        answer: q.correct
+      }))
     };
 
     // Call the QuizService to create the test
