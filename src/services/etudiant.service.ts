@@ -108,12 +108,13 @@ export class EtudiantService {
   }
 
   /**
-   * Get all quiz results for the authenticated student.
-   * @returns Observable of QuizResult array
+   * Get all test/exam results for the authenticated student.
+   * Maps to GET /etudiant/test-results
    */
-  getQuizResults(): Observable<QuizResult[]> {
-    return this.http.get<QuizResult[]>(`${this.apiUrl}/quiz-results`);
+  getTestResults(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/test-results`);
   }
+  // getQuizResults obsolete, do not use.
 
   /**
    * Get all completed courses for the authenticated student.

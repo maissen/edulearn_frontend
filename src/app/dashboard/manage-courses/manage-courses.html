@@ -133,18 +133,18 @@
                 </div>
               } @else {
                 <div class="quiz-list existing">
-                  <div class="quiz-item existing" *ngFor="let quiz of courseQuizzes">
+                  <div class="quiz-item existing" *ngFor="let test of courseQuizzes">
                     <div class="quiz-header">
-                      <h4>{{ quiz.titre }}</h4>
+                      <h4>{{ test.titre }}</h4>
                       <button type="button" class="btn-delete-quiz"
-                              (click)="deleteQuiz(quiz.id!)"
+                              (click)="deleteTest(test.id!)"
                               title="Delete quiz"
                               [disabled]="loading">
                         <i class="icon-trash"></i> Delete
                       </button>
                     </div>
                     <div class="quiz-meta">
-                      <span class="meta-item">Quiz ID: {{ quiz.id }}</span>
+                      <span class="meta-item">Quiz ID: {{ test.id }}</span>
                     </div>
                   </div>
                 </div>
@@ -168,7 +168,7 @@
                 </div>
               } @else {
                 <div class="quiz-list">
-                  <div class="quiz-item" *ngFor="let quiz of oldCourse.quizzes; let i = index">
+                  <div class="quiz-item" *ngFor="let test of oldCourse.quizzes; let i = index">
                     <div class="quiz-header">
                       <h4>Quiz {{ i + 1 }}</h4>
                       <button type="button" class="btn-remove-quiz" (click)="removeQuiz(i)"
@@ -185,7 +185,7 @@
                                placeholder="Enter quiz question" required>
                       </div>
                       <div class="options-grid">
-                        <div *ngFor="let opt of quiz.options; let j = index" class="option-group">
+                        <div *ngFor="let opt of test.options; let j = index" class="option-group">
                           <label>Option {{ j + 1 }}</label>
                           <input type="text"
                                  [(ngModel)]="oldCourse.quizzes[i].options[j]"

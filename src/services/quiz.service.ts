@@ -55,12 +55,20 @@ export class QuizService {
   }
 
   /**
-   * Create a complete test for a course.
-   * @param testData Test data including title, course_id, and questions array
-   * @returns Observable of the response message
+   * Fetch the test/exam for a given course ID.
+   * Maps to GET /quiz/test/course/:courseId
+   */
+  getTestByCourse(courseId: number): Observable<any> {
+    return this.http.get<any>(`${API_BASE_URL}/quiz/test/course/${courseId}`);
+  }
+
+  /**
+   * Create a test (teacher only) with questions
+   * Maps to POST /quiz/test
    */
   createTest(testData: {
     titre: string;
+    description: string;
     cours_id: number;
     questions: Array<{
       question: string;
@@ -68,48 +76,17 @@ export class QuizService {
       option_b: string;
       option_c: string;
       option_d: string;
-      correct: string;
-    }>
-  }): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(this.apiUrl, testData);
+      answer: string;
+    }>;
+  }): Observable<any> {
+    return this.http.post<any>(`${API_BASE_URL}/quiz/test`, testData);
   }
 
   /**
-   * Submit quiz responses and get results.
-   * @param quizId Quiz ID
-   * @param responses Object mapping question IDs to selected answers
-   * @returns Observable of the submission result
+   * Delete a test/exam by ID
+   * Maps to DELETE /quiz/test/:id
    */
-  submitQuiz(quizId: number, responses: { [questionId: string]: string }): Observable<{
-    message: string;
-    result: {
-      id: number;
-      score: number;
-      totalQuestions: number;
-      correctAnswers: number;
-      maxScore: number;
-      pointsPerQuestion: number;
-    }
-  }> {
-    return this.http.post<{
-      message: string;
-      result: {
-        id: number;
-        score: number;
-        totalQuestions: number;
-        correctAnswers: number;
-        maxScore: number;
-        pointsPerQuestion: number;
-      }
-    }>(`${this.apiUrl}/submit`, { quizId, responses });
-  }
-
-  /**
-   * Batch submit multiple quizzes for a course.
-   * @param submissions Array of quiz submissions (quizId + responses)
-   * @returns Observable with batch result containing successes and errors
-   */
-  submitQuizzesBatch(submissions: Array<{ quizId: number, responses: { [questionId: string]: string } }>): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/submit`, { submissions });
+  deleteTest(testId: number): Observable<any> {
+    return this.http.delete<any>(`${API_BASE_URL}/quiz/test/${testId}`);
   }
 }

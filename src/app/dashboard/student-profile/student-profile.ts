@@ -74,7 +74,7 @@ export class StudentProfileComponent implements OnInit {
 
   coursesInProgress: InProgressCourse[] = [];
   completedCourses: CompletedCourse[] = [];
-  quizResults: QuizResult[] = [];
+  testResults: QuizResult[] = [];
   allCourses: Cours[] = [];
 
   constructor(
@@ -145,13 +145,12 @@ export class StudentProfileComponent implements OnInit {
   }
 
   loadQuizResults() {
-    this.etudiantService.getQuizResults().subscribe({
+    this.etudiantService.getTestResults().subscribe({
       next: (results) => {
-        this.quizResults = results;
+        this.testResults = results;
       },
-      error: (error) => {
-        console.error('Error loading quiz results:', error);
-        this.quizResults = [];
+      error: (err) => {
+        // handle error
       }
     });
   }

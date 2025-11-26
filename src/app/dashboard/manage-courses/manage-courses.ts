@@ -364,44 +364,26 @@ export class ManageCoursesComponent implements OnInit {
 
   // Load quizzes for a specific course (for editing)
   loadCourseQuizzes(courseId: number) {
-    this.quizService.getQuizzesByCourse(courseId).subscribe({
-      next: (quizzes) => {
-        this.courseQuizzes = quizzes;
-        console.log('Loaded quizzes for course:', quizzes);
+    this.quizService.getTestByCourse(courseId).subscribe({
+      next: (test) => {
+        // handle test/question state
       },
-      error: (error) => {
-        console.error('Error loading course quizzes:', error);
-        this.courseQuizzes = [];
+      error: (err) => {
+        // handle error
       }
     });
   }
 
   // Delete a quiz with confirmation
-  deleteQuiz(quizId: number) {
-    const quiz = this.courseQuizzes.find(q => q.id === quizId);
-    const quizTitle = quiz?.titre || 'this quiz';
-
-    if (confirm(`⚠️ Are you sure you want to delete "${quizTitle}"?\n\nThis action cannot be undone.`)) {
-      this.loading = true;
-      this.errorMessage = '';
-      this.successMessage = '';
-
-      this.quizService.deleteQuiz(quizId).subscribe({
-        next: (response) => {
-          this.successMessage = response.message || 'Quiz deleted successfully';
-          // Reload quizzes for current course if we're editing
-          if (this.mode === 'edit' && this.newCourse.id) {
-            this.loadCourseQuizzes(this.newCourse.id);
-          }
-          this.loading = false;
-        },
-        error: (error) => {
-          console.error('Error deleting quiz:', error);
-          this.errorMessage = error.error?.message || 'Failed to delete quiz. Please check your authentication.';
-          this.loading = false;
-        }
-      });
-    }
+  deleteTest(testId: number) {
+    this.quizService.deleteTest(testId).subscribe({
+      next: (res) => {
+        // refresh list, alert
+      },
+      error: (err) => {
+        // handle error
+      }
+    });
   }
 
   // --- AFFICHAGE ---

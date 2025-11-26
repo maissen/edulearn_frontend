@@ -373,10 +373,21 @@ export class CourseDetailComponent implements OnInit {
   }
 
   deleteQuiz(index: number) {
+    // Use the test ID for deletion
+    if (!this.course?.test?.id) {
+      alert('No test to delete.');
+      return;
+    }
     if (confirm('Are you sure you want to delete this test? This action cannot be undone.')) {
-      // For now, we can't actually delete tests through the API
-      // This would need to be implemented in the backend
-      alert('Test deletion is not currently implemented in the backend.');
+      this.quizService.deleteTest(this.course.test.id).subscribe({
+        next: (res) => {
+          alert(res.message || 'Test deleted!');
+          this.loadCourse();
+        },
+        error: (err) => {
+          alert('Failed to delete test.');
+        }
+      });
     }
   }
 
