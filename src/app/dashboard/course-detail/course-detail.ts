@@ -11,6 +11,7 @@ import { AuthService } from '../../../services/auth.service';
 import { EnseignantService } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
+import { ExamenService } from '../../../services/examen.service';
 interface Quiz {
   id?: number;
   question: string;
@@ -128,7 +129,8 @@ export class CourseDetailComponent implements OnInit {
     private quizService: QuizService,
     private questionService: QuestionService,
     private authService: AuthService,
-    private enseignantService: EnseignantService
+    private enseignantService: EnseignantService,
+    private examenService: ExamenService
   ) {
     this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
     const user = this.authService.getUser();
@@ -356,14 +358,14 @@ export class CourseDetailComponent implements OnInit {
 
     // Call the QuizService to create the test
     this.quizService.createTest(testData).subscribe({
-      next: (result) => {
+      next: (result: any) => {
         console.log('Test created successfully:', result);
         alert('Test created successfully!');
         this.closeQuizModal();
         // Reload course data to get the updated test
         this.loadCourse();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error creating test:', error);
         alert('Failed to create test. Please try again.');
       }
@@ -416,8 +418,8 @@ export class CourseDetailComponent implements OnInit {
     if (this.currentQuestionIndex < this.quizQuestions.length - 1) {
       this.currentQuestionIndex++;
     } else {
-      // Last question, submit quiz
-      this.submitQuiz();
+      // Last question, submit all quizzes (even if just one)
+      this.submitAllQuizzes();
     }
   }
 
@@ -436,30 +438,45 @@ export class CourseDetailComponent implements OnInit {
     return currentQuestion && !!this.selectedAnswers[currentQuestion.id];
   }
 
-  submitQuiz() {
-    // Check if all questions have answers
-    const unanswered = this.quizQuestions.filter(q => !this.selectedAnswers[q.id]);
-    if (unanswered.length > 0) {
-      alert(`Please answer all questions before submitting. ${unanswered.length} question(s) remaining.`);
+  /**
+   * Submit all course quizzes in a single API call (exam submission).
+   * Uses /test/submit endpoint with testID and answer array.
+   */
+  submitAllQuizzes() {
+    if (!this.course || !this.course.test || !this.course.test.quizzes) {
+      alert('No quizzes to submit.');
+      return;
+    }
+    // Build submissions[] as required by new /test/submit API
+    const submissions: Array<{ quizId: number, answer: string }> = this.quizQuestions.map(q => ({
+      quizId: q.id, // Actual question/quiz ID (should be from API)
+      answer: this.selectedAnswers[q.id]
+    })).filter(s => s.answer); // Only include answered
+
+    if (!submissions.length) {
+      alert('Please answer at least one question before submitting.');
       return;
     }
 
-    // Use the test ID from the course data
-    const testId = this.course?.test?.id;
-    if (!testId) {
-      alert('Unable to submit quiz. Test data not found.');
-      return;
-    }
+    const testID = this.course.test.id;
 
-    // Submit quiz via API - the server will validate answers
-    this.quizService.submitQuiz(testId, this.selectedAnswers).subscribe({
-      next: (result) => {
-        this.quizSubmissionResult = result.result;
-        console.log('Quiz submitted successfully:', result);
+    this.examenService.submitTest(testID, submissions).subscribe({
+      next: (response: any) => {
+        if (response && response.result) {
+          this.quizSubmissionResult = response.result;
+          alert(response.message || `Submission successful! Score: ${response.result.score}/${response.result.maxScore}`);
+        } else if (response && response.error) {
+          alert(response.error);
+        } else {
+          alert('Unexpected/empty response from server.');
+        }
       },
-      error: (error) => {
-        console.error('Error submitting quiz:', error);
-        alert('Failed to submit quiz. Please try again.');
+      error: (error: any) => {
+        let msg = 'Failed to submit test. Please try again.';
+        if (error && error.error && error.error.error) {
+          msg = error.error.error;
+        }
+        alert(msg);
       }
     });
   }

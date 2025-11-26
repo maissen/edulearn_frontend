@@ -181,12 +181,39 @@
 
                   <!-- Options -->
                   <div class="options-grid">
-                    <div class="option-group" *ngFor="let option of ['a', 'b', 'c', 'd']; let j = index">
+                    <div class="option-group">
                       <div class="option-input-group">
-                        <label class="option-label">{{ option | uppercase }}.</label>
-                        <input type="text" [(ngModel)]="currentTest.questions[i]['option_' + option]"
-                               [name]="'option_' + i + '_' + option"
-                               [placeholder]="'Option ' + option.toUpperCase()"
+                        <label class="option-label">A.</label>
+                        <input type="text" [(ngModel)]="currentTest.questions[i].option_a"
+                               [name]="'option_' + i + '_a'"
+                               placeholder="Option A"
+                               required>
+                      </div>
+                    </div>
+                    <div class="option-group">
+                      <div class="option-input-group">
+                        <label class="option-label">B.</label>
+                        <input type="text" [(ngModel)]="currentTest.questions[i].option_b"
+                               [name]="'option_' + i + '_b'"
+                               placeholder="Option B"
+                               required>
+                      </div>
+                    </div>
+                    <div class="option-group">
+                      <div class="option-input-group">
+                        <label class="option-label">C.</label>
+                        <input type="text" [(ngModel)]="currentTest.questions[i].option_c"
+                               [name]="'option_' + i + '_c'"
+                               placeholder="Option C"
+                               required>
+                      </div>
+                    </div>
+                    <div class="option-group">
+                      <div class="option-input-group">
+                        <label class="option-label">D.</label>
+                        <input type="text" [(ngModel)]="currentTest.questions[i].option_d"
+                               [name]="'option_' + i + '_d'"
+                               placeholder="Option D"
                                required>
                       </div>
                     </div>

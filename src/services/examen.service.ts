@@ -55,4 +55,15 @@ export class ExamenService {
   deleteExamen(id: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
+
+    /**
+     * Submit test answers for evaluation (student exam submission)
+     * @param testID Test/exam ID
+     * @param submissions Array of { quizId, answer }
+     * @returns Observable<{ message, result } | { error }>
+     */
+    submitTest(testID: number, submissions: Array<{ quizId: number, answer: string }>): Observable<any> {
+        const body = { testID, submissions };
+        return this.http.post<any>(`${API_BASE_URL}/test/submit`, body);
+    }
 }

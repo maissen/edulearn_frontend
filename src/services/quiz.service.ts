@@ -103,4 +103,13 @@ export class QuizService {
       }
     }>(`${this.apiUrl}/submit`, { quizId, responses });
   }
+
+  /**
+   * Batch submit multiple quizzes for a course.
+   * @param submissions Array of quiz submissions (quizId + responses)
+   * @returns Observable with batch result containing successes and errors
+   */
+  submitQuizzesBatch(submissions: Array<{ quizId: number, responses: { [questionId: string]: string } }>): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/submit`, { submissions });
+  }
 }
