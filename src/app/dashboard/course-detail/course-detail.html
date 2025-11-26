@@ -52,7 +52,7 @@
   <!-- Quiz Section -->
   <section class="quiz-section">
     <div class="quiz-header">
-      <h2>🧠 Practice Quizzes</h2>
+      <h2>🧠 Pass your exam Now</h2>
       @if (isTeacher) {
         <button type="button" class="btn-add-quiz" (click)="openAddQuizModal()">
           <i class="icon-plus"></i> Add Quiz
@@ -108,7 +108,7 @@
           <div class="quiz-stats">
             <div class="stat-item">
               <span class="stat-number">{{ quizzes.length }}</span>
-              <span class="stat-label">Quiz{{ quizzes.length > 1 ? 'zes' : '' }} Available</span>
+              <span class="stat-label">Test{{ quizzes.length > 1 ? 's' : '' }} Available</span>
             </div>
             <div class="stat-item">
               <span class="stat-number">{{ getTotalQuestions() }}</span>
@@ -138,22 +138,6 @@
   </div>
 
   <!-- Recommandations -->
-  <section class="related-section" *ngIf="!isTeacher">
-    <h2>🎓 Student also bought</h2>
-    <div class="related-grid">
-      <div class="related-card" *ngFor="let c of relatedCourses">
-        <img [src]="c.imageUrl" [alt]="c.titre" class="related-image">
-        <div class="related-info">
-          <h3>{{ c.titre }}</h3>
-          <div class="related-meta">
-            <span>⭐ {{ c.rating }}/5</span>
-            <span>${{ c.price }}</span>
-          </div>
-          <button class="btn-enroll">Enroll Now</button>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Quiz Modal (Teacher) -->
   @if (showQuizModal) {
