@@ -611,4 +611,49 @@ export class CourseDetailComponent implements OnInit {
       }
     });
   }
+
+  completeCourse() {
+    this.etudiantService.completeCourse(this.courseId).subscribe({
+      next: (response: { message: string }) => {
+        console.log('Course completed successfully:', response.message);
+        // Show confetti effect
+        this.showConfetti();
+        // Update UI to reflect completion
+        if (this.enrollmentStatus) {
+          this.enrollmentStatus.status = 'completed';
+        }
+      },
+      error: (error: any) => {
+        console.error('Error completing course:', error);
+        alert('Failed to complete the course. Please try again.');
+      }
+    });
+  }
+
+  showConfetti() {
+    // Create confetti container
+    const confettiContainer = document.createElement('div');
+    confettiContainer.className = 'confetti-container';
+    
+    // Create confetti pieces
+    let confettiHTML = '<div class="confetti">';
+    for (let i = 0; i < 150; i++) {
+      const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+      const left = Math.random() * 100;
+      const delay = Math.random() * 5;
+      const size = Math.random() * 10 + 5;
+      confettiHTML += `<div class="confetti-piece" style="background: ${color}; left: ${left}%; animation-delay: ${delay}s; width: ${size}px; height: ${size}px;"></div>`;
+    }
+    confettiHTML += '</div>';
+    
+    confettiContainer.innerHTML = confettiHTML;
+    document.body.appendChild(confettiContainer);
+    
+    // Remove confetti after animation
+    setTimeout(() => {
+      if (document.body.contains(confettiContainer)) {
+        document.body.removeChild(confettiContainer);
+      }
+    }, 5000);
+  }
 }

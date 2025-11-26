@@ -132,5 +132,14 @@ export class EtudiantService {
   startCourse(courseId: number): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(`${this.apiUrl}/start-course`, { coursId: courseId });
   }
+
+  /**
+   * Mark a course as completed for the student
+   * @param courseId The ID of the course to complete
+   * @returns Observable of the response message
+   */
+  completeCourse(courseId: number): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/complete-course`, { coursId: courseId });
+  }
 }
 
