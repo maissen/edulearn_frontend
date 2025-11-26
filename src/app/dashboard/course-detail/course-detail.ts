@@ -542,7 +542,6 @@ export class CourseDetailComponent implements OnInit {
           this.hasTakenTest = true;
           this.studentScore = response.result.score;
           this.totalScore = response.result.maxScore;
-          alert(response.message || `Submission successful! Score: ${response.result.score}/${response.result.maxScore}`);
         } else if (response && response.error) {
           alert(response.error);
         } else {
