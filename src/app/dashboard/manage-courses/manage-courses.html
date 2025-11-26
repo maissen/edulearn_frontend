@@ -104,6 +104,12 @@
             <small>Optional: URL to course thumbnail image</small>
           </div>
           <div class="form-group">
+            <label for="youtubeVideoUrl">YouTube Video URL</label>
+            <input type="url" id="youtubeVideoUrl" [(ngModel)]="newCourse.youtube_vd_url" name="youtube_vd_url"
+                   placeholder="https://www.youtube.com/watch?v=...">
+            <small>Optional: Direct YouTube video URL</small>
+          </div>
+          <div class="form-group">
             <label for="courseVideo">Video URL</label>
             <input type="url" id="courseVideo" [(ngModel)]="oldCourse.videoUrl" name="videoUrl"
                    placeholder="https://www.youtube.com/embed/...">

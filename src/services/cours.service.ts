@@ -7,6 +7,8 @@ export interface Cours {
   id?: number;
   titre: string;
   description: string;
+  category?: string;
+  youtube_vd_url?: string;
   enseignant_id: number;
   imageUrl?: string;
   duration?: string;
@@ -19,6 +21,10 @@ export interface CourseContent {
   id: number;
   titre: string;
   description: string;
+  category?: string;
+  youtube_vd_url?: string;
+  teacher_username: string;
+  teacher_email: string;
   duration: string;
   videoUrl: string;
   imageUrl: string;
@@ -33,17 +39,19 @@ export interface CourseContent {
   };
   test?: {
     id: number;
-    title: string;
+    titre: string;
     cours_id: number;
-    quizzes: Array<{
+    questions: Array<{
+      id: number;
       question: string;
-      options: {
-        a: string;
-        b: string;
-        c: string;
-        d: string;
-      };
+      option_a: string;
+      option_b: string;
+      option_c: string;
+      option_d: string;
     }>;
+    hasTakenTest: boolean;
+    studentScore: number | null;
+    totalScore: number | null;
   };
 }
 

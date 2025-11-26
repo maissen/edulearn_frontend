@@ -47,6 +47,8 @@ export class ManageCoursesComponent implements OnInit {
   newCourse: Partial<Cours> = {
     titre: '',
     description: '',
+    category: '',
+    youtube_vd_url: '',
     enseignant_id: 0
   };
 
@@ -223,6 +225,8 @@ export class ManageCoursesComponent implements OnInit {
       id: course.id,
       titre: course.titre,
       description: course.description,
+      category: course.category,
+      youtube_vd_url: course.youtube_vd_url,
       enseignant_id: course.enseignant_id
     };
     // Also update old interface for template compatibility
@@ -230,10 +234,10 @@ export class ManageCoursesComponent implements OnInit {
       id: course.id,
       title: course.titre,
       description: course.description,
-      category: 'general',
+      category: course.category || 'general',
       duration: 1,
-      imageUrl: '',
-      videoUrl: '',
+      imageUrl: course.imageUrl || '',
+      videoUrl: course.videoUrl || '',
       quizzes: []
     };
 
@@ -285,6 +289,8 @@ export class ManageCoursesComponent implements OnInit {
     this.newCourse = {
       titre: '',
       description: '',
+      category: '',
+      youtube_vd_url: '',
       enseignant_id: user?.id || 0
     };
     this.oldCourse = {

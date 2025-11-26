@@ -10,7 +10,7 @@ import { QuestionService, Question } from '../../../services/question.service';
 import { AuthService } from '../../../services/auth.service';
 import { EnseignantService } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { LogoComponent } from '../../shared/logo/logo.component';
+import { LogoComponent } from '../../shared/logo.component';
 import { ExamenService } from '../../../services/examen.service';
 interface Quiz {
   id?: number;
@@ -41,6 +41,12 @@ interface Course {
   imageUrl: string;
   videoUrl: string;
   description: string;
+  category?: string;
+  youtube_vd_url?: string;
+  teacher?: {
+    name: string;
+    email: string;
+  };
   targetAudience: string;
   prerequisites: string;
   learningObjectives: string[];
@@ -173,15 +179,21 @@ export class CourseDetailComponent implements OnInit {
     this.coursService.getCourseContent(this.courseId).subscribe({
       next: (courseContent: CourseContent) => {
         console.log('Course content loaded:', courseContent); // Debug log
-        // Transform API course content to display format
+        // Process course content data
         this.course = {
           id: courseContent.id,
           title: courseContent.titre,
-          subtitle: `Learn ${courseContent.titre} — from basics to expert level.`,
-          duration: courseContent.duration,
-          imageUrl: courseContent.imageUrl,
-          videoUrl: courseContent.videoUrl,
+          subtitle: `${courseContent.titre}`,
           description: courseContent.description,
+          category: courseContent.category,
+          youtube_vd_url: courseContent.youtube_vd_url,
+          teacher: {
+            name: courseContent.teacher_username,
+            email: courseContent.teacher_email
+          },
+          duration: courseContent.duration,
+          videoUrl: courseContent.videoUrl,
+          imageUrl: courseContent.imageUrl,
           targetAudience: courseContent.targetAudience,
           prerequisites: courseContent.prerequisites,
           learningObjectives: courseContent.learningObjectives,
@@ -190,10 +202,13 @@ export class CourseDetailComponent implements OnInit {
           quizzes: [],
           test: (courseContent as any).test // Include test data from API response
         };
-        console.log('Course description:', this.course.description); // Debug log
-
+        if (this.course) {
+          console.log('Course description:', this.course.description); // Debug log
+        }
         // Convert YouTube URL to embed format if needed
-        const embedUrl = this.convertToEmbedUrl(this.course.videoUrl);
+        // First check if there's a specific YouTube video URL, otherwise use the general video URL
+        const videoUrlToUse = this.course.youtube_vd_url || this.course.videoUrl;
+        const embedUrl = this.convertToEmbedUrl(videoUrlToUse);
         this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
 
         // Load quiz data (now part of course content)
