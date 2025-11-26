@@ -986,6 +986,45 @@
   box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
 }
 
+/* Test Result Display */
+.test-result {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.result-score {
+  margin-bottom: 1rem;
+}
+
+.result-score .score {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.result-score .status {
+  font-size: 1.125rem;
+  font-weight: 600;
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+}
+
+.result-score .status.passed {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.result-score .status.failed {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
 /* Quiz Taking Modal */
 .quiz-taking-modal {
   max-width: 700px;

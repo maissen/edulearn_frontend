@@ -66,4 +66,29 @@ export class ExamenService {
         const body = { testID, submissions };
         return this.http.post<any>(`${API_BASE_URL}/test/submit`, body);
     }
+
+    /**
+     * Check if a student has taken a test and get their score if they have
+     * @param testId Test/exam ID
+     * @returns Observable with test result information
+     */
+    getTestResult(testId: number): Observable<{ 
+        hasTakenTest: boolean, 
+        hasPassed?: boolean, 
+        score?: number, 
+        totalScore?: number, 
+        correctAnswers?: number, 
+        totalQuestions?: number, 
+        submittedAt?: string 
+    }> {
+        return this.http.get<{ 
+            hasTakenTest: boolean, 
+            hasPassed?: boolean, 
+            score?: number, 
+            totalScore?: number, 
+            correctAnswers?: number, 
+            totalQuestions?: number, 
+            submittedAt?: string 
+        }>(`${API_BASE_URL}/etudiant/test-result/${testId}`);
+    }
 }

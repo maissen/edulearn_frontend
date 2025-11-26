@@ -105,9 +105,22 @@
               <span class="stat-label">Questions Total</span>
             </div>
           </div>
-          <button type="button" class="btn-start-quiz" (click)="startQuiz()">
-            🚀 Start Test Now
-          </button>
+          
+          <!-- Show test result if student has taken the test -->
+          @if (hasTakenTest) {
+            <div class="test-result">
+              <div class="result-score">
+                <span class="score">{{ studentScore }} / {{ totalScore }}</span>
+                <span class="status" [class.passed]="studentScore && studentScore >= 12" [class.failed]="studentScore && studentScore < 12">
+                  {{ studentScore && studentScore >= 12 ? 'Passed' : 'Failed' }}
+                </span>
+              </div>
+            </div>
+          } @else {
+            <button type="button" class="btn-start-quiz" (click)="startQuiz()">
+              🚀 Start Test Now
+            </button>
+          }
         </div>
       </div>
     }

@@ -33,20 +33,6 @@ interface Test {
   questions: TestQuestion[];
 }
 
-interface TestQuestion {
-  question: string;
-  option_a: string;
-  option_b: string;
-  option_c: string;
-  option_d: string;
-  correct: string;
-}
-
-interface Test {
-  title: string;
-  questions: TestQuestion[];
-}
-
 interface Course {
   id: number;
   title: string;
@@ -79,6 +65,9 @@ interface Course {
         d: string;
       };
     }>;
+    hasTakenTest?: boolean;
+    studentScore?: number | null;
+    totalScore?: number | null;
   };
 }
 
@@ -120,6 +109,11 @@ export class CourseDetailComponent implements OnInit {
   selectedAnswers: { [questionId: string]: string } = {};
   quizQuestions: any[] = [];
   quizSubmissionResult: any = null;
+
+  // Test result state
+  hasTakenTest = false;
+  studentScore: number | null = null;
+  totalScore: number | null = null;
 
   constructor(
     private router: Router,
@@ -206,9 +200,22 @@ export class CourseDetailComponent implements OnInit {
         this.loadQuizzes();
 
         this.loadRelatedCourses();
+        
+        // Check if student has already taken the test using data from course content
+        if (this.course && this.course.test && !this.isTeacher) {
+          const test = this.course.test as any;
+          console.log('Test data:', test);
+          this.hasTakenTest = test.hasTakenTest || false;
+          // Handle string to number conversion for studentScore
+          const score = test.studentScore;
+          this.studentScore = score !== null && score !== undefined ? Number(score) : null;
+          this.totalScore = test.totalScore || null;
+          console.log('Test result status:', { hasTakenTest: this.hasTakenTest, studentScore: this.studentScore, totalScore: this.totalScore });
+        }
+        
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading course:', error);
         this.errorMessage = 'Failed to load course';
         this.loading = false;
@@ -223,7 +230,7 @@ export class CourseDetailComponent implements OnInit {
           this.course.relatedCourses = relatedCourses;
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading related courses:', error);
         // Fallback to empty array if API fails
         if (this.course) {
@@ -266,7 +273,6 @@ export class CourseDetailComponent implements OnInit {
       }
     }
   }
-
 
   // Quiz Modal Methods
   openAddQuizModal() {
@@ -388,11 +394,11 @@ export class CourseDetailComponent implements OnInit {
     }
     if (confirm('Are you sure you want to delete this test? This action cannot be undone.')) {
       this.quizService.deleteTest(this.course.test.id).subscribe({
-        next: (res) => {
+        next: (res: any) => {
           alert(res.message || 'Test deleted!');
           this.loadCourse();
         },
-        error: (err) => {
+        error: (err: any) => {
           alert('Failed to delete test.');
         }
       });
@@ -401,6 +407,12 @@ export class CourseDetailComponent implements OnInit {
 
   // Student Quiz Taking Methods
   startQuiz() {
+    // Prevent starting quiz if student has already taken it
+    if (this.hasTakenTest) {
+      alert('You have already taken this test. Check your results above.');
+      return;
+    }
+    
     if (this.quizQuestions.length === 0) {
       alert('No questions available for this quiz. Please try again later.');
       return;
@@ -483,6 +495,10 @@ export class CourseDetailComponent implements OnInit {
       next: (response: any) => {
         if (response && response.result) {
           this.quizSubmissionResult = response.result;
+          // Update test result status
+          this.hasTakenTest = true;
+          this.studentScore = response.result.score;
+          this.totalScore = response.result.maxScore;
           alert(response.message || `Submission successful! Score: ${response.result.score}/${response.result.maxScore}`);
         } else if (response && response.error) {
           alert(response.error);
