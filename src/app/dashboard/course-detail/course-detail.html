@@ -110,10 +110,17 @@
                     <div class="celebration-complete">
                       <h2>🎉 Congratulations!</h2>
                       <p>You've successfully passed the exam with a score of {{ studentScore }}/{{ totalScore }}.</p>
-                      <p>Complete this course to add it to your achievements.</p>
-                      <button type="button" class="btn-finish-course" (click)="completeCourse()">
-                        ✅ Finish this Course
-                      </button>
+                      @if (!isCourseCompleted) {
+                        <p>Complete this course to add it to your achievements.</p>
+                        <button type="button" class="btn-finish-course" (click)="completeCourse()">
+                          Finish this Course
+                        </button>
+                      } @else {
+                        <p>This course has been completed! 🎓</p>
+                        <button type="button" class="btn-finish-course" disabled>
+                          Course Completed
+                        </button>
+                      }
                     </div>
                   }
                 </div>

@@ -98,6 +98,7 @@ export class CourseDetailComponent implements OnInit {
   isEnrolled = false;
   enrollmentStatus: CourseEnrollmentStatus | null = null;
   showStartCourseButton = false;
+  isCourseCompleted = false; // Add this property to track if course is completed
 
   // Quiz modal state
   showQuizModal = false;
@@ -256,12 +257,31 @@ export class CourseDetailComponent implements OnInit {
           console.log('Test result status:', { hasTakenTest: this.hasTakenTest, studentScore: this.studentScore, totalScore: this.totalScore });
         }
         
+        // Check if the course is completed
+        if (!this.isTeacher) {
+          this.checkIfCourseCompleted();
+        }
+        
         this.loading = false;
       },
       error: (error: any) => {
         console.error('Error loading course:', error);
         this.errorMessage = 'Failed to load course';
         this.loading = false;
+      }
+    });
+  }
+
+  checkIfCourseCompleted() {
+    this.etudiantService.getCompletedCourses().subscribe({
+      next: (completedCourses: any[]) => {
+        // Check if the current course is in the completed courses list
+        const isCompleted = completedCourses.some(course => course.id === this.courseId);
+        this.isCourseCompleted = isCompleted;
+        console.log('Course completed status:', this.isCourseCompleted);
+      },
+      error: (error: any) => {
+        console.error('Error checking completed courses:', error);
       }
     });
   }
