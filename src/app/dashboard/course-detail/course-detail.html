@@ -4,140 +4,141 @@
 <!-- Contenu principal -->
 <div class="course-detail-page">
 
-  <!-- En-tête vidéo -->
-  <header class="course-header">
-    <h1>{{ course?.title }}</h1>
-    <p class="course-subtitle">{{ course?.subtitle }}</p>
-    <div class="course-meta">
-      <span>⏱️ {{ course?.duration }}</span>
-      <span>⭐ {{ instructor.rating }}/5</span>
-    </div>
-  </header>
-
-  <!-- Player vidéo -->
-  <div class="video-player">
-    <!-- Show start course button for students who are not enrolled -->
-    <div *ngIf="!isTeacher && showStartCourseButton && !loading" class="start-course-container">
-      <button type="button" class="btn-start-course" (click)="startCourse()">
-        🚀 Start the Course Now
-      </button>
-    </div>
-    
-    <!-- Show video player for teachers or enrolled students -->
-    <div *ngIf="isTeacher || !showStartCourseButton">
-      <iframe 
-        [src]="safeVideoUrl"
-        frameborder="0" 
-        allowfullscreen
-        width="100%" 
-        height="500px">
-      </iframe>
-    </div>
-  </div>
-
-  <!-- Description & sections -->
-  <div class="course-content">
-
-  <!-- Course Description -->
-  <section class="course-description-section">
-    <h2>📖 Course Description</h2>
-    <p *ngIf="hasDescription; else noDescription">
-      {{ course?.description }}
-    </p>
-    <ng-template #noDescription>
-      <p class="no-description">No description available for this course.</p>
-    </ng-template>
-  </section>
-
-  <!-- Quiz Section -->
-  <section class="quiz-section">
-    <div class="quiz-header">
-      <h2>🧠 Pass your exam Now</h2>
-      @if (isTeacher) {
-        <button type="button" class="btn-add-quiz" (click)="openAddQuizModal()">
-          <i class="icon-plus"></i> Add Quiz
-        </button>
-      }
-    </div>
-
-    @if (quizzes.length === 0) {
-      <div class="empty-quiz">
-        <div class="empty-icon">🧠</div>
-        <h3>No quizzes yet</h3>
-        <p>Quizzes will help students test their knowledge and understanding.</p>
-        @if (isTeacher) {
-          <button type="button" class="btn-add-first-quiz" (click)="openAddQuizModal()">
-            Create First Quiz
-          </button>
-        }
-      </div>
-    } @else if (isTeacher) {
-      <!-- Teacher view: Quiz management -->
-      <div class="quiz-gallery">
-        <div class="quiz-card" *ngFor="let quiz of quizzes; let i = index">
-          <div class="quiz-card-header">
-            <div class="quiz-number">Quiz {{ i + 1 }}</div>
-            <div class="quiz-actions">
-              <button class="btn-edit-quiz" (click)="editQuiz(i)" title="Edit quiz">
-                <i class="icon-edit"></i>
-              </button>
-              <button class="btn-delete-quiz" (click)="deleteQuiz(i)" title="Delete quiz">
-                <i class="icon-trash"></i>
-              </button>
-            </div>
-          </div>
-          <div class="quiz-card-content">
-            <h3 class="quiz-question">{{ quiz.question }}</h3>
-            <div class="quiz-options">
-              <div class="option" *ngFor="let option of quiz.options; let j = index"
-                   [class.correct]="j === quiz.correctAnswer">
-                <span class="option-label">{{ j + 1 }}.</span>
-                <span class="option-text">{{ option }}</span>
-                @if (j === quiz.correctAnswer) {
-                  <span class="correct-badge">✓ Correct</span>
-                }
-              </div>
-            </div>
-          </div>
+  <!-- Two-column layout -->
+  <div class="two-column-layout">
+    <!-- Left Column: Course Info, Description, and Test -->
+    <div class="left-column">
+      <header class="course-header">
+        <h1>{{ course?.title }}</h1>
+        <p class="course-subtitle">{{ course?.subtitle }}</p>
+        <div class="course-meta">
+          <span>⏱️ {{ course?.duration }}</span>
+          <span>⭐ {{ instructor.rating }}/5</span>
         </div>
-      </div>
-    } @else {
-      <!-- Student view: Quiz taking -->
-      <div class="student-quiz-section">
-        <div class="quiz-info">
-          <div class="quiz-stats">
-            <div class="stat-item">
-              <span class="stat-number">{{ quizzes.length }}</span>
-              <span class="stat-label">Test{{ quizzes.length > 1 ? 's' : '' }} Available</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number">{{ getTotalQuestions() }}</span>
-              <span class="stat-label">Questions Total</span>
-            </div>
-          </div>
-          
-          <!-- Show test result if student has taken the test -->
-          @if (hasTakenTest) {
-            <div class="test-result">
-              <div class="result-score">
-                <span class="score">{{ studentScore }} / {{ totalScore }}</span>
-                <span class="status" [class.passed]="studentScore && studentScore >= 12" [class.failed]="studentScore && studentScore < 12">
-                  {{ studentScore && studentScore >= 12 ? 'Passed' : 'Failed' }}
-                </span>
-              </div>
-            </div>
-          } @else {
-            <button type="button" class="btn-start-quiz" (click)="startQuiz()">
-              🚀 Start Test Now
+      </header>
+
+      <!-- Course Description -->
+      <section class="course-description-section">
+        <h2>📖 Course Description</h2>
+        <p *ngIf="hasDescription; else noDescription">
+          {{ course?.description }}
+        </p>
+        <ng-template #noDescription>
+          <p class="no-description">No description available for this course.</p>
+        </ng-template>
+      </section>
+
+      <!-- Quiz Section -->
+      <section class="quiz-section">
+        <div class="quiz-header">
+          <h2>🧠 Pass your exam Now</h2>
+          @if (isTeacher) {
+            <button type="button" class="btn-add-quiz" (click)="openAddQuizModal()">
+              <i class="icon-plus"></i> Add Quiz
             </button>
           }
         </div>
-      </div>
-    }
-  </section>
-  </div>
 
-  <!-- Recommandations -->
+        @if (quizzes.length === 0) {
+          <div class="empty-quiz">
+            <div class="empty-icon">🧠</div>
+            <h3>No quizzes yet</h3>
+            <p>Quizzes will help students test their knowledge and understanding.</p>
+            @if (isTeacher) {
+              <button type="button" class="btn-add-first-quiz" (click)="openAddQuizModal()">
+                Create First Quiz
+              </button>
+            }
+          </div>
+        } @else if (isTeacher) {
+          <!-- Teacher view: Quiz management -->
+          <div class="quiz-gallery">
+            <div class="quiz-card" *ngFor="let quiz of quizzes; let i = index">
+              <div class="quiz-card-header">
+                <div class="quiz-number">Quiz {{ i + 1 }}</div>
+                <div class="quiz-actions">
+                  <button class="btn-edit-quiz" (click)="editQuiz(i)" title="Edit quiz">
+                    <i class="icon-edit"></i>
+                  </button>
+                  <button class="btn-delete-quiz" (click)="deleteQuiz(i)" title="Delete quiz">
+                    <i class="icon-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="quiz-card-content">
+                <h3 class="quiz-question">{{ quiz.question }}</h3>
+                <div class="quiz-options">
+                  <div class="option" *ngFor="let option of quiz.options; let j = index"
+                       [class.correct]="j === quiz.correctAnswer">
+                    <span class="option-label">{{ j + 1 }}.</span>
+                    <span class="option-text">{{ option }}</span>
+                    @if (j === quiz.correctAnswer) {
+                      <span class="correct-badge">✓ Correct</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <!-- Student view: Quiz taking -->
+          <div class="student-quiz-section">
+            <div class="quiz-info">
+              <div class="quiz-stats">
+                <div class="stat-item">
+                  <span class="stat-number">{{ quizzes.length }}</span>
+                  <span class="stat-label">Test{{ quizzes.length > 1 ? 's' : '' }} Available</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ getTotalQuestions() }}</span>
+                  <span class="stat-label">Questions Total</span>
+                </div>
+              </div>
+              
+              <!-- Show test result if student has taken the test -->
+              @if (hasTakenTest) {
+                <div class="test-result">
+                  <div class="result-score">
+                    <span class="score">{{ studentScore }} / {{ totalScore }}</span>
+                    <span class="status" [class.passed]="studentScore && studentScore >= 12" [class.failed]="studentScore && studentScore < 12">
+                      {{ studentScore && studentScore >= 12 ? 'Passed' : 'Failed' }}
+                    </span>
+                  </div>
+                </div>
+              } @else {
+                <button type="button" class="btn-start-quiz" (click)="startQuiz()">
+                  🚀 Start Test Now
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </section>
+    </div>
+
+    <!-- Right Column: Video/Start Course Button -->
+    <div class="right-column">
+      <div class="video-player">
+        <!-- Show start course button for students who are not enrolled -->
+        <div *ngIf="!isTeacher && showStartCourseButton && !loading" class="start-course-container">
+          <button type="button" class="btn-start-course" (click)="startCourse()">
+            🚀 Start the Course Now
+          </button>
+        </div>
+        
+        <!-- Show video player for teachers or enrolled students -->
+        <div *ngIf="isTeacher || !showStartCourseButton">
+          <iframe 
+            [src]="safeVideoUrl"
+            frameborder="0" 
+            allowfullscreen
+            width="100%" 
+            height="500px">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Quiz Modal (Teacher) -->
   @if (showQuizModal) {
@@ -363,7 +364,6 @@
       </div>
     </div>
   }
-
 </div>
 
 <!-- 🏁 Footer (identique au template) -->
