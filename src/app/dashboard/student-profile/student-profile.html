@@ -93,7 +93,7 @@
   <div class="quiz-results-grid" *ngIf="quizResults.length > 0; else noQuizResults">
     <div class="quiz-card" *ngFor="let quiz of quizResults">
       <div class="quiz-header">
-        <h4>{{ quiz.test_title || quiz.quiz_title || 'test untitulé' }}</h4>
+        <h4>{{ quiz.test_title || 'test untitulé' }}</h4>
         <span class="course-info">{{ quiz.course_title }} • {{ quiz.course_category }}</span>
       </div>
       <div class="quiz-stats">
@@ -113,10 +113,10 @@
       <div class="quiz-footer">
         <span class="submitted-date">Submitted: {{ quiz.submitted_at | date:'short' }}</span>
         <span class="score-badge" [ngClass]="{
-          'excellent': (quiz.score | number: '1.0-2') >= 16,
-          'good': (quiz.score | number: '1.0-2') >= 12 && (quiz.score | number: '1.0-2') < 16,
-          'average': (quiz.score | number: '1.0-2') >= 8 && (quiz.score | number: '1.0-2') < 12,
-          'poor': (quiz.score | number: '1.0-2') < 8
+          'excellent': quiz.score >= 16,
+          'good': quiz.score >= 12 && quiz.score < 16,
+          'average': quiz.score >= 8 && quiz.score < 12,
+          'poor': quiz.score < 8
         }">
           {{ (quiz.score % 1 === 0 ? (quiz.score | number: '1.0-0') : (quiz.score | number: '1.1-1')) >= 12 ? '✅ Passed' : '❌ Failed' }}
         </span>

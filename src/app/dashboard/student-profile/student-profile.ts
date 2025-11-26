@@ -9,6 +9,11 @@ import { AuthService } from '../../../services/auth.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
 
+// Internal interface for quiz results with numeric score
+interface QuizResultDisplay extends Omit<QuizResult, 'score'> {
+  score: number;
+}
+
 interface Course {
   id: number;
   title: string;
@@ -56,7 +61,7 @@ export class StudentProfileComponent implements OnInit {
 
   coursesInProgress: InProgressCourse[] = [];
   completedCourses: CompletedCourse[] = [];
-  quizResults: QuizResult[] = [];
+  quizResults: QuizResultDisplay[] = [];
   allCourses: Cours[] = [];
 
   constructor(
@@ -128,15 +133,19 @@ export class StudentProfileComponent implements OnInit {
 
   loadQuizResults() {
     this.etudiantService.getTestResults().subscribe({
-      next: (results: any[]) => {
-        // Map the results to handle the new API response format
-        this.quizResults = results.map(result => ({
-          ...result,
-          score: typeof result.score === 'string' ? parseFloat(result.score) : result.score
-        }));
+      next: (results: QuizResult[]) => {
+        // Map the results to ensure score is a number for display purposes
+        this.quizResults = results.map(result => {
+          const scoreValue = typeof result.score === 'string' ? parseFloat(result.score) : result.score;
+          return {
+            ...result,
+            score: isNaN(scoreValue) ? 0 : scoreValue
+          } as QuizResultDisplay;
+        });
       },
       error: (err: any) => {
         console.error('Error loading quiz results:', err);
+        this.quizResults = [];
       }
     });
   }
@@ -198,16 +207,11 @@ export class StudentProfileComponent implements OnInit {
     this.router.navigate(['/course', courseId]);
   }
 
+  navigate(path: string) {
+    this.router.navigate([path]);
+  }
+
   onImageError(event: any): void {
-    // Fallback to a default image if the image fails to load
     event.target.src = 'https://picsum.photos/300/180?random=999';
-  }
-
-  navigate(url: string) {
-    this.router.navigateByUrl(url);
-  }
-
-  get userName() {
-    return this.studentName;
   }
 }
