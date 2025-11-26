@@ -9,9 +9,11 @@ import { QuizService } from '../../../services/quiz.service';
 import { QuestionService, Question } from '../../../services/question.service';
 import { AuthService } from '../../../services/auth.service';
 import { EnseignantService } from '../../../services/enseignant.service';
+import { EtudiantService, CourseEnrollmentStatus } from '../../../services/etudiant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { LogoComponent } from '../../shared/logo.component';
+import { LogoComponent } from '../../shared/logo/logo.component';
 import { ExamenService } from '../../../services/examen.service';
+
 interface Quiz {
   id?: number;
   question: string;
@@ -93,6 +95,9 @@ export class CourseDetailComponent implements OnInit {
   courseId: number = 0;
   userName = '';
   isTeacher = false;
+  isEnrolled = false;
+  enrollmentStatus: CourseEnrollmentStatus | null = null;
+  showStartCourseButton = false;
 
   // Quiz modal state
   showQuizModal = false;
@@ -130,7 +135,8 @@ export class CourseDetailComponent implements OnInit {
     private questionService: QuestionService,
     private authService: AuthService,
     private enseignantService: EnseignantService,
-    private examenService: ExamenService
+    private examenService: ExamenService,
+    private etudiantService: EtudiantService
   ) {
     this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
     const user = this.authService.getUser();
@@ -167,11 +173,33 @@ export class CourseDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.courseId = parseInt(id, 10);
-      this.loadCourse(); // loadQuizzes is now called after course loads
+      // Check enrollment status first
+      if (!this.isTeacher) {
+        this.checkEnrollmentStatus();
+      } else {
+        this.loadCourse();
+      }
     } else {
       this.errorMessage = 'Course ID not found';
       this.loading = false;
     }
+  }
+
+  checkEnrollmentStatus() {
+    this.etudiantService.getCourseEnrollmentStatus(this.courseId).subscribe({
+      next: (status: CourseEnrollmentStatus) => {
+        this.enrollmentStatus = status;
+        this.isEnrolled = status.isEnrolled;
+        this.showStartCourseButton = !this.isEnrolled;
+        // Load course content after checking enrollment
+        this.loadCourse();
+      },
+      error: (error: any) => {
+        console.error('Error checking enrollment status:', error);
+        // Still load course content even if enrollment check fails
+        this.loadCourse();
+      }
+    });
   }
 
   loadCourse() {
@@ -563,5 +591,25 @@ export class CourseDetailComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  startCourse() {
+    this.etudiantService.startCourse(this.courseId).subscribe({
+      next: (response: { message: string }) => {
+        console.log('Course started successfully:', response.message);
+        // Hide the start button and show the video
+        this.showStartCourseButton = false;
+        this.isEnrolled = true;
+        // Update enrollment status
+        if (this.enrollmentStatus) {
+          this.enrollmentStatus.isEnrolled = true;
+          this.enrollmentStatus.status = 'in_progress';
+        }
+      },
+      error: (error: any) => {
+        console.error('Error starting course:', error);
+        alert('Failed to start the course. Please try again.');
+      }
+    });
   }
 }

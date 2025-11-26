@@ -16,13 +16,23 @@
 
   <!-- Player vidéo -->
   <div class="video-player">
-    <iframe 
-  [src]="safeVideoUrl"
-  frameborder="0" 
-  allowfullscreen
-  width="100%" 
-  height="400px">
-</iframe>
+    <!-- Show start course button for students who are not enrolled -->
+    <div *ngIf="!isTeacher && showStartCourseButton && !loading" class="start-course-container">
+      <button type="button" class="btn-start-course" (click)="startCourse()">
+        🚀 Start the Course Now
+      </button>
+    </div>
+    
+    <!-- Show video player for teachers or enrolled students -->
+    <div *ngIf="isTeacher || !showStartCourseButton">
+      <iframe 
+        [src]="safeVideoUrl"
+        frameborder="0" 
+        allowfullscreen
+        width="100%" 
+        height="500px">
+      </iframe>
+    </div>
   </div>
 
   <!-- Description & sections -->

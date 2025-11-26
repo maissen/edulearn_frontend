@@ -123,5 +123,14 @@ export class EtudiantService {
   getCompletedCourses(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/courses/completed`);
   }
+
+  /**
+   * Add a course to the student's in-progress courses list
+   * @param courseId The ID of the course to start
+   * @returns Observable of the response message
+   */
+  startCourse(courseId: number): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/start-course`, { coursId: courseId });
+  }
 }
 
