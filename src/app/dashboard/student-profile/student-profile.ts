@@ -128,11 +128,15 @@ export class StudentProfileComponent implements OnInit {
 
   loadQuizResults() {
     this.etudiantService.getTestResults().subscribe({
-      next: (results: QuizResult[]) => {
-        this.quizResults = results;
+      next: (results: any[]) => {
+        // Map the results to handle the new API response format
+        this.quizResults = results.map(result => ({
+          ...result,
+          score: typeof result.score === 'string' ? parseFloat(result.score) : result.score
+        }));
       },
       error: (err: any) => {
-        // handle error
+        console.error('Error loading quiz results:', err);
       }
     });
   }

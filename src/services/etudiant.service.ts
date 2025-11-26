@@ -46,14 +46,19 @@ export interface CourseEnrollmentStatus {
 export interface QuizResult {
   id: number;
   etudiant_id: number;
-  quiz_id: number;
-  score: number;
+  test_id: number;
+  score: string; // API now returns string
   total_questions: number;
   correct_answers: number;
+  responses: Array<{
+    answer: string;
+    quizId: number;
+  }>;
   submitted_at: string;
-  quiz_title: string;
-  course_title: string;
-  course_category: string;
+  test_title: string; // Changed from quiz_title to test_title
+  cours_id: number;
+  course_title?: string;
+  course_category?: string;
 }
 
 @Injectable({
