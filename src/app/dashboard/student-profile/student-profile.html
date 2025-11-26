@@ -7,14 +7,16 @@
   <div class="profile-info">
     <h1>{{ studentName }}</h1>
     <p class="profile-email">{{ studentEmail }}</p>
-    <p class="profile-role">Student</p>
     
     <div class="profile-biography" *ngIf="editForm.biography">
       <p>{{ editForm.biography }}</p>
     </div>
 
     <div class="profile-actions">
-      <button class="btn-edit" (click)="openUpdateProfileModal()">Mettre à jour le profil</button>
+      <button class="btn-edit" (click)="openUpdateProfileModal()">
+        <span class="btn-icon">✎</span>
+        Mettre à jour le profil
+      </button>
     </div>
 
     <div class="profile-stats">
@@ -93,9 +95,10 @@
   <div class="quiz-results-grid" *ngIf="quizResults.length > 0; else noQuizResults">
     <div class="quiz-card" *ngFor="let quiz of quizResults">
       <div class="quiz-header">
-        <h4>{{ quiz.test_title || 'test untitulé' }}</h4>
+        <h4 class="quiz-title">{{ quiz.test_title || 'test untitulé' }}</h4>
         <span class="course-info">{{ quiz.course_title }} • {{ quiz.course_category }}</span>
       </div>
+      <div class="test-name">Test: {{ quiz.test_title }}</div>
       <div class="quiz-stats">
         <div class="stat">
           <div class="stat-value">{{ formatScore(quiz) }}/20</div>

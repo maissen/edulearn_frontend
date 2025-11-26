@@ -243,7 +243,7 @@ export class StudentProfileComponent implements OnInit {
 
   formatScore(quiz: QuizResultDisplay): string {
     const score = this.getScoreValue(quiz);
-    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
+    return score.toString();
   }
 
   isQuizPassed(quiz: QuizResultDisplay): boolean {

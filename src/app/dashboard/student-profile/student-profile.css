@@ -155,19 +155,32 @@
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
   border: none;
-  padding: 0.875rem 1.5rem;
-  border-radius: 8px;
+  padding: 0.95rem 1.6rem;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-  font-size: 0.95rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 16px rgba(52, 152, 219, 0.35);
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .btn-edit:hover {
   background: linear-gradient(135deg, #2980b9, #2573a7);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+  box-shadow: 0 8px 18px rgba(52, 152, 219, 0.45);
+}
+
+.btn-edit:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.35);
+}
+
+.btn-icon {
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .profile-stats {
@@ -201,6 +214,18 @@
   color: #2c3e50;
   margin-bottom: 1.5rem;
   text-align: center;
+}
+
+.quiz-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1f2937;
+}
+
+.test-name {
+  margin: 0.5rem 0 0.8rem;
+  font-size: 0.95rem;
+  color: #374151;
 }
 
 .subtitle {
