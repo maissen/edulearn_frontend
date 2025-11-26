@@ -133,6 +133,43 @@
   margin: 0 0 1rem;
 }
 
+.profile-biography {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-left: 4px solid #3498db;
+}
+
+.profile-biography p {
+  margin: 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.profile-actions {
+  margin: 1.5rem 0;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  font-size: 0.95rem;
+}
+
+.btn-edit:hover {
+  background: linear-gradient(135deg, #2980b9, #2573a7);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+}
+
 .profile-stats {
   display: flex;
   gap: 1.5rem;

@@ -4,13 +4,14 @@
 
 <!-- Profil header -->
 <div class="profile-header">
-  <div class="profile-avatar">
-    <img [src]="avatarUrl" [alt]="studentName">
-    <div class="badge-student">Student</div>
-  </div>
   <div class="profile-info">
-    <h1>Profil Étudiant</h1>
-    <p class="profile-email">{{ editForm.biography || 'Aucune biographie définie' }}</p>
+    <h1>{{ studentName }}</h1>
+    <p class="profile-email">{{ studentEmail }}</p>
+    <p class="profile-role">Student</p>
+    
+    <div class="profile-biography" *ngIf="editForm.biography">
+      <p>{{ editForm.biography }}</p>
+    </div>
 
     <div class="profile-actions">
       <button class="btn-edit" (click)="openUpdateProfileModal()">Mettre à jour le profil</button>
