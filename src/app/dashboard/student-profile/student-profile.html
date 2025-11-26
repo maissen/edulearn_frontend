@@ -98,7 +98,7 @@
       </div>
       <div class="quiz-stats">
         <div class="stat">
-          <div class="stat-value">{{ quiz.score % 1 === 0 ? (quiz.score | number: '1.0-0') : (quiz.score | number: '1.1-1') }}/20</div>
+          <div class="stat-value">{{ (quiz.score !== null && quiz.score !== undefined) ? (quiz.score % 1 === 0 ? (quiz.score | number: '1.0-0') : (quiz.score | number: '1.1-1')) : '0' }}/20</div>
           <div class="stat-label">Score</div>
         </div>
         <div class="stat">
@@ -113,12 +113,12 @@
       <div class="quiz-footer">
         <span class="submitted-date">Submitted: {{ quiz.submitted_at | date:'short' }}</span>
         <span class="score-badge" [ngClass]="{
-          'excellent': quiz.score >= 16,
-          'good': quiz.score >= 12 && quiz.score < 16,
-          'average': quiz.score >= 8 && quiz.score < 12,
-          'poor': quiz.score < 8
+          'excellent': (quiz.score !== null && quiz.score !== undefined) && quiz.score >= 16,
+          'good': (quiz.score !== null && quiz.score !== undefined) && quiz.score >= 12 && quiz.score < 16,
+          'average': (quiz.score !== null && quiz.score !== undefined) && quiz.score >= 8 && quiz.score < 12,
+          'poor': (quiz.score !== null && quiz.score !== undefined) && quiz.score < 8
         }">
-          {{ (quiz.score % 1 === 0 ? (quiz.score | number: '1.0-0') : (quiz.score | number: '1.1-1')) >= 12 ? '✅ Passed' : '❌ Failed' }}
+          {{ ((quiz.score !== null && quiz.score !== undefined) ? (quiz.score % 1 === 0 ? (quiz.score | number: '1.0-0') : (quiz.score | number: '1.1-1')) : '0') >= 12 ? '✅ Passed' : '❌ Failed' }}
         </span>
       </div>
     </div>
