@@ -44,14 +44,13 @@
       <div class="course-card" *ngFor="let course of filteredCourses" (click)="openCourse(course.id)">
         <div class="course-image-container">
           <img [src]="course.image" [alt]="course.title" class="course-image" (error)="onImageError($event)">
-          <div class="course-category-badge">{{ course.category }}</div>
         </div>
         <div class="course-content">
           <h3 class="course-title">{{ course.title }}</h3>
           <p class="course-description">{{ course.title }} - Learn the fundamentals and advanced concepts</p>
           <div class="course-meta">
             <span class="lesson-info">Lesson {{ course.currentLesson }} of {{ course.totalLessons }}</span>
-            <span class="rating">⭐ {{ course.rating.toFixed(1) }}</span>
+            <!-- Removed rating stars -->
           </div>
           <div class="enrollment-status" *ngIf="getEnrollmentStatus(course.id)">
             <span class="status-badge" [ngClass]="{
@@ -83,6 +82,8 @@
               {{ Math.floor(Math.random() * 500) + 50 }} students enrolled
             </span>
           </div>
+          <!-- Moved category to bottom -->
+          <div class="course-category-bottom">{{ course.category }}</div>
         </div>
       </div>
     </div>
@@ -99,14 +100,13 @@
         <div class="course-card" *ngFor="let course of groupedCourses[category].courses; let i = index" (click)="openCourse(course.id)">
           <div class="course-image-container">
             <img [src]="'https://picsum.photos/300/180?random=' + (i + 100)" [alt]="course.titre" class="course-image" (error)="onImageError($event)">
-            <div class="course-category-badge">{{ category }}</div>
           </div>
         <div class="course-content">
           <h3 class="course-title">{{ course.titre }}</h3>
           <p class="course-description">{{ course.description || course.titre + ' - Learn the fundamentals and advanced concepts' }}</p>
           <div class="course-meta">
             <span class="teacher-info">By {{ course.teacher_username }}</span>
-            <span class="rating">⭐ 4.{{ Math.floor(Math.random() * 9) + 1 }}</span>
+            <!-- Removed rating stars -->
           </div>
           <div class="enrollment-status" *ngIf="getEnrollmentStatus(course.id)">
             <span class="status-badge" [ngClass]="{
@@ -133,6 +133,8 @@
           <div class="course-footer">
             <span class="enrollment-count">{{ groupedCourses[category].enrolledStudents }} students enrolled</span>
           </div>
+          <!-- Moved category to bottom -->
+          <div class="course-category-bottom">{{ category }}</div>
         </div>
         </div>
       </div>

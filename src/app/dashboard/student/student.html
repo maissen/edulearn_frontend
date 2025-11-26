@@ -6,13 +6,14 @@
   <section class="welcome-section">
     <h2>Welcome back {{userName}}! Ready for your next lesson?</h2>
     <div class="course-slider" *ngIf="!loading && inProgressCourses.length > 0">
-      <div class="course-card" *ngFor="let course of inProgressCourses">
-        <div class="course-image-placeholder">
+      <div class="course-card" *ngFor="let course of inProgressCourses" (click)="navigateToCourse(course.id)">
+        <div class="course-image-container">
+          <img [src]="'https://picsum.photos/300/180?random=' + course.id" [alt]="course.titre" class="course-image" (error)="onImageError($event)">
           <span class="course-category">{{course.category}}</span>
         </div>
         <h3 class="course-title">{{course.titre}}</h3>
         <div class="course-meta">
-          <span>Progress: {{course.progress_percentage}}%</span>
+          <!-- Removed progress badge -->
           <span>Teacher: {{course.teacher_username}}</span>
         </div>
       </div>

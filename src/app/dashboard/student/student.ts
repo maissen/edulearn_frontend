@@ -112,6 +112,17 @@ export class Student implements OnInit {
     return descriptions[category] || 'Explore and learn new skills';
   }
 
+  // Navigate to course details page
+  navigateToCourse(courseId: number) {
+    this.router.navigate(['/course', courseId]);
+  }
+
+  // Handle image loading errors
+  onImageError(event: any): void {
+    // Fallback to a default image if the image fails to load
+    event.target.src = 'https://picsum.photos/300/180?random=999';
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
