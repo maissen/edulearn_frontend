@@ -54,10 +54,7 @@
         <div class="test-result" style="margin-top: 1rem; margin-bottom: 1rem;">
           <div class="encouragement-message" style="position: relative; transform: none; padding: 1.5rem; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 12px; text-align: center; border: 1px solid #fde68a; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
             <h2>📚 Keep Trying!</h2>
-            <p>You scored {{ studentScore }}/{{ totalScore }}. Review the material and try again to pass the exam.</p>
-            <button type="button" class="btn-start-quiz" (click)="startQuiz()">
-              Retake Test
-            </button>
+            <p>You scored {{ studentScore }}/{{ totalScore }}.</p>
           </div>
         </div>
       }
@@ -68,7 +65,7 @@
           <h2>🧠 Pass your exam Now</h2>
           @if (isTeacher) {
             <button type="button" class="btn-add-quiz" (click)="openAddQuizModal()">
-              <i class="icon-plus"></i> Add Quiz
+              <i class="icon-plus"></i> Add Test
             </button>
           }
         </div>
@@ -143,8 +140,8 @@
                 <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="hasTakenTest || course?.test?.hasTakenTest || !hasStartedCourse">
                   🚀 Start Test Now
                 </button>
-                <div *ngIf="!hasStartedCourse" class="start-course-notice">
-                  <p>You need to start the course before taking the test.</p>
+                <div *ngIf="!hasStartedCourse" class="start-course-notice" style="margin-top: 10px; color: #e74c3c; font-style: italic;">
+                  You need to start the course before taking the test.
                 </div>
               }
             </div>
