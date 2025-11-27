@@ -39,6 +39,27 @@
           }
         </div>
 
+        <!-- Show congratulatory message if student passed the test -->
+        @if (hasTakenTest && studentScore && studentScore > 12 && !isTeacher) {
+          <div class="test-result" style="margin-top: 1rem; margin-bottom: 1rem;">
+            <div class="celebration-complete" style="position: relative; transform: none; padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+              <h2>🎉 Congratulations!</h2>
+              <p>You've successfully passed the exam with a score of {{ studentScore }}/{{ totalScore }}.</p>
+              @if (!isCourseCompleted) {
+                <p>Complete this course to add it to your achievements.</p>
+                <button type="button" class="btn-finish-course" (click)="completeCourse()">
+                  Finish this Course
+                </button>
+              } @else {
+                <p>This course has been completed! 🎓</p>
+                <button type="button" class="btn-finish-course" disabled>
+                  Course Completed
+                </button>
+              }
+            </div>
+          </div>
+        }
+
         @if (quizzes.length === 0) {
           <div class="empty-quiz">
             <div class="empty-icon">🧠</div>
@@ -100,32 +121,13 @@
                 <div class="test-result">
                   <div class="result-score">
                     <span class="score">{{ studentScore }} / {{ totalScore }}</span>
-                    <span class="status" [class.passed]="studentScore && studentScore >= 12" [class.failed]="studentScore && studentScore < 12">
-                      {{ studentScore && studentScore >= 12 ? 'Passed' : 'Failed' }}
+                    <span class="status" [class.passed]="studentScore && studentScore > 12" [class.failed]="studentScore && studentScore <= 12">
+                      {{ studentScore && studentScore > 12 ? 'Passed' : 'Failed' }}
                     </span>
                   </div>
-                  
-                  <!-- Show completion button if student passed the test -->
-                  @if (studentScore && studentScore >= 12) {
-                    <div class="celebration-complete">
-                      <h2>🎉 Congratulations!</h2>
-                      <p>You've successfully passed the exam with a score of {{ studentScore }}/{{ totalScore }}.</p>
-                      @if (!isCourseCompleted) {
-                        <p>Complete this course to add it to your achievements.</p>
-                        <button type="button" class="btn-finish-course" (click)="completeCourse()">
-                          Finish this Course
-                        </button>
-                      } @else {
-                        <p>This course has been completed! 🎓</p>
-                        <button type="button" class="btn-finish-course" disabled>
-                          Course Completed
-                        </button>
-                      }
-                    </div>
-                  }
                 </div>
               } @else {
-                <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="course?.test?.hasTakenTest">
+                <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="hasTakenTest || course?.test?.hasTakenTest">
                   🚀 Start Test Now
                 </button>
               }
@@ -373,9 +375,6 @@
             <div class="results-actions">
               <button type="button" class="btn-secondary" (click)="closeQuizTakingModal()">
                 Close
-              </button>
-              <button type="button" class="btn-primary" (click)="startQuiz()">
-                Retake Quiz
               </button>
             </div>
           </div>
