@@ -63,9 +63,10 @@ interface Course {
   quizzes: Quiz[];
   test?: {
     id: number;
-    title: string;
+    titre: string; // Use titre instead of title
     cours_id: number;
-    quizzes: Array<{
+    questions: Array<{ // Use questions instead of quizzes
+      id: number; // Add id field
       question: string;
       options: {
         a: string;
@@ -77,6 +78,10 @@ interface Course {
     hasTakenTest?: boolean;
     studentScore?: number | null;
     totalScore?: number | null;
+    hasFinishedCourse?: boolean; // Add hasFinishedCourse field
+    finishedCourseId?: number | null; // Add finishedCourseId field
+    finishedAt?: string | null; // Add finishedAt field
+    finalGrade?: number | null; // Add finalGrade field
   };
 }
 
@@ -255,7 +260,16 @@ export class CourseDetailComponent implements OnInit {
           const score = test.studentScore;
           this.studentScore = score !== null && score !== undefined ? Number(score) : null;
           this.totalScore = test.totalScore || null;
-          console.log('Test result status:', { hasTakenTest: this.hasTakenTest, studentScore: this.studentScore, totalScore: this.totalScore });
+          
+          // Check if course is finished
+          this.isCourseCompleted = test.hasFinishedCourse || false;
+          
+          console.log('Test result status:', { 
+            hasTakenTest: this.hasTakenTest, 
+            studentScore: this.studentScore, 
+            totalScore: this.totalScore,
+            isCourseCompleted: this.isCourseCompleted
+          });
         }
         
         // Check if the course is completed
@@ -306,11 +320,11 @@ export class CourseDetailComponent implements OnInit {
 
   loadQuizzes() {
     // Quiz data is now included in the course content API response
-    // No separate API call needed - data comes from this.course.test.quizzes
-    if (this.course && this.course.test && this.course.test.quizzes) {
+    // No separate API call needed - data comes from this.course.test.questions
+    if (this.course && this.course.test && this.course.test.questions) {
       // Transform the quiz data from course content to our component format
-      this.quizQuestions = this.course.test.quizzes.map((q: any, index: number) => ({
-        id: index + 1, // Generate sequential IDs
+      this.quizQuestions = this.course.test.questions.map((q: any, index: number) => ({
+        id: q.id, // Use the actual question ID from the API
         quiz_id: this.course?.test?.id || this.courseId,
         question: q.question,
         options: [
@@ -325,7 +339,7 @@ export class CourseDetailComponent implements OnInit {
       // For teacher interface, create a single quiz object representing the test
       this.course.quizzes = [{
         id: this.course.test.id,
-        question: this.course.test.title,
+        question: this.course.test.titre, // Use titre instead of title
         options: [], // Teachers don't need individual question options in the list view
         correctAnswer: 0
       }];
@@ -538,7 +552,7 @@ export class CourseDetailComponent implements OnInit {
    * Uses /test/submit endpoint with testID and answer array.
    */
   submitAllQuizzes() {
-    if (!this.course || !this.course.test || !this.course.test.quizzes) {
+    if (!this.course || !this.course.test || !this.course.test.questions) {
       alert('No quizzes to submit.');
       return;
     }
@@ -561,8 +575,11 @@ export class CourseDetailComponent implements OnInit {
           this.quizSubmissionResult = response.result;
           // Update test result status
           this.hasTakenTest = true;
-          this.studentScore = response.result.score;
-          this.totalScore = response.result.maxScore;
+          // Ensure score is treated as a number
+          this.studentScore = response.result.score !== null && response.result.score !== undefined ? 
+                              Number(response.result.score) : null;
+          this.totalScore = response.result.maxScore !== null && response.result.maxScore !== undefined ? 
+                            Number(response.result.maxScore) : null;
         } else if (response && response.error) {
           alert(response.error);
         } else {

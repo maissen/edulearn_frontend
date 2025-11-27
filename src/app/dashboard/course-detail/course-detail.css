@@ -1742,6 +1742,21 @@
   animation: pop-in 0.5s ease-out;
 }
 
+.encouragement-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+  animation: pop-in 0.5s ease-out;
+}
+
 @keyframes pop-in {
   0% {
     transform: translate(-50%, -50%) scale(0.5);
@@ -1753,13 +1768,15 @@
   }
 }
 
-.celebration-complete h2 {
+.celebration-complete h2,
+.encouragement-message h2 {
   color: #1e293b;
   margin-bottom: 1rem;
   font-size: 2rem;
 }
 
-.celebration-complete p {
+.celebration-complete p,
+.encouragement-message p {
   color: #64748b;
   margin-bottom: 1.5rem;
   font-size: 1.1rem;
