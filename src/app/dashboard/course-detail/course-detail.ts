@@ -657,6 +657,8 @@ export class CourseDetailComponent implements OnInit {
         // Show confetti effect
         this.showConfetti();
         // Update UI to reflect completion
+        this.isCourseCompleted = true;
+        this.showStartCourseButton = false;
         if (this.enrollmentStatus) {
           this.enrollmentStatus.status = 'completed';
         }

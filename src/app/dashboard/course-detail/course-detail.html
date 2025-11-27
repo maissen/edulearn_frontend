@@ -153,15 +153,15 @@
     <!-- Right Column: Video/Start Course Button -->
     <div class="right-column">
       <div class="video-player">
-        <!-- Show start course button for students who are not enrolled -->
-        <div *ngIf="!isTeacher && showStartCourseButton && !loading" class="start-course-container">
+        <!-- Show start course button for students who are not enrolled and haven't finished the course -->
+        <div *ngIf="!isTeacher && showStartCourseButton && !isCourseCompleted && !loading" class="start-course-container">
           <button type="button" class="btn-start-course" (click)="startCourse()">
             🚀 Start the Course Now
           </button>
         </div>
         
-        <!-- Show video player for teachers or enrolled students -->
-        <div *ngIf="isTeacher || !showStartCourseButton">
+        <!-- Show video player for teachers, enrolled students, or students who have finished the course -->
+        <div *ngIf="isTeacher || !showStartCourseButton || isCourseCompleted">
           <iframe 
             [src]="safeVideoUrl"
             frameborder="0" 
