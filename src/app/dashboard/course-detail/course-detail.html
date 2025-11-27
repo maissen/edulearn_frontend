@@ -28,6 +28,40 @@
         </ng-template>
       </section>
 
+      <!-- Show congratulatory message if student passed the test -->
+      @if (hasTakenTest && studentScore !== null && studentScore >= 12 && !isTeacher) {
+        <div class="test-result" style="margin-top: 1rem; margin-bottom: 1rem;">
+          <div class="celebration-complete" style="position: relative; transform: none; padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+            <h2>🎉 Congratulations!</h2>
+            <p>You've successfully passed the exam with a score of {{ studentScore }}/{{ totalScore }}.</p>
+            @if (!isCourseCompleted) {
+              <p>Complete this course to add it to your achievements.</p>
+              <button type="button" class="btn-finish-course" (click)="completeCourse()">
+                Finish this Course
+              </button>
+            } @else {
+              <p>This course has been completed! 🎓</p>
+              <button type="button" class="btn-finish-course" disabled>
+                Course Completed
+              </button>
+            }
+          </div>
+        </div>
+      }
+      
+      <!-- Show encouraging message if student failed the test -->
+      @if (hasTakenTest && studentScore !== null && studentScore < 12 && !isTeacher) {
+        <div class="test-result" style="margin-top: 1rem; margin-bottom: 1rem;">
+          <div class="encouragement-message" style="position: relative; transform: none; padding: 1.5rem; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 12px; text-align: center; border: 1px solid #fde68a; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+            <h2>📚 Keep Trying!</h2>
+            <p>You scored {{ studentScore }}/{{ totalScore }}. Review the material and try again to pass the exam.</p>
+            <button type="button" class="btn-start-quiz" (click)="startQuiz()">
+              Retake Test
+            </button>
+          </div>
+        </div>
+      }
+
       <!-- Quiz Section -->
       <section class="quiz-section">
         <div class="quiz-header">
@@ -38,40 +72,6 @@
             </button>
           }
         </div>
-
-        <!-- Show congratulatory message if student passed the test -->
-        @if (hasTakenTest && studentScore !== null && studentScore >= 12 && !isTeacher) {
-          <div class="test-result" style="margin-top: 1rem; margin-bottom: 1rem;">
-            <div class="celebration-complete" style="position: relative; transform: none; padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
-              <h2>🎉 Congratulations!</h2>
-              <p>You've successfully passed the exam with a score of {{ studentScore }}/{{ totalScore }}.</p>
-              @if (!isCourseCompleted) {
-                <p>Complete this course to add it to your achievements.</p>
-                <button type="button" class="btn-finish-course" (click)="completeCourse()">
-                  Finish this Course
-                </button>
-              } @else {
-                <p>This course has been completed! 🎓</p>
-                <button type="button" class="btn-finish-course" disabled>
-                  Course Completed
-                </button>
-              }
-            </div>
-          </div>
-        }
-        
-        <!-- Show encouraging message if student failed the test -->
-        @if (hasTakenTest && studentScore !== null && studentScore < 12 && !isTeacher) {
-          <div class="test-result" style="margin-top: 1rem; margin-bottom: 1rem;">
-            <div class="encouragement-message" style="position: relative; transform: none; padding: 1.5rem; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 12px; text-align: center; border: 1px solid #fde68a; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
-              <h2>📚 Keep Trying!</h2>
-              <p>You scored {{ studentScore }}/{{ totalScore }}. Review the material and try again to pass the exam.</p>
-              <button type="button" class="btn-start-quiz" (click)="startQuiz()">
-                Retake Test
-              </button>
-            </div>
-          </div>
-        }
 
         @if (quizzes.length === 0) {
           <div class="empty-quiz">
