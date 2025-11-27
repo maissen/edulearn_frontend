@@ -131,7 +131,7 @@
                 <div class="test-result">
                   <div class="result-score">
                     <span class="score">{{ studentScore }} / {{ totalScore }}</span>
-                    <span class="status" [class.passed]="studentScore && studentScore > 12" [class.failed]="studentScore && studentScore <= 12">
+                    <span class="status" [class.passed]="studentScore && studentScore >= 12" [class.failed]="studentScore && studentScore <= 12">
                       {{ studentScore && studentScore >= 12 ? 'Passed' : 'Failed' }}
                     </span>
                   </div>
