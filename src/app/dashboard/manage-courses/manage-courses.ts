@@ -386,26 +386,10 @@ export class ManageCoursesComponent implements OnInit {
   isQuizValid(): boolean {
     return !!(
       this.currentQuiz.question.trim() &&
-      this.currentQuiz.options.every(opt => opt.trim()) &&
+      this.currentQuiz.options[this.currentQuiz.correctAnswer]?.trim() &&
       this.currentQuiz.correctAnswer >= 0 &&
       this.currentQuiz.correctAnswer < this.currentQuiz.options.length
     );
-  }
-
-  addQuizOption(): void {
-    if (this.currentQuiz.options.length < 6) {
-      this.currentQuiz.options.push('');
-    }
-  }
-
-  removeQuizOption(index: number): void {
-    if (this.currentQuiz.options.length > 2) {
-      this.currentQuiz.options.splice(index, 1);
-      // Adjust correct answer if it was pointing to a removed option
-      if (this.currentQuiz.correctAnswer >= this.currentQuiz.options.length) {
-        this.currentQuiz.correctAnswer = this.currentQuiz.options.length - 1;
-      }
-    }
   }
 
   // Load quizzes for a specific course (for editing)
