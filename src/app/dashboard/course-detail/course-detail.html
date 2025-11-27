@@ -140,9 +140,12 @@
                   </div>
                 </div>
               } @else {
-                <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="hasTakenTest || course?.test?.hasTakenTest">
+                <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="hasTakenTest || course?.test?.hasTakenTest || !hasStartedCourse">
                   🚀 Start Test Now
                 </button>
+                <div *ngIf="!hasStartedCourse" class="start-course-notice">
+                  <p>You need to start the course before taking the test.</p>
+                </div>
               }
             </div>
           </div>

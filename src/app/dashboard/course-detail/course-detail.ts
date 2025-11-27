@@ -78,6 +78,7 @@ interface Course {
     hasTakenTest?: boolean;
     studentScore?: number | null;
     totalScore?: number | null;
+    hasStartedCourse?: boolean; // Add hasStartedCourse field
     hasFinishedCourse?: boolean; // Add hasFinishedCourse field
     finishedCourseId?: number | null; // Add finishedCourseId field
     finishedAt?: string | null; // Add finishedAt field
@@ -104,7 +105,8 @@ export class CourseDetailComponent implements OnInit {
   isEnrolled = false;
   enrollmentStatus: CourseEnrollmentStatus | null = null;
   showStartCourseButton = false;
-  isCourseCompleted = false; // Add this property to track if course is completed
+  isCourseCompleted = false;
+  hasStartedCourse = false; // Add this property to track if student has started the course
 
   // Quiz modal state
   showQuizModal = false;
@@ -264,11 +266,15 @@ export class CourseDetailComponent implements OnInit {
           // Check if course is finished
           this.isCourseCompleted = test.hasFinishedCourse || false;
           
+          // Check if student has started the course
+          this.hasStartedCourse = test.hasStartedCourse || false;
+          
           console.log('Test result status:', { 
             hasTakenTest: this.hasTakenTest, 
             studentScore: this.studentScore, 
             totalScore: this.totalScore,
-            isCourseCompleted: this.isCourseCompleted
+            isCourseCompleted: this.isCourseCompleted,
+            hasStartedCourse: this.hasStartedCourse
           });
         }
         
@@ -642,6 +648,8 @@ export class CourseDetailComponent implements OnInit {
           this.enrollmentStatus.isEnrolled = true;
           this.enrollmentStatus.status = 'in_progress';
         }
+        // Update hasStartedCourse status
+        this.hasStartedCourse = true;
       },
       error: (error: any) => {
         console.error('Error starting course:', error);

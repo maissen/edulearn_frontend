@@ -52,6 +52,11 @@ export interface CourseContent {
     hasTakenTest: boolean;
     studentScore: number | null;
     totalScore: number | null;
+    hasStartedCourse: boolean; // Add hasStartedCourse field
+    hasFinishedCourse: boolean; // Add hasFinishedCourse field
+    finishedCourseId: number | null; // Add finishedCourseId field
+    finishedAt: string | null; // Add finishedAt field
+    finalGrade: number | null; // Add finalGrade field
   };
 }
 
