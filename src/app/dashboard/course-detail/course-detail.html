@@ -73,7 +73,7 @@
           <!-- Teacher view: Display test information with questions and correct answers -->
           @if (course && course.test) {
             <div class="test-display">
-              <h2>📝 {{ course.test.titre }}</h2>
+              <h2>📝 {{ course.test.title }}</h2>
               <div class="questions-list">
                 <div class="question-card" *ngFor="let question of course.test.questions; let i = index">
                   <div class="question-header">
@@ -81,33 +81,21 @@
                     <h4 class="question-text">{{ question.question }}</h4>
                   </div>
                   <div class="options-container">
-                    <div class="option-item" [class.correct]="question.options.a === getCorrectAnswerText(question)">
+                    <div class="option-item">
                       <span class="option-label">A.</span>
                       <span class="option-text">{{ question.options.a }}</span>
-                      @if (question.options.a === getCorrectAnswerText(question)) {
-                        <span class="correct-indicator">✓ Correct Answer</span>
-                      }
                     </div>
-                    <div class="option-item" [class.correct]="question.options.b === getCorrectAnswerText(question)">
+                    <div class="option-item">
                       <span class="option-label">B.</span>
                       <span class="option-text">{{ question.options.b }}</span>
-                      @if (question.options.b === getCorrectAnswerText(question)) {
-                        <span class="correct-indicator">✓ Correct Answer</span>
-                      }
                     </div>
-                    <div class="option-item" [class.correct]="question.options.c === getCorrectAnswerText(question)">
+                    <div class="option-item">
                       <span class="option-label">C.</span>
                       <span class="option-text">{{ question.options.c }}</span>
-                      @if (question.options.c === getCorrectAnswerText(question)) {
-                        <span class="correct-indicator">✓ Correct Answer</span>
-                      }
                     </div>
-                    <div class="option-item" [class.correct]="question.options.d === getCorrectAnswerText(question)">
+                    <div class="option-item">
                       <span class="option-label">D.</span>
                       <span class="option-text">{{ question.options.d }}</span>
-                      @if (question.options.d === getCorrectAnswerText(question)) {
-                        <span class="correct-indicator">✓ Correct Answer</span>
-                      }
                     </div>
                   </div>
                 </div>
