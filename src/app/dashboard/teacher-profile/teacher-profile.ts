@@ -4,10 +4,34 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
-import { EnseignantService, TeacherStats } from '../../../services/enseignant.service';
+import { EnseignantService, TeacherStats, TeacherCourse } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { LogoComponent } from '../../shared/logo/logo.component';
 import { FooterComponent } from '../../shared/footer/footer';
+
+// Extend the Profile interface for teacher-specific data
+interface TeacherProfile {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  biography?: string;
+  totalCoursesCreated: number;
+  totalStudentsEnrolled: number;
+  averageTestScore: number;
+  courses: TeacherCourseFromProfile[];
+}
+
+interface TeacherCourseFromProfile {
+  id: number;
+  titre: string;
+  description: string;
+  category: string;
+  youtube_vd_url: string;
+  created_at: string;
+  updated_at: string;
+  enrolled_students: number;
+}
 
 @Component({
   selector: 'app-teacher-profile',
@@ -19,15 +43,14 @@ import { FooterComponent } from '../../shared/footer/footer';
 export class TeacherProfileComponent implements OnInit {
   teacherName = '';
   teacherEmail = '';
-  avatarUrl = 'https://i.pravatar.cc/150?u=teacher';
   showProfileModal = false;
+  teacherCourses: TeacherCourseFromProfile[] = [];
 
   // Statistics
   stats = {
-    activeCourses: 0,
-    totalEnrollments: 0,
-    averageRating: 0,
-    satisfactionRate: 0
+    totalCoursesCreated: 0,
+    totalStudentsEnrolled: 0,
+    averageTestScore: 0
   };
 
   // Form data for editing
@@ -46,19 +69,29 @@ export class TeacherProfileComponent implements OnInit {
 
   ngOnInit() {
     this.loadTeacherData();
-    this.loadTeacherStats();
   }
 
   loadTeacherData() {
     this.profileService.getProfile().subscribe({
-      next: (profile) => {
-        this.teacherName = profile.username || 'Teacher';
-        this.teacherEmail = profile.email || '';
-        this.editForm.username = profile.username || '';
-        this.editForm.email = profile.email || '';
-        this.editForm.biography = profile.biography || '';
+      next: (profile: any) => {
+        // Cast to TeacherProfile to access teacher-specific fields
+        const teacherProfile = profile as TeacherProfile;
+        
+        this.teacherName = teacherProfile.username || 'Teacher';
+        this.teacherEmail = teacherProfile.email || '';
+        this.editForm.username = teacherProfile.username || '';
+        this.editForm.email = teacherProfile.email || '';
+        this.editForm.biography = teacherProfile.biography || '';
+        
+        // Update stats with profile data
+        this.stats.totalCoursesCreated = teacherProfile.totalCoursesCreated || 0;
+        this.stats.totalStudentsEnrolled = teacherProfile.totalStudentsEnrolled || 0;
+        this.stats.averageTestScore = teacherProfile.averageTestScore || 0;
+        
+        // Update courses from profile data
+        this.teacherCourses = teacherProfile.courses || [];
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading profile:', error);
         const user = this.authService.getUser();
         if (user) {
@@ -69,32 +102,6 @@ export class TeacherProfileComponent implements OnInit {
         }
       }
     });
-  }
-
-  loadTeacherStats() {
-    const user = this.authService.getUser();
-    if (user && user.id) {
-      this.enseignantService.getTeacherStats(user.id).subscribe({
-        next: (apiStats: TeacherStats) => {
-          this.stats = {
-            activeCourses: apiStats.activeCourses,
-            totalEnrollments: apiStats.totalEnrollments,
-            averageRating: apiStats.averageRating,
-            satisfactionRate: apiStats.satisfactionRate
-          };
-        },
-        error: (error) => {
-          console.error('Error loading teacher stats:', error);
-          // Fallback to zeros if API fails
-          this.stats = {
-            activeCourses: 0,
-            totalEnrollments: 0,
-            averageRating: 0,
-            satisfactionRate: 0
-          };
-        }
-      });
-    }
   }
 
   openUpdateProfileModal() {
@@ -142,6 +149,10 @@ export class TeacherProfileComponent implements OnInit {
         alert('Erreur lors de la mise à jour du profil. Veuillez réessayer.');
       }
     });
+  }
+
+  navigateToCourse(courseId: number) {
+    this.router.navigate(['/course', courseId]);
   }
 
   navigate(url: string) {
