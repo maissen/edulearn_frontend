@@ -3,7 +3,17 @@
 
 <!-- 📚 Contenu principal -->
 <div class="manage-courses-page">
+  <!-- Snackbar Notification -->
+  @if (showSnackbar) {
+    <div class="snackbar" [class.snackbar-success]="snackbarType === 'success'" [class.snackbar-error]="snackbarType === 'error'">
+      <div class="snackbar-content">
+        <span class="snackbar-icon" [class.icon-check]="snackbarType === 'success'" [class.icon-error]="snackbarType === 'error'"></span>
+        {{ snackbarMessage }}
+      </div>
+    </div>
+  }
 
+  <!-- Page Header -->
   <header class="page-header">
     <div class="header-content">
       <h1>📚 Manage My Courses</h1>
@@ -94,19 +104,44 @@
               </div>
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="courseImage">Cover Image URL</label>
-                <input type="url" id="courseImage" [(ngModel)]="oldCourse.imageUrl" name="imageUrl"
-                       placeholder="https://example.com/image.jpg">
-                <small>Optional: URL to course thumbnail image</small>
-              </div>
-              <div class="form-group">
-                <label for="youtubeVideoUrl">YouTube Video URL</label>
-                <input type="url" id="youtubeVideoUrl" [(ngModel)]="newCourse.youtube_vd_url" name="youtube_vd_url"
-                       placeholder="https://www.youtube.com/watch?v=...">
-                <small>Optional: Direct YouTube video URL</small>
-              </div>
+            <div class="form-group">
+              <label for="courseImage">Cover Image URL</label>
+              <input type="url" id="courseImage" [(ngModel)]="oldCourse.imageUrl" name="imageUrl"
+                     placeholder="https://example.com/image.jpg">
+              <small>Optional: URL to course thumbnail image</small>
+            </div>
+
+            <div class="form-group">
+              <label for="youtubeVideoUrl">YouTube Video URL</label>
+              <input type="url" id="youtubeVideoUrl" [(ngModel)]="newCourse.youtube_vd_url" name="youtube_vd_url"
+                     placeholder="https://www.youtube.com/watch?v=...">
+              <small>Optional: Direct YouTube video URL</small>
+            </div>
+            
+            <!-- Form Actions moved to left column -->
+            <div class="form-actions">
+              <button type="submit" class="btn-submit" [disabled]="isSubmitting || loading">
+                @if (loading || isSubmitting) {
+                  <span class="loading-spinner"></span>
+                  @if (mode === 'create') {
+                    Creating Course...
+                  } @else {
+                    Updating Course...
+                  }
+                } @else {
+                  @if (mode === 'create') {
+                    <i class="icon-rocket"></i> Create Course
+                  } @else {
+                    <i class="icon-check"></i> Update Course
+                  }
+                }
+              </button>
+              @if (mode === 'edit') {
+                <button type="button" class="btn-secondary" (click)="resetForm()"
+                        [disabled]="isSubmitting || loading">
+                  <i class="icon-cancel"></i> Cancel
+                </button>
+              }
             </div>
           </div>
 
@@ -115,12 +150,23 @@
             <div class="test-section">
               <div class="test-header">
                 <h3>Add a test for your course</h3>
-                <button type="button" class="btn-add-test" (click)="addNewTestForm()">
-                  <i class="icon-plus"></i> Add Test
-                </button>
               </div>
 
-              <!-- Test Form (appears when Add Test button is clicked) -->
+              <!-- Small Test Name Form -->
+              <div class="test-form test-name-form">
+                <div class="form-group">
+                  <label>Test Name *</label>
+                  <input type="text" [(ngModel)]="testName" name="testName"
+                         placeholder="Enter test name" required>
+                </div>
+                <div class="test-form-actions">
+                  <button type="button" class="btn-primary" (click)="saveTestName()" [disabled]="!testName?.trim()">
+                    Add Question
+                  </button>
+                </div>
+              </div>
+
+              <!-- Question Form (appears when Add Question button is clicked) -->
               @if (showTestForm) {
                 <div class="test-form">
                   <h4>Create a question for your test</h4>
@@ -155,6 +201,7 @@
                   <div class="form-group">
                     <label>Correct Answer *</label>
                     <select [(ngModel)]="currentQuiz.correctAnswer" name="correctAnswer" required>
+                      <option [value]="null" disabled selected>Select correct option</option>
                       <option [value]="0" [disabled]="!currentQuiz.options[0]?.trim()">Option 1: {{ currentQuiz.options[0] || 'Option 1' }}</option>
                       <option [value]="1" [disabled]="!currentQuiz.options[1]?.trim()">Option 2: {{ currentQuiz.options[1] || 'Option 2' }}</option>
                       <option [value]="2" [disabled]="!currentQuiz.options[2]?.trim()">Option 3: {{ currentQuiz.options[2] || 'Option 3' }}</option>
@@ -193,41 +240,16 @@
                     </div>
                   </div>
                 </div>
-              } @else if (!showTestForm) {
+              } @else if (!showTestForm && !currentQuiz.titre) {
                 <div class="empty-tests">
                   <div class="empty-icon">🧠</div>
-                  <p>No tests added yet. Click "Add Test" to create your first test question!</p>
+                  <p>Enter a test name and click "Add Question" to get started!</p>
                 </div>
               }
             </div>
           </div>
         </div>
 
-        <!-- Form Actions -->
-        <div class="form-actions">
-          <button type="submit" class="btn-submit" [disabled]="isSubmitting || loading">
-            @if (loading || isSubmitting) {
-              <span class="loading-spinner"></span>
-              @if (mode === 'create') {
-                Creating Course...
-              } @else {
-                Updating Course...
-              }
-            } @else {
-              @if (mode === 'create') {
-                <i class="icon-rocket"></i> Create Course
-              } @else {
-                <i class="icon-check"></i> Update Course
-              }
-            }
-          </button>
-          @if (mode === 'edit') {
-            <button type="button" class="btn-secondary" (click)="resetForm()"
-                    [disabled]="isSubmitting || loading">
-              <i class="icon-cancel"></i> Cancel
-            </button>
-          }
-        </div>
       </form>
     </div>
   </section>

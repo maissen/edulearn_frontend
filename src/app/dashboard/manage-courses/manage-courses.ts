@@ -11,9 +11,10 @@ import { FooterComponent } from '../../shared/footer/footer';
 
 interface QuizTemplate {
   id?: number;
+  titre?: string; // Add titre property for test name
   question: string;
   options: string[];
-  correctAnswer: number;
+  correctAnswer: number | null; // Make correctAnswer nullable
 }
 
 interface CourseTemplate {
@@ -39,6 +40,22 @@ export class ManageCoursesComponent implements OnInit {
   loading = false;
   errorMessage = '';
   successMessage = '';
+
+  // Snackbar notification
+  showSnackbar = false;
+  snackbarMessage = '';
+  snackbarType: 'success' | 'error' = 'success';
+
+  showSnackbarMessage(message: string, type: 'success' | 'error' = 'success'): void {
+    this.snackbarMessage = message;
+    this.snackbarType = type;
+    this.showSnackbar = true;
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      this.showSnackbar = false;
+    }, 3000);
+  }
 
   // Mode: 'create' ou 'edit'
   mode: 'create' | 'edit' = 'create';
@@ -76,13 +93,13 @@ export class ManageCoursesComponent implements OnInit {
 
   // Test form visibility
   showTestForm = false;
-
-  // Quiz modal
-  showAddQuizModal = false;
+  showTestNameForm = false; // New property for test name form
+  testName = ''; // New property for test name
   currentQuiz: QuizTemplate = {
+    titre: '',
     question: '',
     options: ['', '', '', ''],
-    correctAnswer: 0
+    correctAnswer: null // Initialize as null
   };
 
   constructor(
@@ -173,6 +190,13 @@ export class ManageCoursesComponent implements OnInit {
       this.isSubmitting = false;
       return;
     }
+    
+    // Validate test name if a test has been started
+    if (this.testName?.trim() && !this.currentQuiz.titre) {
+      this.errorMessage = 'Please click "Add Question" to create the test or clear the test name field';
+      this.isSubmitting = false;
+      return;
+    }
 
     this.loading = true;
     this.errorMessage = '';
@@ -184,6 +208,7 @@ export class ManageCoursesComponent implements OnInit {
       this.coursService.createCours(this.newCourse as Cours).subscribe({
         next: (response: any) => {
           this.successMessage = response.message || 'Course created successfully';
+          this.showSnackbarMessage('Course has been created successfully!', 'success');
           this.loadCourses();
           this.resetForm();
           this.loading = false;
@@ -192,6 +217,7 @@ export class ManageCoursesComponent implements OnInit {
         error: (error: any) => {
           console.error('Error creating course:', error);
           this.errorMessage = error.error?.message || 'Failed to create course. Please check your authentication.';
+          this.showSnackbarMessage(this.errorMessage, 'error');
           this.loading = false;
           this.isSubmitting = false;
         }
@@ -204,17 +230,19 @@ export class ManageCoursesComponent implements OnInit {
         this.isSubmitting = false;
         return;
       }
+
       this.coursService.updateCours(this.newCourse.id, this.newCourse as Cours).subscribe({
         next: (response: any) => {
           this.successMessage = response.message || 'Course updated successfully';
+          this.showSnackbarMessage('Course has been updated successfully!', 'success');
           this.loadCourses();
-          this.resetForm();
           this.loading = false;
           this.isSubmitting = false;
         },
         error: (error: any) => {
           console.error('Error updating course:', error);
           this.errorMessage = error.error?.message || 'Failed to update course. Please check your authentication.';
+          this.showSnackbarMessage(this.errorMessage, 'error');
           this.loading = false;
           this.isSubmitting = false;
         }
@@ -316,11 +344,11 @@ export class ManageCoursesComponent implements OnInit {
   addQuiz(): void {
     // Reset the current quiz form
     this.currentQuiz = {
+      titre: '',
       question: '',
       options: ['', '', '', ''],
-      correctAnswer: 0
+      correctAnswer: null
     };
-    this.showAddQuizModal = true;
   }
 
   removeQuiz(index: number): void {
@@ -331,20 +359,37 @@ export class ManageCoursesComponent implements OnInit {
 
   // New methods for test form handling
   addNewTestForm(): void {
-    this.showTestForm = true;
-    this.currentQuiz = {
-      question: '',
-      options: ['', '', '', ''],
-      correctAnswer: 0
-    };
+    this.showTestNameForm = true; // Show test name form first
+    this.testName = '';
+  }
+
+  saveTestName(): void {
+    if (this.testName?.trim()) {
+      // Set the test name in currentQuiz
+      this.currentQuiz.titre = this.testName.trim();
+      // Reset the question form fields
+      this.currentQuiz.question = '';
+      this.currentQuiz.options = ['', '', '', ''];
+      this.currentQuiz.correctAnswer = null;
+      // Show the question form immediately
+      this.showTestForm = true;
+    }
+  }
+
+  cancelTestNameForm(): void {
+    this.showTestNameForm = false;
+    this.testName = '';
   }
 
   cancelTestForm(): void {
     this.showTestForm = false;
+    this.showTestNameForm = false; // Also hide test name form
+    this.testName = '';
     this.currentQuiz = {
+      titre: '',
       question: '',
       options: ['', '', '', ''],
-      correctAnswer: 0
+      correctAnswer: null
     };
   }
 
@@ -355,9 +400,10 @@ export class ManageCoursesComponent implements OnInit {
     this.oldCourse.quizzes.push({ ...this.currentQuiz });
     this.showTestForm = false;
     this.currentQuiz = {
+      titre: this.testName,
       question: '',
       options: ['', '', '', ''],
-      correctAnswer: 0
+      correctAnswer: null
     };
   }
 
@@ -367,11 +413,12 @@ export class ManageCoursesComponent implements OnInit {
 
   // Quiz Modal Methods
   closeAddQuizModal(): void {
-    this.showAddQuizModal = false;
+    // Removed reference to showAddQuizModal
     this.currentQuiz = {
+      titre: '',
       question: '',
       options: ['', '', '', ''],
-      correctAnswer: 0
+      correctAnswer: null
     };
   }
 
@@ -380,15 +427,19 @@ export class ManageCoursesComponent implements OnInit {
 
     if (!this.oldCourse.quizzes) this.oldCourse.quizzes = [];
     this.oldCourse.quizzes.push({ ...this.currentQuiz });
-    this.closeAddQuizModal();
+    // Removed reference to showAddQuizModal
   }
 
   isQuizValid(): boolean {
     return !!(
+      this.currentQuiz.titre?.trim() &&
       this.currentQuiz.question.trim() &&
-      this.currentQuiz.options[this.currentQuiz.correctAnswer]?.trim() &&
+      this.currentQuiz.options.every(opt => opt.trim()) &&
+      this.currentQuiz.correctAnswer !== null && 
+      this.currentQuiz.correctAnswer !== undefined &&
       this.currentQuiz.correctAnswer >= 0 &&
-      this.currentQuiz.correctAnswer < this.currentQuiz.options.length
+      this.currentQuiz.correctAnswer < this.currentQuiz.options.length &&
+      this.currentQuiz.options[this.currentQuiz.correctAnswer]?.trim()
     );
   }
 
