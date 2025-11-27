@@ -132,6 +132,31 @@ export class CoursService {
   }
 
   /**
+   * Create a course and its associated test/questions
+   * @param data Course and test data
+   * @returns Observable of the response message
+   */
+  createCoursWithTest(data: {
+    titre: string;
+    description: string;
+    category: string;
+    youtube_vd_url: string;
+    enseignant_id: number;
+    test_titre: string;
+    questions: Array<{
+      question: string;
+      options: {
+        a: string;
+        b: string;
+        c: string;
+        d: string;
+      }
+    }>
+  }): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/with-test`, data);
+  }
+
+  /**
    * Update an existing course.
    * @param id Course ID
    * @param cours Partial Cours object with updated fields
@@ -139,6 +164,32 @@ export class CoursService {
    */
   updateCours(id: number, cours: Partial<Cours>): Observable<{ message: string }> {
     return this.http.put<{ message: string }>(`${this.apiUrl}/${id}`, cours);
+  }
+
+  /**
+   * Update a course and its associated test/questions
+   * @param id Course ID
+   * @param data Course and test data
+   * @returns Observable of the response message
+   */
+  updateCoursWithTest(id: number, data: {
+    titre: string;
+    description: string;
+    category: string;
+    youtube_vd_url: string;
+    test_titre: string;
+    questions: Array<{
+      id?: number;
+      question: string;
+      options: {
+        a: string;
+        b: string;
+        c: string;
+        d: string;
+      }
+    }>
+  }): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.apiUrl}/${id}/with-test`, data);
   }
 
   /**

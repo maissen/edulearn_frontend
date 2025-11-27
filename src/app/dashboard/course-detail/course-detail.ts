@@ -552,6 +552,17 @@ export class CourseDetailComponent implements OnInit {
     return currentQuestion && !!this.selectedAnswers[currentQuestion.id];
   }
 
+  getCorrectAnswerText(question: any): string {
+    // Map the answer key to the actual text
+    switch (question.answer) {
+      case 'a': return question.options.a;
+      case 'b': return question.options.b;
+      case 'c': return question.options.c;
+      case 'd': return question.options.d;
+      default: return '';
+    }
+  }
+
   /**
    * Submit all course quizzes in a single API call (exam submission).
    * Uses /test/submit endpoint with testID and answer array.
@@ -633,6 +644,17 @@ export class CourseDetailComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  updateCourse(): void {
+    if (this.course && this.course.id) {
+      this.router.navigate(['/coursesManage'], { 
+        queryParams: { 
+          action: 'edit', 
+          courseId: this.course.id 
+        } 
+      });
+    }
   }
 
   startCourse(): void {

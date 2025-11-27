@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CoursService, Cours } from '../../../services/cours.service';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
@@ -104,6 +104,7 @@ export class ManageCoursesComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute, // Add ActivatedRoute
     private coursService: CoursService,
     private authService: AuthService,
     private profileService: ProfileService,
@@ -113,6 +114,13 @@ export class ManageCoursesComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserData();
     this.loadCourses();
+    // Check for edit action from query params
+    this.route.queryParams.subscribe((params: any) => {
+      if (params['action'] === 'edit' && params['courseId']) {
+        const courseId = +params['courseId'];
+        this.loadCourseForEditing(courseId);
+      }
+    });
   }
 
   loadUserData(): void {
@@ -205,23 +213,64 @@ export class ManageCoursesComponent implements OnInit {
     console.log('Sending course data to API:', this.newCourse);
 
     if (this.mode === 'create') {
-      this.coursService.createCours(this.newCourse as Cours).subscribe({
-        next: (response: any) => {
-          this.successMessage = response.message || 'Course created successfully';
-          this.showSnackbarMessage('Course has been created successfully!', 'success');
-          this.loadCourses();
-          this.resetForm();
-          this.loading = false;
-          this.isSubmitting = false;
-        },
-        error: (error: any) => {
-          console.error('Error creating course:', error);
-          this.errorMessage = error.error?.message || 'Failed to create course. Please check your authentication.';
-          this.showSnackbarMessage(this.errorMessage, 'error');
-          this.loading = false;
-          this.isSubmitting = false;
-        }
-      });
+      // Check if we have a test to create
+      if (this.testName?.trim() || this.oldCourse.quizzes.length > 0) {
+        // Create course with test
+        const createData = {
+          titre: this.newCourse.titre || '',
+          description: this.newCourse.description || '',
+          category: this.oldCourse.category || '',
+          youtube_vd_url: this.newCourse.youtube_vd_url || '',
+          enseignant_id: this.newCourse.enseignant_id || 0,
+          test_titre: this.testName?.trim() || '',
+          questions: this.oldCourse.quizzes.map(quiz => ({
+            question: quiz.question,
+            options: {
+              a: quiz.options[0] || '',
+              b: quiz.options[1] || '',
+              c: quiz.options[2] || '',
+              d: quiz.options[3] || ''
+            }
+          }))
+        };
+
+        this.coursService.createCoursWithTest(createData).subscribe({
+          next: (response: any) => {
+            this.successMessage = response.message || 'Course and test created successfully';
+            this.showSnackbarMessage('Course and test have been created successfully!', 'success');
+            this.loadCourses();
+            this.resetForm();
+            this.loading = false;
+            this.isSubmitting = false;
+          },
+          error: (error: any) => {
+            console.error('Error creating course with test:', error);
+            this.errorMessage = error.error?.message || 'Failed to create course and test. Please check your authentication.';
+            this.showSnackbarMessage(this.errorMessage, 'error');
+            this.loading = false;
+            this.isSubmitting = false;
+          }
+        });
+      } else {
+        // Create course only (without test)
+        this.coursService.createCours(this.newCourse as Cours).subscribe({
+          next: (response: any) => {
+            this.successMessage = response.message || 'Course created successfully';
+            this.showSnackbarMessage('Course has been created successfully!', 'success');
+            this.loadCourses();
+            this.resetForm();
+            this.loading = false;
+            this.isSubmitting = false;
+          },
+          error: (error: any) => {
+            console.error('Error creating course:', error);
+            this.errorMessage = error.error?.message || 'Failed to create course. Please check your authentication.';
+            this.showSnackbarMessage(this.errorMessage, 'error');
+            this.loading = false;
+            this.isSubmitting = false;
+          }
+        });
+      }
     } else {
       // ✅ UPDATE
       if (!this.newCourse.id) {
@@ -231,22 +280,62 @@ export class ManageCoursesComponent implements OnInit {
         return;
       }
 
-      this.coursService.updateCours(this.newCourse.id, this.newCourse as Cours).subscribe({
-        next: (response: any) => {
-          this.successMessage = response.message || 'Course updated successfully';
-          this.showSnackbarMessage('Course has been updated successfully!', 'success');
-          this.loadCourses();
-          this.loading = false;
-          this.isSubmitting = false;
-        },
-        error: (error: any) => {
-          console.error('Error updating course:', error);
-          this.errorMessage = error.error?.message || 'Failed to update course. Please check your authentication.';
-          this.showSnackbarMessage(this.errorMessage, 'error');
-          this.loading = false;
-          this.isSubmitting = false;
-        }
-      });
+      // Check if we have a test to update
+      if (this.testName?.trim() || this.oldCourse.quizzes.length > 0) {
+        // Update course with test
+        const updateData = {
+          titre: this.newCourse.titre || '',
+          description: this.newCourse.description || '',
+          category: this.oldCourse.category || '',
+          youtube_vd_url: this.newCourse.youtube_vd_url || '',
+          test_titre: this.testName?.trim() || '',
+          questions: this.oldCourse.quizzes.map(quiz => ({
+            id: quiz.id, // Will be undefined for new questions
+            question: quiz.question,
+            options: {
+              a: quiz.options[0] || '',
+              b: quiz.options[1] || '',
+              c: quiz.options[2] || '',
+              d: quiz.options[3] || ''
+            }
+          }))
+        };
+
+        this.coursService.updateCoursWithTest(this.newCourse.id, updateData).subscribe({
+          next: (response: any) => {
+            this.successMessage = response.message || 'Course and test updated successfully';
+            this.showSnackbarMessage('Course and test have been updated successfully!', 'success');
+            this.loadCourses();
+            this.loading = false;
+            this.isSubmitting = false;
+          },
+          error: (error: any) => {
+            console.error('Error updating course with test:', error);
+            this.errorMessage = error.error?.message || 'Failed to update course and test. Please check your authentication.';
+            this.showSnackbarMessage(this.errorMessage, 'error');
+            this.loading = false;
+            this.isSubmitting = false;
+          }
+        });
+      } else {
+        // Update course only (without test)
+        this.coursService.updateCours(this.newCourse.id, this.newCourse as Cours).subscribe({
+          next: (response: any) => {
+            this.successMessage = response.message || 'Course updated successfully';
+            this.showSnackbarMessage('Course has been updated successfully!', 'success');
+            this.loadCourses();
+            this.loading = false;
+            this.isSubmitting = false;
+          },
+          error: (error: any) => {
+            console.error('Error updating course:', error);
+            this.errorMessage = error.error?.message || 'Failed to update course. Please check your authentication.';
+            this.showSnackbarMessage(this.errorMessage, 'error');
+            this.loading = false;
+            this.isSubmitting = false;
+          }
+        });
+      }
     }
   }
 
@@ -451,6 +540,56 @@ export class ManageCoursesComponent implements OnInit {
       },
       error: (err: any) => {
         // handle error
+      }
+    });
+  }
+
+  // Load course data for editing
+  loadCourseForEditing(courseId: number): void {
+    this.loading = true;
+    this.coursService.getCoursById(courseId).subscribe({
+      next: (course: Cours) => {
+        this.onEditCourse(course);
+        // Load test data if exists
+        this.loadCourseTestData(courseId);
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading course for editing:', error);
+        this.errorMessage = 'Failed to load course for editing';
+        this.loading = false;
+      }
+    });
+  }
+
+  // Load test data for a course
+  loadCourseTestData(courseId: number): void {
+    this.quizService.getTestByCourse(courseId).subscribe({
+      next: (test: any) => {
+        if (test && test.questions) {
+          // Set test name
+          this.testName = test.titre || '';
+          
+          // Convert test questions to quiz format
+          this.oldCourse.quizzes = test.questions.map((q: any) => {
+            // Determine correct answer index
+            let correctAnswerIndex = null;
+            const options = [q.options.a, q.options.b, q.options.c, q.options.d];
+            
+            // We don't have the correct answer in the response, so we'll leave it as null
+            // In a real implementation, this would come from the API
+            
+            return {
+              id: q.id,
+              question: q.question,
+              options: options,
+              correctAnswer: correctAnswerIndex
+            };
+          });
+        }
+      },
+      error: (error: any) => {
+        console.log('No test found for this course or error loading test:', error);
       }
     });
   }

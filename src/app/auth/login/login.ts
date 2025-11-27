@@ -74,9 +74,9 @@ export class Login {
         if (userRole === 'admin') {
           this.router.navigate(['/admin']);
         } else if (userRole === 'enseignant' || userRole === 'teacher') {
-          this.router.navigate(['/teacher']);
+          this.router.navigate(['/teacher/profile']);
         } else {
-          this.router.navigate(['/student']);
+          this.router.navigate(['/profile']);
         }
       },
       error: (error) => {

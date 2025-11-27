@@ -15,6 +15,14 @@
           <span>⏱️ {{ course?.duration }}</span>
           <span>⭐ {{ instructor.rating }}/5</span>
         </div>
+        <!-- Update Course Button for Teachers -->
+        @if (isTeacher) {
+          <div class="teacher-actions">
+            <button type="button" class="btn-update-course" (click)="updateCourse()">
+              <i class="icon-edit"></i> Update Course
+            </button>
+          </div>
+        }
       </header>
 
       <!-- Course Description -->
@@ -61,94 +69,117 @@
 
       <!-- Quiz Section -->
       <section class="quiz-section">
-        <div class="quiz-header">
-          <h2>🧠 Pass your exam Now</h2>
-          @if (isTeacher) {
-            <button type="button" class="btn-add-quiz" (click)="openAddQuizModal()">
-              <i class="icon-plus"></i> Add Quiz
-            </button>
-          }
-        </div>
-
-        @if (quizzes.length === 0) {
-          <div class="empty-quiz">
-            <div class="empty-icon">🧠</div>
-            <h3>No quizzes yet</h3>
-            <p>Quizzes will help students test their knowledge and understanding.</p>
-            @if (isTeacher) {
-              <button type="button" class="btn-add-first-quiz" (click)="openAddQuizModal()">
-                Create First Quiz
-              </button>
-            }
-          </div>
-        } @else if (isTeacher) {
-          <!-- Teacher view: Quiz management -->
-          <div class="quiz-gallery">
-            <div class="quiz-card" *ngFor="let quiz of quizzes; let i = index">
-              <div class="quiz-card-header">
-                <div class="quiz-number">Quiz {{ i + 1 }}</div>
-                <div class="quiz-actions">
-                  <button class="btn-edit-quiz" (click)="editQuiz(i)" title="Edit quiz">
-                    <i class="icon-edit"></i>
-                  </button>
-                  <button class="btn-delete-quiz" (click)="deleteQuiz(i)" title="Delete quiz">
-                    <i class="icon-trash"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="quiz-card-content">
-                <h3 class="quiz-question">{{ quiz.question }}</h3>
-                <div class="quiz-options">
-                  <div class="option" *ngFor="let option of quiz.options; let j = index"
-                       [class.correct]="j === quiz.correctAnswer">
-                    <span class="option-label">{{ j + 1 }}.</span>
-                    <span class="option-text">{{ option }}</span>
-                    @if (j === quiz.correctAnswer) {
-                      <span class="correct-badge">✓ Correct</span>
-                    }
+        @if (isTeacher) {
+          <!-- Teacher view: Display test information with questions and correct answers -->
+          @if (course && course.test) {
+            <div class="test-display">
+              <h2>📝 {{ course.test.titre }}</h2>
+              <div class="questions-list">
+                <div class="question-card" *ngFor="let question of course.test.questions; let i = index">
+                  <div class="question-header">
+                    <h3 class="question-number">Question {{ i + 1 }}</h3>
+                    <h4 class="question-text">{{ question.question }}</h4>
+                  </div>
+                  <div class="options-container">
+                    <div class="option-item" [class.correct]="question.options.a === getCorrectAnswerText(question)">
+                      <span class="option-label">A.</span>
+                      <span class="option-text">{{ question.options.a }}</span>
+                      @if (question.options.a === getCorrectAnswerText(question)) {
+                        <span class="correct-indicator">✓ Correct Answer</span>
+                      }
+                    </div>
+                    <div class="option-item" [class.correct]="question.options.b === getCorrectAnswerText(question)">
+                      <span class="option-label">B.</span>
+                      <span class="option-text">{{ question.options.b }}</span>
+                      @if (question.options.b === getCorrectAnswerText(question)) {
+                        <span class="correct-indicator">✓ Correct Answer</span>
+                      }
+                    </div>
+                    <div class="option-item" [class.correct]="question.options.c === getCorrectAnswerText(question)">
+                      <span class="option-label">C.</span>
+                      <span class="option-text">{{ question.options.c }}</span>
+                      @if (question.options.c === getCorrectAnswerText(question)) {
+                        <span class="correct-indicator">✓ Correct Answer</span>
+                      }
+                    </div>
+                    <div class="option-item" [class.correct]="question.options.d === getCorrectAnswerText(question)">
+                      <span class="option-label">D.</span>
+                      <span class="option-text">{{ question.options.d }}</span>
+                      @if (question.options.d === getCorrectAnswerText(question)) {
+                        <span class="correct-indicator">✓ Correct Answer</span>
+                      }
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          } @else {
+            <!-- No test created yet -->
+            <div class="quiz-header">
+              <h2>🧠 Pass your exam Now</h2>
+              <button type="button" class="btn-add-quiz" (click)="openAddQuizModal()">
+                <i class="icon-plus"></i> Add Quiz
+              </button>
+            </div>
+            <div class="empty-quiz">
+              <div class="empty-icon">🧠</div>
+              <h3>No test created yet</h3>
+              <p>Create a test for your students to evaluate their knowledge.</p>
+              <button type="button" class="btn-add-first-quiz" (click)="openAddQuizModal()">
+                Create Test
+              </button>
+            </div>
+          }
         } @else {
           <!-- Student view: Quiz taking -->
-          <div class="student-quiz-section">
-            <div class="quiz-info">
-              <div class="quiz-stats">
-                <div class="stat-item">
-                  <span class="stat-number">{{ quizzes.length }}</span>
-                  <span class="stat-label">Test{{ quizzes.length > 1 ? 's' : '' }} Available</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-number">{{ getTotalQuestions() }}</span>
-                  <span class="stat-label">Questions Total</span>
-                </div>
-              </div>
-              
-              <!-- Show test result if student has taken the test -->
-              @if (hasTakenTest) {
-                <div class="test-result">
-                  <div class="result-score">
-                    <span class="score">{{ studentScore }} / {{ totalScore }}</span>
-                    <span class="status" [class.passed]="studentScore && studentScore >= 12" [class.failed]="studentScore && studentScore <= 12">
-                      {{ studentScore && studentScore >= 12 ? 'Passed' : 'Failed' }}
-                    </span>
+          <div class="quiz-header">
+            <h2>🧠 Pass your exam Now</h2>
+          </div>
+          
+          @if (quizzes.length === 0) {
+            <div class="empty-quiz">
+              <div class="empty-icon">🧠</div>
+              <h3>No quizzes yet</h3>
+              <p>Quizzes will help you test your knowledge and understanding.</p>
+            </div>
+          } @else {
+            <div class="student-quiz-section">
+              <div class="quiz-info">
+                <div class="quiz-stats">
+                  <div class="stat-item">
+                    <span class="stat-number">{{ quizzes.length }}</span>
+                    <span class="stat-label">Test{{ quizzes.length > 1 ? 's' : '' }} Available</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-number">{{ getTotalQuestions() }}</span>
+                    <span class="stat-label">Questions Total</span>
                   </div>
                 </div>
-              }
-              
-              <!-- Show the Start Test button for students who haven't taken the test or failed the test -->
-              @if (!hasTakenTest || (hasTakenTest && studentScore !== null && studentScore < 12)) {
-                <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="(hasTakenTest && studentScore !== null && studentScore >= 12) || !hasStartedCourse">
-                  🚀 Start Test Now
-                </button>
-                <div *ngIf="!hasStartedCourse" class="start-course-notice" style="margin-top: 10px; color: #e74c3c; font-style: italic;">
-                  You need to start the course before taking the test.
-                </div>
-              }
+                
+                <!-- Show test result if student has taken the test -->
+                @if (hasTakenTest) {
+                  <div class="test-result">
+                    <div class="result-score">
+                      <span class="score">{{ studentScore }} / {{ totalScore }}</span>
+                      <span class="status" [class.passed]="studentScore && studentScore >= 12" [class.failed]="studentScore && studentScore <= 12">
+                        {{ studentScore && studentScore >= 12 ? 'Passed' : 'Failed' }}
+                      </span>
+                    </div>
+                  </div>
+                }
+                
+                <!-- Show the Start Test button for students who haven't taken the test or failed the test -->
+                @if (!hasTakenTest || (hasTakenTest && studentScore !== null && studentScore < 12)) {
+                  <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="(hasTakenTest && studentScore !== null && studentScore >= 12) || !hasStartedCourse">
+                    🚀 Start Test Now
+                  </button>
+                  <div *ngIf="!hasStartedCourse" class="start-course-notice" style="margin-top: 10px; color: #e74c3c; font-style: italic;">
+                    You need to start the course before taking the test.
+                  </div>
+                }
+              </div>
             </div>
-          </div>
+          }
         }
       </section>
     </div>
