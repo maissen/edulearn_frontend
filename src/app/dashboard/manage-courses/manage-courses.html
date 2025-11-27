@@ -89,11 +89,6 @@
               <option value="other">📚 Other</option>
             </select>
           </div>
-          <div class="form-group">
-            <label for="courseDuration">Duration (hours)</label>
-            <input type="number" id="courseDuration" [(ngModel)]="oldCourse.duration"
-                   name="duration" min="1" max="100" placeholder="e.g., 10">
-          </div>
         </div>
 
         <div class="form-row">
@@ -108,12 +103,6 @@
             <input type="url" id="youtubeVideoUrl" [(ngModel)]="newCourse.youtube_vd_url" name="youtube_vd_url"
                    placeholder="https://www.youtube.com/watch?v=...">
             <small>Optional: Direct YouTube video URL</small>
-          </div>
-          <div class="form-group">
-            <label for="courseVideo">Video URL</label>
-            <input type="url" id="courseVideo" [(ngModel)]="oldCourse.videoUrl" name="videoUrl"
-                   placeholder="https://www.youtube.com/embed/...">
-            <small>Optional: YouTube or Vimeo embed URL</small>
           </div>
         </div>
 
@@ -246,74 +235,6 @@
     </div>
   </section>
 
-  <!-- Courses List -->
-  <section class="courses-list">
-    <div class="section-header">
-      <h2><i class="icon-courses"></i> My Courses</h2>
-      <div class="courses-count">{{ courses.length }} course{{ courses.length !== 1 ? 's' : '' }}</div>
-    </div>
-
-    @if (loading && courses.length === 0) {
-      <div class="loading-state">
-        <div class="loading-spinner"></div>
-        <p>Loading your courses...</p>
-      </div>
-    } @else if (courses.length === 0) {
-      <div class="empty-state">
-        <div class="empty-icon">📚</div>
-        <h3>No courses yet</h3>
-        <p>Start by creating your first course above!</p>
-      </div>
-    } @else {
-      <div class="course-grid">
-        <div class="course-card" *ngFor="let course of courses">
-          <div class="course-media">
-            <img [src]="course.imageUrl || 'https://picsum.photos/300/180?random=1'"
-                  [alt]="course.titre" loading="lazy">
-            <div class="course-badges">
-              <span class="badge badge-video" *ngIf="course.videoUrl">🎥 Video</span>
-              <span class="badge badge-quiz">🧠 Quiz</span>
-            </div>
-            <div class="course-overlay">
-              <button (click)="viewCourse(course.id!)" class="btn-overlay">
-                <i class="icon-eye"></i> View Course
-              </button>
-            </div>
-          </div>
-          <div class="course-content">
-            <div class="course-header">
-              <h3>{{ course.titre }}</h3>
-              <div class="course-status">
-                <span class="status-dot status-active"></span>
-                Active
-              </div>
-            </div>
-            <p class="course-description">{{ course.description | slice:0:100 }}...</p>
-            <div class="course-meta">
-              <span class="meta-item">
-                <i class="icon-calendar"></i>
-                Created recently
-              </span>
-              <span class="meta-item">
-                <i class="icon-users"></i>
-                0 students
-              </span>
-            </div>
-            <div class="course-actions">
-              <button (click)="onEditCourse(course)" class="btn-action btn-edit"
-                      title="Edit course">
-                <i class="icon-edit"></i> Edit
-              </button>
-              <button (click)="onDeleteCourse(course.id!)" class="btn-action btn-delete"
-                      title="Delete course">
-                <i class="icon-trash"></i> Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    }
-  </section>
 </div>
 
 <!-- Add Quiz Modal -->
