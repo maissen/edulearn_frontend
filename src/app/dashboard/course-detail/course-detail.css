@@ -1,5 +1,11 @@
 /* === Global === */
 
+.course-detail-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 /* Barre de navigation */
 .top-nav {
   display: flex;
