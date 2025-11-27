@@ -55,112 +55,145 @@
       </div>
 
       <form (ngSubmit)="onCreateCourse()" novalidate>
-        <!-- Titre -->
-        <div class="form-group" [class.error]="formErrors['title']">
-          <label for="courseTitle">Course Title *</label>
-          <input type="text" id="courseTitle" [(ngModel)]="oldCourse.title" name="title"
-                 placeholder="Enter course title" [class.error]="formErrors['title']" required>
-          @if (formErrors['title']) {
-            <div class="error-message">{{ formErrors['title'] }}</div>
-          }
-        </div>
+        <div class="two-column-layout">
+          <!-- Left Column: Course Details -->
+          <div class="left-column">
+            <!-- Titre -->
+            <div class="form-group" [class.error]="formErrors['title']">
+              <label for="courseTitle">Course Title *</label>
+              <input type="text" id="courseTitle" [(ngModel)]="oldCourse.title" name="title"
+                     placeholder="Enter course title" [class.error]="formErrors['title']" required>
+              @if (formErrors['title']) {
+                <div class="error-message">{{ formErrors['title'] }}</div>
+              }
+            </div>
 
-        <div class="form-group" [class.error]="formErrors['description']">
-          <label for="courseDescription">Description *</label>
-          <textarea id="courseDescription" [(ngModel)]="newCourse.description" name="description"
-                    rows="4" placeholder="Describe what students will learn in this course"
-                    [class.error]="formErrors['description']" required></textarea>
-          @if (formErrors['description']) {
-            <div class="error-message">{{ formErrors['description'] }}</div>
-          }
-        </div>
+            <div class="form-group" [class.error]="formErrors['description']">
+              <label for="courseDescription">Description *</label>
+              <textarea id="courseDescription" [(ngModel)]="newCourse.description" name="description"
+                        rows="4" placeholder="Describe what students will learn in this course"
+                        [class.error]="formErrors['description']" required></textarea>
+              @if (formErrors['description']) {
+                <div class="error-message">{{ formErrors['description'] }}</div>
+              }
+            </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="courseCategory">Category</label>
-            <select id="courseCategory" [(ngModel)]="oldCourse.category" name="category">
-              <option value="">Select category...</option>
-              <option value="programming">💻 Programming</option>
-              <option value="math">📐 Mathematics</option>
-              <option value="design">🎨 Design & UX/UI</option>
-              <option value="science">🔬 Sciences</option>
-              <option value="business">💼 Business</option>
-              <option value="language">🌐 Languages</option>
-              <option value="other">📚 Other</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="courseImage">Cover Image URL</label>
-            <input type="url" id="courseImage" [(ngModel)]="oldCourse.imageUrl" name="imageUrl"
-                   placeholder="https://example.com/image.jpg">
-            <small>Optional: URL to course thumbnail image</small>
-          </div>
-          <div class="form-group">
-            <label for="youtubeVideoUrl">YouTube Video URL</label>
-            <input type="url" id="youtubeVideoUrl" [(ngModel)]="newCourse.youtube_vd_url" name="youtube_vd_url"
-                   placeholder="https://www.youtube.com/watch?v=...">
-            <small>Optional: Direct YouTube video URL</small>
-          </div>
-        </div>
-
-        <!-- Quiz Section -->
-        <div class="quiz-section">
-          <div class="new-quizzes">
-            @if (mode === 'create') {
-              <h4>Add a test for your course</h4>
-            } @else {
-              <h4>Add a test for your course</h4>
-            }
-
-            @if (oldCourse.quizzes.length === 0) {
-              <div class="empty-quiz">
-                <div class="empty-icon">🧠</div>
-                <p>No tests added yet. Add your first test to engage students!</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="courseCategory">Category</label>
+                <select id="courseCategory" [(ngModel)]="oldCourse.category" name="category">
+                  <option value="">Select category...</option>
+                  <option value="programming">💻 Programming</option>
+                  <option value="math">📐 Mathematics</option>
+                  <option value="design">🎨 Design & UX/UI</option>
+                  <option value="science">🔬 Sciences</option>
+                  <option value="business">💼 Business</option>
+                  <option value="language">🌐 Languages</option>
+                  <option value="other">📚 Other</option>
+                </select>
               </div>
-            } @else {
-              <div class="quiz-list">
-                <div class="quiz-item" *ngFor="let test of oldCourse.quizzes; let i = index">
-                  <div class="quiz-header">
-                    <h4>Test {{ i + 1 }}</h4>
-                    <button type="button" class="btn-remove-quiz" (click)="removeQuiz(i)"
-                            title="Remove test">
-                      <i class="icon-trash"></i>
-                    </button>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="courseImage">Cover Image URL</label>
+                <input type="url" id="courseImage" [(ngModel)]="oldCourse.imageUrl" name="imageUrl"
+                       placeholder="https://example.com/image.jpg">
+                <small>Optional: URL to course thumbnail image</small>
+              </div>
+              <div class="form-group">
+                <label for="youtubeVideoUrl">YouTube Video URL</label>
+                <input type="url" id="youtubeVideoUrl" [(ngModel)]="newCourse.youtube_vd_url" name="youtube_vd_url"
+                       placeholder="https://www.youtube.com/watch?v=...">
+                <small>Optional: Direct YouTube video URL</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Test Interface -->
+          <div class="right-column">
+            <div class="test-section">
+              <div class="test-header">
+                <h3>Add a test for your course</h3>
+                <button type="button" class="btn-add-test" (click)="addNewTestForm()">
+                  <i class="icon-plus"></i> Add Test
+                </button>
+              </div>
+
+              <!-- Test Form (appears when Add Test button is clicked) -->
+              @if (showTestForm) {
+                <div class="test-form">
+                  <h4>Create a question for your test</h4>
+                  <div class="form-group">
+                    <label>Question *</label>
+                    <input type="text" [(ngModel)]="currentQuiz.question" name="testQuestion"
+                           placeholder="Enter your test question" required>
                   </div>
-                  <div class="quiz-body">
-                    <div class="form-group">
-                      <label>Question</label>
-                      <input type="text"
-                             [(ngModel)]="oldCourse.quizzes[i].question"
-                             [name]="'quiz_' + i + '_question'"
-                             placeholder="Enter test question" required>
-                    </div>
-                    <div class="options-grid">
-                      <div *ngFor="let opt of test.options; let j = index" class="option-group">
-                        <label>Option {{ j + 1 }}</label>
-                        <input type="text"
-                               [(ngModel)]="oldCourse.quizzes[i].options[j]"
-                               [name]="'quiz_' + i + '_opt_' + j"
-                               placeholder="Enter option {{ j + 1 }}">
+
+                  <div class="options-section">
+                    <label>Options</label>
+                    <div class="options-list">
+                      <div class="option-input" *ngFor="let option of currentQuiz.options; let j = index">
+                        <input type="text" [(ngModel)]="currentQuiz.options[j]" [name]="'option_' + j"
+                               [placeholder]="'Option ' + (j + 1)" required>
+                        <button type="button" class="btn-remove-option" (click)="removeQuizOption(j)"
+                                [disabled]="currentQuiz.options.length <= 2">
+                          <i class="icon-minus"></i>
+                        </button>
                       </div>
                     </div>
-                    <div class="form-group">
-                      <label>Correct Answer (0-3)</label>
-                      <select [(ngModel)]="oldCourse.quizzes[i].correctAnswer"
-                              [name]="'quiz_' + i + '_correct'">
-                        <option [value]="0">Option A (0)</option>
-                        <option [value]="1">Option B (1)</option>
-                        <option [value]="2">Option C (2)</option>
-                        <option [value]="3">Option D (3)</option>
-                      </select>
+                    <button type="button" class="btn-add-option" (click)="addQuizOption()">
+                      <i class="icon-plus"></i> Add Option
+                    </button>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Correct Answer *</label>
+                    <select [(ngModel)]="currentQuiz.correctAnswer" name="correctAnswer" required>
+                      <option [value]="j" *ngFor="let option of currentQuiz.options; let j = index">
+                        Option {{ j + 1 }}: {{ option || 'Option ' + (j + 1) }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="test-form-actions">
+                    <button type="button" class="btn-secondary" (click)="cancelTestForm()">Cancel</button>
+                    <button type="button" class="btn-primary" (click)="saveTestQuestion()" [disabled]="!isQuizValid()">
+                      Save Question
+                    </button>
+                  </div>
+                </div>
+              }
+
+              <!-- Existing Tests -->
+              @if (oldCourse.quizzes.length > 0) {
+                <div class="tests-list">
+                  <h4>Existing Questions</h4>
+                  <div class="test-item" *ngFor="let test of oldCourse.quizzes; let i = index">
+                    <div class="test-item-header">
+                      <h5>Question {{ i + 1 }}</h5>
+                      <button type="button" class="btn-remove-test" (click)="removeQuiz(i)" title="Remove test">
+                        <i class="icon-trash"></i>
+                      </button>
+                    </div>
+                    <div class="test-question">{{ test.question }}</div>
+                    <div class="test-options">
+                      <div class="test-option" *ngFor="let option of test.options; let j = index"
+                           [class.correct]="j === test.correctAnswer">
+                        <span class="option-letter">{{ getOptionLetter(j) }}.</span>
+                        <span class="option-text">{{ option }}</span>
+                        <span class="correct-badge" *ngIf="j === test.correctAnswer">Correct</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            }
+              } @else if (!showTestForm) {
+                <div class="empty-tests">
+                  <div class="empty-icon">🧠</div>
+                  <p>No tests added yet. Click "Add Test" to create your first test question!</p>
+                </div>
+              }
+            </div>
           </div>
         </div>
 
@@ -194,63 +227,5 @@
   </section>
 
 </div>
-
-<!-- Add Quiz Modal -->
-@if (showAddQuizModal) {
-  <div class="modal-overlay" (click)="closeAddQuizModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3>Add New Test</h3>
-        <button type="button" class="modal-close" (click)="closeAddQuizModal()">
-          <i class="icon-close"></i>
-        </button>
-      </div>
-
-      <form class="quiz-form" (ngSubmit)="saveQuiz()">
-        <div class="form-group">
-          <label for="quizQuestion">Question *</label>
-          <input type="text" id="quizQuestion" [(ngModel)]="currentQuiz.question"
-                 name="question" placeholder="Enter your test question" required>
-        </div>
-
-        <div class="options-section">
-          <label>Options</label>
-          <div class="options-list">
-            <div class="option-input" *ngFor="let option of currentQuiz.options; let j = index">
-              <input type="text" [(ngModel)]="currentQuiz.options[j]"
-                     [name]="'option_' + j"
-                     [placeholder]="'Option ' + (j + 1)"
-                     required>
-              <button type="button" class="btn-remove-option"
-                      (click)="removeQuizOption(j)"
-                      [disabled]="currentQuiz.options.length <= 2">
-                <i class="icon-minus"></i>
-              </button>
-            </div>
-          </div>
-          <button type="button" class="btn-add-option" (click)="addQuizOption()">
-            <i class="icon-plus"></i> Add Option
-          </button>
-        </div>
-
-        <div class="form-group">
-          <label for="correctAnswer">Correct Answer *</label>
-          <select id="correctAnswer" [(ngModel)]="currentQuiz.correctAnswer" name="correctAnswer" required>
-            <option [value]="j" *ngFor="let option of currentQuiz.options; let j = index">
-              Option {{ j + 1 }}: {{ option || 'Option ' + (j + 1) }}
-            </option>
-          </select>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" (click)="closeAddQuizModal()">Cancel</button>
-          <button type="submit" class="btn-primary" [disabled]="!isQuizValid()">
-            Add Test
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-}
 
 <app-footer></app-footer>

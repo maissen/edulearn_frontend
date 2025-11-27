@@ -6,7 +6,6 @@ import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { EnseignantService, TeacherStats, TeacherCourse } from '../../../services/enseignant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { LogoComponent } from '../../shared/logo/logo.component';
 import { FooterComponent } from '../../shared/footer/footer';
 
 // Extend the Profile interface for teacher-specific data
@@ -36,7 +35,7 @@ interface TeacherCourseFromProfile {
 @Component({
   selector: 'app-teacher-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, LogoComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, FooterComponent],
   templateUrl: './teacher-profile.html',
   styleUrl: './teacher-profile.css'
 })
@@ -67,11 +66,11 @@ export class TeacherProfileComponent implements OnInit {
     private enseignantService: EnseignantService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadTeacherData();
   }
 
-  loadTeacherData() {
+  loadTeacherData(): void {
     this.profileService.getProfile().subscribe({
       next: (profile: any) => {
         // Cast to TeacherProfile to access teacher-specific fields
@@ -104,7 +103,7 @@ export class TeacherProfileComponent implements OnInit {
     });
   }
 
-  openUpdateProfileModal() {
+  openUpdateProfileModal(): void {
     // Load current data into form
     this.editForm = {
       username: this.teacherName,
@@ -114,7 +113,7 @@ export class TeacherProfileComponent implements OnInit {
     this.showProfileModal = true;
   }
 
-  closeProfileModal() {
+  closeProfileModal(): void {
     this.showProfileModal = false;
     this.editForm = {
       username: '',
@@ -124,10 +123,10 @@ export class TeacherProfileComponent implements OnInit {
   }
 
   isProfileFormValid(): boolean {
-    return !!this.editForm.username?.trim();
+    return !!(this.editForm.username?.trim());
   }
 
-  saveProfile() {
+  saveProfile(): void {
     if (!this.isProfileFormValid()) return;
 
     // According to API contract, both username and biography can be updated
@@ -151,15 +150,15 @@ export class TeacherProfileComponent implements OnInit {
     });
   }
 
-  navigateToCourse(courseId: number) {
+  navigateToCourse(courseId: number): void {
     this.router.navigate(['/course', courseId]);
   }
 
-  navigate(url: string) {
+  navigate(url: string): void {
     this.router.navigateByUrl(url);
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }

@@ -11,7 +11,6 @@ import { AuthService } from '../../../services/auth.service';
 import { EnseignantService } from '../../../services/enseignant.service';
 import { EtudiantService, CourseEnrollmentStatus } from '../../../services/etudiant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { LogoComponent } from '../../shared/logo/logo.component';
 import { FooterComponent } from '../../shared/footer/footer';
 import { ExamenService } from '../../../services/examen.service';
 
@@ -40,16 +39,16 @@ interface Course {
   id: number;
   title: string;
   subtitle: string;
-  duration: string;
-  imageUrl: string;
-  videoUrl: string;
   description: string;
-  category?: string;
-  youtube_vd_url?: string;
-  teacher?: {
+  category: string;
+  youtube_vd_url: string;
+  teacher: {
     name: string;
     email: string;
   };
+  duration: string; // Changed from number to string to match the API
+  videoUrl: string;
+  imageUrl: string;
   targetAudience: string;
   prerequisites: string;
   learningObjectives: string[];
@@ -89,7 +88,7 @@ interface Course {
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, LogoComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, FooterComponent],
   templateUrl: './course-detail.html',
   styleUrls: ['./course-detail.css']
 })
@@ -178,7 +177,7 @@ export class CourseDetailComponent implements OnInit {
     return this.quizzes.length * 4;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.courseId = parseInt(id, 10);
@@ -194,7 +193,7 @@ export class CourseDetailComponent implements OnInit {
     }
   }
 
-  checkEnrollmentStatus() {
+  checkEnrollmentStatus(): void {
     this.etudiantService.getCourseEnrollmentStatus(this.courseId).subscribe({
       next: (status: CourseEnrollmentStatus) => {
         this.enrollmentStatus = status;
@@ -211,7 +210,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  loadCourse() {
+  loadCourse(): void {
     this.loading = true;
     this.coursService.getCourseContent(this.courseId).subscribe({
       next: (courseContent: CourseContent) => {
@@ -221,19 +220,19 @@ export class CourseDetailComponent implements OnInit {
           id: courseContent.id,
           title: courseContent.titre,
           subtitle: `${courseContent.titre}`,
-          description: courseContent.description,
-          category: courseContent.category,
-          youtube_vd_url: courseContent.youtube_vd_url,
+          description: courseContent.description || '',
+          category: courseContent.category || '',
+          youtube_vd_url: courseContent.youtube_vd_url || '',
           teacher: {
-            name: courseContent.teacher_username,
-            email: courseContent.teacher_email
+            name: courseContent.teacher_username || '',
+            email: courseContent.teacher_email || ''
           },
-          duration: courseContent.duration,
-          videoUrl: courseContent.videoUrl,
-          imageUrl: courseContent.imageUrl,
-          targetAudience: courseContent.targetAudience,
-          prerequisites: courseContent.prerequisites,
-          learningObjectives: courseContent.learningObjectives,
+          duration: courseContent.duration || '0', // Keep as string
+          videoUrl: courseContent.videoUrl || '',
+          imageUrl: courseContent.imageUrl || '',
+          targetAudience: courseContent.targetAudience || '',
+          prerequisites: courseContent.prerequisites || '',
+          learningObjectives: courseContent.learningObjectives || [],
           instructor: courseContent.instructor,
           relatedCourses: [],
           quizzes: [],
@@ -244,7 +243,7 @@ export class CourseDetailComponent implements OnInit {
         }
         // Convert YouTube URL to embed format if needed
         // First check if there's a specific YouTube video URL, otherwise use the general video URL
-        const videoUrlToUse = this.course.youtube_vd_url || this.course.videoUrl;
+        const videoUrlToUse = this.course?.youtube_vd_url || this.course?.videoUrl || '';
         const embedUrl = this.convertToEmbedUrl(videoUrlToUse);
         this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
 
@@ -293,7 +292,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  checkIfCourseCompleted() {
+  checkIfCourseCompleted(): void {
     this.etudiantService.getCompletedCourses().subscribe({
       next: (completedCourses: any[]) => {
         // Check if the current course is in the completed courses list
@@ -307,7 +306,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  loadRelatedCourses() {
+  loadRelatedCourses(): void {
     this.coursService.getRelatedCourses(this.courseId).subscribe({
       next: (relatedCourses: RelatedCourse[]) => {
         if (this.course) {
@@ -324,7 +323,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  loadQuizzes() {
+  loadQuizzes(): void {
     // Quiz data is now included in the course content API response
     // No separate API call needed - data comes from this.course.test.questions
     if (this.course && this.course.test && this.course.test.questions) {
@@ -359,7 +358,7 @@ export class CourseDetailComponent implements OnInit {
   }
 
   // Quiz Modal Methods
-  openAddQuizModal() {
+  openAddQuizModal(): void {
     this.editingQuizIndex = null;
     this.currentTest = {
       title: '',
@@ -375,12 +374,12 @@ export class CourseDetailComponent implements OnInit {
     this.showQuizModal = true;
   }
 
-  editQuiz(index: number) {
+  editQuiz(index: number): void {
     // For now, editing is not implemented - teachers would need to delete and recreate
     alert('Editing tests is not currently supported. Please delete and create a new test.');
   }
 
-  closeQuizModal() {
+  closeQuizModal(): void {
     this.showQuizModal = false;
     this.editingQuizIndex = null;
     this.currentTest = {
@@ -396,7 +395,7 @@ export class CourseDetailComponent implements OnInit {
     };
   }
 
-  addQuestion() {
+  addQuestion(): void {
     this.currentTest.questions.push({
       question: '',
       option_a: '',
@@ -407,7 +406,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  removeQuestion(index: number) {
+  removeQuestion(index: number): void {
     if (this.currentTest.questions.length > 1) {
       this.currentTest.questions.splice(index, 1);
     }
@@ -428,7 +427,7 @@ export class CourseDetailComponent implements OnInit {
     );
   }
 
-  saveQuiz() {
+  saveQuiz(): void {
     if (!this.isTestFormValid()) {
       alert('Please fill in all required fields for the test and questions.');
       return;
@@ -470,7 +469,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  deleteQuiz(index: number) {
+  deleteQuiz(index: number): void {
     // Use the test ID for deletion
     if (!this.course?.test?.id) {
       alert('No test to delete.');
@@ -490,7 +489,7 @@ export class CourseDetailComponent implements OnInit {
   }
 
   // Student Quiz Taking Methods
-  startQuiz() {
+  startQuiz(): void {
     // Prevent starting quiz if student has already taken it
     if (this.hasTakenTest) {
       alert('You have already taken this test. Check your results above.');
@@ -508,14 +507,14 @@ export class CourseDetailComponent implements OnInit {
     this.showQuizTakingModal = true;
   }
 
-  closeQuizTakingModal() {
+  closeQuizTakingModal(): void {
     this.showQuizTakingModal = false;
     this.currentQuestionIndex = 0;
     this.selectedAnswers = {};
     this.quizSubmissionResult = null;
   }
 
-  selectAnswer(questionId: string, answer: string) {
+  selectAnswer(questionId: string, answer: string): void {
     this.selectedAnswers[questionId] = answer;
   }
 
@@ -523,7 +522,7 @@ export class CourseDetailComponent implements OnInit {
     return this.quizQuestions[this.currentQuestionIndex];
   }
 
-  nextQuestion() {
+  nextQuestion(): void {
     const currentQuestion = this.getCurrentQuestion();
     if (!currentQuestion || !this.selectedAnswers[currentQuestion.id]) {
       alert('Please select an answer before proceeding.');
@@ -538,7 +537,7 @@ export class CourseDetailComponent implements OnInit {
     }
   }
 
-  previousQuestion() {
+  previousQuestion(): void {
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
     }
@@ -557,7 +556,7 @@ export class CourseDetailComponent implements OnInit {
    * Submit all course quizzes in a single API call (exam submission).
    * Uses /test/submit endpoint with testID and answer array.
    */
-  submitAllQuizzes() {
+  submitAllQuizzes(): void {
     if (!this.course || !this.course.test || !this.course.test.questions) {
       alert('No quizzes to submit.');
       return;
@@ -602,7 +601,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  navigate(url: string) {
+  navigate(url: string): void {
     this.router.navigateByUrl(url);
   }
 
@@ -631,12 +630,12 @@ export class CourseDetailComponent implements OnInit {
     return url;
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 
-  startCourse() {
+  startCourse(): void {
     this.etudiantService.startCourse(this.courseId).subscribe({
       next: (response: { message: string }) => {
         console.log('Course started successfully:', response.message);
@@ -658,7 +657,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  completeCourse() {
+  completeCourse(): void {
     this.etudiantService.completeCourse(this.courseId).subscribe({
       next: (response: { message: string }) => {
         console.log('Course completed successfully:', response.message);
@@ -678,7 +677,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
-  showConfetti() {
+  showConfetti(): void {
     // Create confetti container
     const confettiContainer = document.createElement('div');
     confettiContainer.className = 'confetti-container';

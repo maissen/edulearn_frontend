@@ -15,10 +15,7 @@ export const serverRoutes: ServerRoute[] = [
     path: 'student',
     renderMode: RenderMode.Server
   },
-  {
-    path: 'teacher',
-    renderMode: RenderMode.Server
-  },
+  // Removed the 'teacher' route since the teacher dashboard was removed
   {
     path: 'admin',
     renderMode: RenderMode.Server

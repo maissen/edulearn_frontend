@@ -7,7 +7,6 @@ import { CoursService, Cours } from '../../../services/cours.service';
 import { EtudiantService, QuizResult, CompletedCourse, InProgressCourse } from '../../../services/etudiant.service';
 import { AuthService } from '../../../services/auth.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { LogoComponent } from '../../shared/logo/logo.component';
 import { FooterComponent } from '../../shared/footer/footer';
 
 // Internal interface for quiz results with numeric score
@@ -37,7 +36,7 @@ interface UserProfile {
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, LogoComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NavbarComponent, FooterComponent],
   templateUrl: './student-profile.html',
   styleUrls: ['./student-profile.css']
 })

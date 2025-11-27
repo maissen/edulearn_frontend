@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { CoursService, Cours } from '../../../services/cours.service';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { QuizService, Quiz } from '../../../services/quiz.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { LogoComponent } from '../../shared/logo/logo.component';
 import { FooterComponent } from '../../shared/footer/footer';
 
 interface QuizTemplate {
@@ -31,7 +30,7 @@ interface CourseTemplate {
 @Component({
   selector: 'app-manage-courses',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, LogoComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, FooterComponent],
   templateUrl: './manage-courses.html',
   styleUrls: ['./manage-courses.css']
 })
@@ -75,6 +74,9 @@ export class ManageCoursesComponent implements OnInit {
   // Course quizzes for editing
   courseQuizzes: Quiz[] = [];
 
+  // Test form visibility
+  showTestForm = false;
+
   // Quiz modal
   showAddQuizModal = false;
   currentQuiz: QuizTemplate = {
@@ -91,20 +93,20 @@ export class ManageCoursesComponent implements OnInit {
     private quizService: QuizService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadUserData();
     this.loadCourses();
   }
 
-  loadUserData() {
+  loadUserData(): void {
     this.profileService.getProfile().subscribe({
-      next: (profile) => {
+      next: (profile: any) => {
         this.userName = profile.username || 'Teacher';
         if (profile.id) {
           this.newCourse.enseignant_id = profile.id;
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading profile:', error);
         const user = this.authService.getUser();
         if (user) {
@@ -117,20 +119,20 @@ export class ManageCoursesComponent implements OnInit {
     });
   }
 
-  loadCourses() {
+  loadCourses(): void {
     this.loading = true;
     this.coursService.getAllCours().subscribe({
-      next: (apiCourses) => {
+      next: (apiCourses: Cours[]) => {
         const user = this.authService.getUser();
         if (user && user.id) {
           // Filter courses by current teacher
-          this.courses = apiCourses.filter(c => c.enseignant_id === user.id);
+          this.courses = apiCourses.filter((c: Cours) => c.enseignant_id === user.id);
         } else {
           this.courses = apiCourses;
         }
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading courses:', error);
         this.errorMessage = 'Failed to load courses';
         this.loading = false;
@@ -139,7 +141,7 @@ export class ManageCoursesComponent implements OnInit {
   }
 
   // ✅ CREATE/UPDATE
-  onCreateCourse() {
+  onCreateCourse(): void {
     console.log('onCreateCourse called');
     this.formErrors = {};
     this.isSubmitting = true;
@@ -180,14 +182,14 @@ export class ManageCoursesComponent implements OnInit {
 
     if (this.mode === 'create') {
       this.coursService.createCours(this.newCourse as Cours).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.successMessage = response.message || 'Course created successfully';
           this.loadCourses();
           this.resetForm();
           this.loading = false;
           this.isSubmitting = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error creating course:', error);
           this.errorMessage = error.error?.message || 'Failed to create course. Please check your authentication.';
           this.loading = false;
@@ -202,15 +204,15 @@ export class ManageCoursesComponent implements OnInit {
         this.isSubmitting = false;
         return;
       }
-      this.coursService.updateCours(this.newCourse.id, this.newCourse).subscribe({
-        next: (response) => {
+      this.coursService.updateCours(this.newCourse.id, this.newCourse as Cours).subscribe({
+        next: (response: any) => {
           this.successMessage = response.message || 'Course updated successfully';
           this.loadCourses();
           this.resetForm();
           this.loading = false;
           this.isSubmitting = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error updating course:', error);
           this.errorMessage = error.error?.message || 'Failed to update course. Please check your authentication.';
           this.loading = false;
@@ -221,7 +223,7 @@ export class ManageCoursesComponent implements OnInit {
   }
 
   // ✏️ EDIT (pré-remplissage)
-  onEditCourse(course: Cours) {
+  onEditCourse(course: Cours): void {
     this.newCourse = {
       id: course.id,
       titre: course.titre,
@@ -256,7 +258,7 @@ export class ManageCoursesComponent implements OnInit {
   }
 
   // 🗑️ DELETE
-  onDeleteCourse(courseId: number) {
+  onDeleteCourse(courseId: number): void {
     const course = this.courses.find(c => c.id === courseId);
     const courseTitle = course?.titre || 'this course';
 
@@ -266,7 +268,7 @@ export class ManageCoursesComponent implements OnInit {
       this.successMessage = '';
 
       this.coursService.deleteCours(courseId).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.successMessage = response.message || 'Course deleted successfully';
           this.loadCourses();
           if (this.mode === 'edit' && this.newCourse.id === courseId) {
@@ -274,7 +276,7 @@ export class ManageCoursesComponent implements OnInit {
           }
           this.loading = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error deleting course:', error);
           this.errorMessage = error.error?.message || 'Failed to delete course. Please check your authentication.';
           this.loading = false;
@@ -284,7 +286,7 @@ export class ManageCoursesComponent implements OnInit {
   }
 
   // 🔄 RÉINITIALISER LE FORMULAIRE
-  resetForm() {
+  resetForm(): void {
     this.mode = 'create';
     const user = this.authService.getUser();
     this.newCourse = {
@@ -307,10 +309,11 @@ export class ManageCoursesComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
     this.isSubmitting = false;
+    this.showTestForm = false;
   }
 
   // Gestion des quiz (méthodes manquantes)
-  addQuiz() {
+  addQuiz(): void {
     // Reset the current quiz form
     this.currentQuiz = {
       question: '',
@@ -320,14 +323,50 @@ export class ManageCoursesComponent implements OnInit {
     this.showAddQuizModal = true;
   }
 
-  removeQuiz(index: number) {
+  removeQuiz(index: number): void {
     if (this.oldCourse.quizzes) {
       this.oldCourse.quizzes.splice(index, 1);
     }
   }
 
+  // New methods for test form handling
+  addNewTestForm(): void {
+    this.showTestForm = true;
+    this.currentQuiz = {
+      question: '',
+      options: ['', '', '', ''],
+      correctAnswer: 0
+    };
+  }
+
+  cancelTestForm(): void {
+    this.showTestForm = false;
+    this.currentQuiz = {
+      question: '',
+      options: ['', '', '', ''],
+      correctAnswer: 0
+    };
+  }
+
+  saveTestQuestion(): void {
+    if (!this.isQuizValid()) return;
+
+    if (!this.oldCourse.quizzes) this.oldCourse.quizzes = [];
+    this.oldCourse.quizzes.push({ ...this.currentQuiz });
+    this.showTestForm = false;
+    this.currentQuiz = {
+      question: '',
+      options: ['', '', '', ''],
+      correctAnswer: 0
+    };
+  }
+
+  getOptionLetter(index: number): string {
+    return String.fromCharCode(65 + index); // A, B, C, D...
+  }
+
   // Quiz Modal Methods
-  closeAddQuizModal() {
+  closeAddQuizModal(): void {
     this.showAddQuizModal = false;
     this.currentQuiz = {
       question: '',
@@ -336,7 +375,7 @@ export class ManageCoursesComponent implements OnInit {
     };
   }
 
-  saveQuiz() {
+  saveQuiz(): void {
     if (!this.isQuizValid()) return;
 
     if (!this.oldCourse.quizzes) this.oldCourse.quizzes = [];
@@ -353,13 +392,13 @@ export class ManageCoursesComponent implements OnInit {
     );
   }
 
-  addQuizOption() {
+  addQuizOption(): void {
     if (this.currentQuiz.options.length < 6) {
       this.currentQuiz.options.push('');
     }
   }
 
-  removeQuizOption(index: number) {
+  removeQuizOption(index: number): void {
     if (this.currentQuiz.options.length > 2) {
       this.currentQuiz.options.splice(index, 1);
       // Adjust correct answer if it was pointing to a removed option
@@ -370,40 +409,40 @@ export class ManageCoursesComponent implements OnInit {
   }
 
   // Load quizzes for a specific course (for editing)
-  loadCourseQuizzes(courseId: number) {
+  loadCourseQuizzes(courseId: number): void {
     this.quizService.getTestByCourse(courseId).subscribe({
-      next: (test) => {
+      next: (test: any) => {
         // handle test/question state
       },
-      error: (err) => {
+      error: (err: any) => {
         // handle error
       }
     });
   }
 
   // Delete a quiz with confirmation
-  deleteTest(testId: number) {
+  deleteTest(testId: number): void {
     this.quizService.deleteTest(testId).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         // refresh list, alert
       },
-      error: (err) => {
+      error: (err: any) => {
         // handle error
       }
     });
   }
 
   // --- AFFICHAGE ---
-  viewCourse(id: number) {
+  viewCourse(id: number): void {
     this.router.navigate(['/course', id]);
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 
-  navigate(url: string) {
+  navigate(url: string): void {
     this.router.navigateByUrl(url);
   }
 }

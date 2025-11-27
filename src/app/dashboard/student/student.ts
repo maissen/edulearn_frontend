@@ -6,13 +6,12 @@ import { ProfileService } from '../../../services/profile.service';
 import { CoursService, Cours } from '../../../services/cours.service';
 import { EtudiantService, InProgressCourse } from '../../../services/etudiant.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
-import { LogoComponent } from '../../shared/logo/logo.component';
 import { FooterComponent } from '../../shared/footer/footer';
 
 @Component({
   selector: 'app-student',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent, LogoComponent, FooterComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, FooterComponent],
   templateUrl: './student.html',
   styleUrl: './student.css'
 })
@@ -32,18 +31,18 @@ export class Student implements OnInit {
     private etudiantService: EtudiantService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadUserData();
     this.loadInProgressCourses();
     this.loadCategories();
   }
 
-  loadUserData() {
+  loadUserData(): void {
     this.profileService.getProfile().subscribe({
-      next: (profile) => {
+      next: (profile: any) => {
         this.userName = profile.username || 'Student';
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading profile:', error);
         const user = this.authService.getUser();
         if (user) {
@@ -53,28 +52,28 @@ export class Student implements OnInit {
     });
   }
 
-  loadInProgressCourses() {
+  loadInProgressCourses(): void {
     this.loading = true;
     this.etudiantService.getInProgressCourses().subscribe({
-      next: (courses) => {
+      next: (courses: InProgressCourse[]) => {
         this.inProgressCourses = courses;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading in-progress courses:', error);
         this.loading = false;
       }
     });
   }
 
-  loadCategories() {
+  loadCategories(): void {
     this.categoriesLoading = true;
     this.coursService.getCategories().subscribe({
-      next: (categories) => {
+      next: (categories: string[]) => {
         this.categories = categories;
         this.categoriesLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading categories:', error);
         this.categoriesLoading = false;
       }
@@ -114,7 +113,7 @@ export class Student implements OnInit {
   }
 
   // Navigate to course details page
-  navigateToCourse(courseId: number) {
+  navigateToCourse(courseId: number): void {
     this.router.navigate(['/course', courseId]);
   }
 
@@ -124,7 +123,7 @@ export class Student implements OnInit {
     event.target.src = 'https://picsum.photos/300/180?random=999';
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
