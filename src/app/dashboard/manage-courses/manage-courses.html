@@ -160,7 +160,7 @@
                          placeholder="Enter test name" required>
                 </div>
                 <div class="test-form-actions">
-                  <button type="button" class="btn-primary" (click)="saveTestName()" [disabled]="!testName?.trim()">
+                  <button type="button" class="btn-primary" (click)="saveTestName()" [disabled]="!testName || !testName.trim()">
                     Add Question
                   </button>
                 </div>

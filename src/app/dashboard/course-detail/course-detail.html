@@ -72,7 +72,7 @@
           <!-- Teacher view: Display test information with questions and correct answers -->
           @if (course && course.test) {
             <div class="test-display">
-              <h2>📝 {{ course.test.title }}</h2>
+              <h2>📝 {{ course.test.titre }}</h2>
               <div class="questions-list">
                 <div class="question-card" *ngFor="let question of course.test.questions; let i = index">
                   <div class="question-header">

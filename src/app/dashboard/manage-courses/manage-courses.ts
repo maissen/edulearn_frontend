@@ -200,7 +200,8 @@ export class ManageCoursesComponent implements OnInit {
     }
     
     // Validate test name if a test has been started
-    if (this.testName?.trim() && !this.currentQuiz.titre) {
+    // Only show this error when creating a new course, not when editing
+    if (this.mode === 'create' && this.testName?.trim() && !this.currentQuiz.titre && this.oldCourse.quizzes.length === 0) {
       this.errorMessage = 'Please click "Add Question" to create the test or clear the test name field';
       this.isSubmitting = false;
       return;
