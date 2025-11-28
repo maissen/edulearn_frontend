@@ -48,7 +48,7 @@ interface Course {
   };
   duration: string; // Changed from number to string to match the API
   videoUrl: string;
-  imageUrl: string;
+  image_url: string;
   targetAudience: string;
   prerequisites: string;
   learningObjectives: string[];
@@ -229,7 +229,7 @@ export class CourseDetailComponent implements OnInit {
           },
           duration: courseContent.duration || '0', // Keep as string
           videoUrl: courseContent.videoUrl || '',
-          imageUrl: courseContent.imageUrl || '',
+          image_url: courseContent.image_url || '',
           targetAudience: courseContent.targetAudience || '',
           prerequisites: courseContent.prerequisites || '',
           learningObjectives: courseContent.learningObjectives || [],

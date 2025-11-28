@@ -23,7 +23,7 @@ interface CourseTemplate {
   description: string;
   category: string;
   duration: number;
-  imageUrl?: string;
+  image_url?: string;
   videoUrl?: string;
   quizzes: QuizTemplate[];
 }
@@ -76,7 +76,7 @@ export class ManageCoursesComponent implements OnInit {
     description: '',
     category: '',
     duration: 1,
-    imageUrl: '',
+    image_url: '',
     videoUrl: '',
     quizzes: []
   };
@@ -222,6 +222,7 @@ export class ManageCoursesComponent implements OnInit {
           description: this.newCourse.description || '',
           category: this.oldCourse.category || '',
           youtube_vd_url: this.newCourse.youtube_vd_url || '',
+          image_url: this.oldCourse.image_url || '',
           enseignant_id: this.newCourse.enseignant_id || 0,
           test_titre: this.testName?.trim() || '',
           questions: this.oldCourse.quizzes.map(quiz => ({
@@ -289,6 +290,7 @@ export class ManageCoursesComponent implements OnInit {
           description: this.newCourse.description || '',
           category: this.oldCourse.category || '',
           youtube_vd_url: this.newCourse.youtube_vd_url || '',
+          image_url: this.oldCourse.image_url || '',
           test_titre: this.testName?.trim() || '',
           questions: this.oldCourse.quizzes.map(quiz => ({
             id: quiz.id, // Will be undefined for new questions
@@ -357,7 +359,7 @@ export class ManageCoursesComponent implements OnInit {
       description: course.description,
       category: course.category || 'general',
       duration: 1,
-      imageUrl: course.imageUrl || '',
+      image_url: course.image_url || '',
       videoUrl: course.videoUrl || '',
       quizzes: []
     };
@@ -419,7 +421,7 @@ export class ManageCoursesComponent implements OnInit {
       description: '',
       category: '',
       duration: 1,
-      imageUrl: '',
+      image_url: '',
       videoUrl: '',
       quizzes: []
     };

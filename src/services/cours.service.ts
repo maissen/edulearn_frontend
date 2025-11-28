@@ -9,8 +9,8 @@ export interface Cours {
   description: string;
   category?: string;
   youtube_vd_url?: string;
+  image_url?: string;
   enseignant_id: number;
-  imageUrl?: string;
   duration?: string;
   videoUrl?: string;
   createdAt?: string;
@@ -27,7 +27,7 @@ export interface CourseContent {
   teacher_email: string;
   duration: string;
   videoUrl: string;
-  imageUrl: string;
+  image_url: string;
   targetAudience: string;
   prerequisites: string;
   learningObjectives: string[];
@@ -84,6 +84,7 @@ export interface GroupedCourse {
   enseignant_id: number;
   teacher_username: string;
   teacher_email: string;
+  image_url?: string;
 }
 
 export interface CategoryWithCourses {
@@ -154,6 +155,7 @@ export class CoursService {
     description: string;
     category: string;
     youtube_vd_url: string;
+    image_url: string;
     enseignant_id: number;
     test_titre: string;
     questions: Array<{
@@ -190,6 +192,7 @@ export class CoursService {
     description: string;
     category: string;
     youtube_vd_url: string;
+    image_url: string;
     test_titre: string;
     questions: Array<{
       id?: number;
