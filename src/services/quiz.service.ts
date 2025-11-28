@@ -9,6 +9,30 @@ export interface Quiz {
   cours_id: number;
 }
 
+// Interface for the teacher tests response
+export interface TeacherTest {
+  test_id: number;
+  test_title: string;
+  test_description: string;
+  test_created_at: string;
+  test_updated_at: string;
+  course_id: number;
+  course_title: string;
+  course_description: string;
+  course_category: string;
+  students: TeacherTestStudent[];
+}
+
+export interface TeacherTestStudent {
+  etudiant_id: number;
+  student_username: string;
+  student_email: string;
+  score: number;
+  total_questions: number;
+  correct_answers: number;
+  submitted_at: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -88,5 +112,13 @@ export class QuizService {
    */
   deleteTest(testId: number): Observable<any> {
     return this.http.delete<any>(`${API_BASE_URL}/quiz/test/${testId}`);
+  }
+
+  /**
+   * Get all tests created by the authenticated teacher with student results
+   * Maps to GET /quiz/teacher/tests
+   */
+  getTeacherTests(): Observable<TeacherTest[]> {
+    return this.http.get<TeacherTest[]>(`${API_BASE_URL}/enseignant/tests`);
   }
 }

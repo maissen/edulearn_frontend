@@ -33,6 +33,58 @@
   </div>
 </section>
 
+<!-- Teacher Tests Section -->
+<section class="section" *ngIf="teacherTests && teacherTests.length > 0">
+  <h2>📝 Tests créés</h2>
+  <div class="tests-container">
+    <div class="test-card" *ngFor="let test of teacherTests">
+      <div class="test-header">
+        <h3>{{ test.test_title }}</h3>
+        <p class="test-course">Cours: {{ test.course_title }}</p>
+      </div>
+      
+      <div class="test-details">
+        <p class="test-description">{{ test.test_description }}</p>
+        <div class="test-meta">
+          <span class="meta-item">Créé le: {{ test.test_created_at | date:'short' }}</span>
+          <span class="meta-item">Mis à jour: {{ test.test_updated_at | date:'short' }}</span>
+        </div>
+      </div>
+      
+      <div class="students-section">
+        <h4>Résultats des étudiants ({{ test.students.length }})</h4>
+        <div class="students-table-container">
+          <table class="students-table">
+            <thead>
+              <tr>
+                <th>Étudiant</th>
+                <th>Email</th>
+                <th>Score</th>
+                <th>Questions correctes</th>
+                <th>Date de soumission</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of test.students" [class]="getScoreClass(student.score, student.total_questions)">
+                <td>{{ student.student_username }}</td>
+                <td>{{ student.student_email }}</td>
+                <td>
+                  <span class="score-badge">
+                    {{ student.score }}/{{ student.total_questions }}
+                    ({{ getTestScorePercentage(student.score, student.total_questions) }}%)
+                  </span>
+                </td>
+                <td>{{ student.correct_answers }}/{{ student.total_questions }}</td>
+                <td>{{ student.submitted_at | date:'short' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Teacher Courses Gallery -->
 <section class="section" *ngIf="teacherCourses && teacherCourses.length > 0">
   <h2>📚 Mes cours</h2>

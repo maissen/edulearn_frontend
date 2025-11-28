@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ProfileService } from '../../../services/profile.service';
 import { EnseignantService, TeacherStats, TeacherCourse } from '../../../services/enseignant.service';
+import { QuizService, TeacherTest } from '../../../services/quiz.service';
 import { NavbarComponent } from '../../shared/navbar/navbar';
 import { FooterComponent } from '../../shared/footer/footer';
 
@@ -44,6 +45,7 @@ export class TeacherProfileComponent implements OnInit {
   teacherEmail = '';
   showProfileModal = false;
   teacherCourses: TeacherCourseFromProfile[] = [];
+  teacherTests: TeacherTest[] = [];
 
   // Statistics
   stats = {
@@ -63,11 +65,13 @@ export class TeacherProfileComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private profileService: ProfileService,
-    private enseignantService: EnseignantService
+    private enseignantService: EnseignantService,
+    private quizService: QuizService
   ) {}
 
   ngOnInit(): void {
     this.loadTeacherData();
+    this.loadTeacherTests();
   }
 
   loadTeacherData(): void {
@@ -99,6 +103,23 @@ export class TeacherProfileComponent implements OnInit {
           this.editForm.username = user.username || '';
           this.editForm.email = user.email || '';
         }
+      }
+    });
+  }
+
+  loadTeacherTests(): void {
+    this.quizService.getTeacherTests().subscribe({
+      next: (tests: TeacherTest[]) => {
+        // Sort tests by score (highest first) for each test's students
+        this.teacherTests = tests.map(test => {
+          return {
+            ...test,
+            students: [...test.students].sort((a, b) => b.score - a.score)
+          };
+        });
+      },
+      error: (error: any) => {
+        console.error('Error loading teacher tests:', error);
       }
     });
   }
@@ -161,5 +182,18 @@ export class TeacherProfileComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  // Helper methods for displaying test data
+  getTestScorePercentage(score: number, total: number): number {
+    return total > 0 ? Math.round((score / total) * 100) : 0;
+  }
+
+  getScoreClass(score: number, total: number): string {
+    const percentage = this.getTestScorePercentage(score, total);
+    if (percentage >= 80) return 'excellent';
+    if (percentage >= 60) return 'good';
+    if (percentage >= 40) return 'average';
+    return 'poor';
   }
 }
