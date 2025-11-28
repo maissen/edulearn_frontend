@@ -1,21 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
+import { CoursService, RecentCourse } from '../../services/cours.service';
 import { FooterComponent } from '../shared/footer/footer';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FooterComponent],
+  imports: [CommonModule, RouterModule, HttpClientModule, DatePipe, FooterComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
   isLoggedIn: boolean = false;
   isLoginFormVisible: boolean = false;
+  recentCourses: RecentCourse[] = [];
+  isLoadingRecentCourses: boolean = true;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router, 
+    private authService: AuthService,
+    private coursService: CoursService
+  ) {}
 
   ngOnInit() {
     // Check if user has a token (even if expired, we'll handle it)
@@ -31,6 +39,9 @@ export class HomeComponent implements OnInit {
         // Stay on home page, user can login again
       }
     }
+
+    // Fetch recent courses for guests
+    this.fetchRecentCourses();
   }
 
   private redirectToDashboard() {
@@ -58,14 +69,14 @@ export class HomeComponent implements OnInit {
   goToLogin(): void {
     console.log('Navigating to login...');
     this.router.navigate(['/login']).then(
-      (success) => {
+      (success: boolean) => {
         if (success) {
           console.log('Navigation successful');
         } else {
           console.error('Navigation failed');
         }
       }
-    ).catch(err => {
+    ).catch((err: any) => {
       console.error('Navigation error:', err);
     });
   }
@@ -75,9 +86,28 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/signup']);
   }
 
+  // Navigate to course detail page
+  goToCourseDetail(courseId: number): void {
+    this.router.navigate(['/courses', courseId]);
+  }
+
   // Logout and return to home
   logout(): void {
     this.isLoggedIn = false;
     this.router.navigate(['/home']);
+  }
+
+  // Fetch recent courses for display on home page
+  private fetchRecentCourses(): void {
+    this.coursService.getRecentCourses().subscribe({
+      next: (courses: RecentCourse[]) => {
+        this.recentCourses = courses;
+        this.isLoadingRecentCourses = false;
+      },
+      error: (error: any) => {
+        console.error('Error fetching recent courses:', error);
+        this.isLoadingRecentCourses = false;
+      }
+    });
   }
 }

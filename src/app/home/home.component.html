@@ -100,6 +100,48 @@
     </div>
   </section>
 
+  <!-- Recent Courses Section -->
+  <section class="recent-courses-section">
+    <div class="container">
+      <h2 class="section-title">Découvrez Nos Nouveaux Cours</h2>
+      <div class="loading-spinner" *ngIf="isLoadingRecentCourses">
+        <div class="spinner"></div>
+        <p>Chargement des cours...</p>
+      </div>
+      <div class="courses-grid" *ngIf="!isLoadingRecentCourses && recentCourses.length > 0">
+        <div class="course-card" *ngFor="let course of recentCourses">
+          <div class="course-image">
+            <img [src]="course.youtube_vd_url || 'assets/images/default-course.svg'" 
+                 [alt]="course.titre"
+                 (error)="$event.target.src='assets/images/default-course.svg'"
+                 class="course-thumbnail">
+            <div class="course-category">{{ course.category }}</div>
+          </div>
+          <div class="course-content">
+            <h3 class="course-title">{{ course.titre }}</h3>
+            <p class="course-description">{{ course.description }}</p>
+            <div class="course-meta">
+              <div class="course-teacher">
+                <span class="meta-label">Instructeur:</span>
+                <span class="teacher-name">{{ course.teacher_username }}</span>
+              </div>
+              <div class="course-date">
+                <span class="meta-label">Publié:</span>
+                <span class="date">{{ course.created_at | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+            <button class="btn-course-details" (click)="goToCourseDetail(course.id)">
+              Voir les détails
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="no-courses" *ngIf="!isLoadingRecentCourses && recentCourses.length === 0">
+        <p>Aucun cours disponible pour le moment.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- Inspiration Section -->
   <section class="inspiration-section">
     <div class="container">

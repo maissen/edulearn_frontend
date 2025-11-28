@@ -95,6 +95,19 @@ export interface GroupedCourses {
   [category: string]: CategoryWithCourses;
 }
 
+export interface RecentCourse {
+  id: number;
+  titre: string;
+  description: string;
+  category: string;
+  youtube_vd_url: string;
+  enseignant_id: number;
+  created_at: string;
+  updated_at: string;
+  teacher_username: string;
+  teacher_email: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -242,5 +255,13 @@ export class CoursService {
    */
   getGroupedByCategory(): Observable<GroupedCourses> {
     return this.http.get<GroupedCourses>(`${this.apiUrl}/grouped-by-category`);
+  }
+
+  /**
+   * Get the 6 most recent courses for guest users.
+   * @returns Observable of RecentCourse array
+   */
+  getRecentCourses(): Observable<RecentCourse[]> {
+    return this.http.get<RecentCourse[]>(`${this.apiUrl}/recent`);
   }
 }
