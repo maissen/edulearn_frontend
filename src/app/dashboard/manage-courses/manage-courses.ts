@@ -173,6 +173,7 @@ export class ManageCoursesComponent implements OnInit {
 
     // Sync form data
     this.newCourse.titre = this.oldCourse.title;
+    this.newCourse.image_url = this.oldCourse.image_url;
     // Description is already bound to newCourse.description in template
 
     console.log('Form data:', {
@@ -350,6 +351,7 @@ export class ManageCoursesComponent implements OnInit {
       description: course.description,
       category: course.category,
       youtube_vd_url: course.youtube_vd_url,
+      image_url: course.image_url,
       enseignant_id: course.enseignant_id
     };
     // Also update old interface for template compatibility
@@ -414,6 +416,7 @@ export class ManageCoursesComponent implements OnInit {
       description: '',
       category: '',
       youtube_vd_url: '',
+      image_url: '',
       enseignant_id: user?.id || 0
     };
     this.oldCourse = {
