@@ -28,6 +28,7 @@ interface TeacherCourseFromProfile {
   description: string;
   category: string;
   youtube_vd_url: string;
+  image_url?: string;  // Now included in API response
   created_at: string;
   updated_at: string;
   enrolled_students: number;
@@ -195,5 +196,11 @@ export class TeacherProfileComponent implements OnInit {
     if (percentage >= 60) return 'good';
     if (percentage >= 40) return 'average';
     return 'poor';
+  }
+
+  // Handle image loading errors
+  onImageError(event: any): void {
+    // Fallback to a default image if the course thumbnail fails to load
+    event.target.src = 'https://picsum.photos/300/180?random=999';
   }
 }
