@@ -86,11 +86,6 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/signup']);
   }
 
-  // Navigate to course detail page
-  goToCourseDetail(courseId: number): void {
-    this.router.navigate(['/courses', courseId]);
-  }
-
   // Logout and return to home
   logout(): void {
     this.isLoggedIn = false;
