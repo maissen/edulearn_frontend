@@ -111,7 +111,7 @@
       <div class="courses-grid" *ngIf="!isLoadingRecentCourses && recentCourses.length > 0">
         <div class="course-card" *ngFor="let course of recentCourses">
           <div class="course-image">
-            <img [src]="course.youtube_vd_url || 'assets/images/default-course.svg'" 
+            <img [src]="course.image_url || 'assets/images/default-course.svg'" 
                  [alt]="course.titre"
                  (error)="$event.target.src='assets/images/default-course.svg'"
                  class="course-thumbnail">

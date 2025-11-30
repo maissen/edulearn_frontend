@@ -102,6 +102,7 @@ export interface RecentCourse {
   description: string;
   category: string;
   youtube_vd_url: string;
+  image_url?: string;
   enseignant_id: number;
   created_at: string;
   updated_at: string;
