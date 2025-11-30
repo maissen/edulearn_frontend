@@ -19,6 +19,8 @@ export interface InProgressCourse {
   titre: string;
   description: string;
   category: string;
+  youtube_vd_url: string;
+  image_url: string | null;
   teacher_username: string;
 }
 
@@ -31,6 +33,8 @@ export interface CompletedCourse {
   titre: string;
   description: string;
   category: string;
+  youtube_vd_url: string;
+  image_url: string | null;
   teacher_username: string;
 }
 

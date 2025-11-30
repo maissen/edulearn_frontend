@@ -259,7 +259,12 @@ export class CourseDetailComponent implements OnInit {
           this.hasTakenTest = test.hasTakenTest || false;
           // Handle string to number conversion for studentScore
           const score = test.studentScore;
-          this.studentScore = score !== null && score !== undefined ? Number(score) : null;
+          // Ensure studentScore is properly set to null if it's null/undefined, or convert to number
+          if (score === null || score === undefined || score === '') {
+            this.studentScore = null;
+          } else {
+            this.studentScore = Number(score);
+          }
           this.totalScore = test.totalScore || null;
           
           // Check if course is finished
@@ -580,12 +585,12 @@ export class CourseDetailComponent implements OnInit {
    * Uses /test/submit endpoint with testID and answer array.
    */
   submitAllQuizzes(): void {
-    if (!this.course || !this.course.test || !this.course.test.questions) {
-      alert('No quizzes to submit.');
+    if (!this.course || !this.course.test) {
+      alert('No test available for this course.');
       return;
     }
-    // Build submissions[] as required by new /test/submit API
-    const submissions: Array<{ quizId: number, answer: string }> = this.quizQuestions.map(q => ({
+
+    const submissions = this.quizQuestions.map(q => ({
       quizId: q.id, // Actual question/quiz ID (should be from API)
       answer: this.selectedAnswers[q.id]
     })).filter(s => s.answer); // Only include answered
@@ -603,11 +608,19 @@ export class CourseDetailComponent implements OnInit {
           this.quizSubmissionResult = response.result;
           // Update test result status
           this.hasTakenTest = true;
-          // Ensure score is treated as a number
-          this.studentScore = response.result.score !== null && response.result.score !== undefined ? 
-                              Number(response.result.score) : null;
-          this.totalScore = response.result.maxScore !== null && response.result.maxScore !== undefined ? 
-                            Number(response.result.maxScore) : null;
+          // Ensure score is properly handled
+          const score = response.result.score;
+          if (score === null || score === undefined || score === '') {
+            this.studentScore = null;
+          } else {
+            this.studentScore = Number(score);
+          }
+          const maxScore = response.result.maxScore;
+          if (maxScore === null || maxScore === undefined || maxScore === '') {
+            this.totalScore = null;
+          } else {
+            this.totalScore = Number(maxScore);
+          }
         } else if (response && response.error) {
           alert(response.error);
         } else {

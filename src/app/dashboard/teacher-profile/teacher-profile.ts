@@ -218,6 +218,6 @@ export class TeacherProfileComponent implements OnInit {
   // Handle image loading errors
   onImageError(event: any): void {
     // Fallback to a default image if the course thumbnail fails to load
-    event.target.src = 'https://picsum.photos/300/180?random=999';
+    event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzc3NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuKWiCA8L3RleHQ+PC9zdmc+';
   }
 }

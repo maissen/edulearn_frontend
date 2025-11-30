@@ -156,9 +156,9 @@
                 }
                 
                 <!-- Show the Start Test button for students who haven't taken the test or failed the test -->
-                @if (!hasTakenTest || (hasTakenTest && studentScore !== null && studentScore < 12)) {
+                @if (!hasTakenTest || (hasTakenTest && (studentScore === null || studentScore === undefined || studentScore < 12))) {
                   <div class="quiz-actions">
-                    <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="(hasTakenTest && studentScore !== null && studentScore >= 12) || !hasStartedCourse || !isEnrolled">
+                    <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="(hasTakenTest && studentScore !== null && studentScore !== undefined && studentScore >= 12) || !hasStartedCourse || !isEnrolled">
                       🚀 Start Test Now
                     </button>
                   </div>

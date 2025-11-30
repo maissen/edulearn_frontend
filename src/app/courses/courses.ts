@@ -12,7 +12,7 @@ interface Course {
   id: number;
   title: string;
   category: string;
-  image: string;
+  image: string | null;
   currentLesson: number;
   totalLessons: number;
   rating: number;
@@ -109,6 +109,10 @@ export class CoursesComponent implements OnInit {
     this.filterCourses();
   }
 
+  onSearchChange(): void {
+    this.filterCourses();
+  }
+
   loadCourses() {
     this.coursService.getGroupedByCategory().subscribe({
       next: (groupedCourses) => {
@@ -137,14 +141,13 @@ export class CoursesComponent implements OnInit {
     if (this.selectedCategory === 'All') {
       // Show all courses from all categories
       const allCourses: Course[] = [];
-      let index = 0;
       Object.keys(this.groupedCourses).forEach(category => {
         this.groupedCourses[category].courses.forEach(course => {
           allCourses.push({
             id: course.id,
             title: course.titre,
             category: category,
-            image: course.image_url || `https://picsum.photos/300/180?random=${index++}`,
+            image: course.image_url || null, // Set to null if no image_url
             currentLesson: Math.floor(Math.random() * 5) + 1,
             totalLessons: 7,
             rating: 4.5 + Math.random() * 0.5,
@@ -159,11 +162,11 @@ export class CoursesComponent implements OnInit {
       // Show courses from selected category
       const categoryData = this.groupedCourses[this.selectedCategory];
       if (categoryData && categoryData.courses) {
-        this.filteredCourses = categoryData.courses.map((course, index) => ({
+        this.filteredCourses = categoryData.courses.map((course) => ({
           id: course.id,
           title: course.titre,
           category: this.selectedCategory,
-          image: course.image_url || `https://picsum.photos/300/180?random=${index + 100}`,
+          image: course.image_url || null, // Set to null if no image_url
           currentLesson: Math.floor(Math.random() * 5) + 1,
           totalLessons: 7,
           rating: 4.5 + Math.random() * 0.5,

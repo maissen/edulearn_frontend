@@ -212,7 +212,10 @@ export class StudentProfileComponent implements OnInit {
   }
 
   onImageError(event: any): void {
-    event.target.src = 'https://picsum.photos/300/180?random=999';
+    // Check if the image source is already the fallback image to prevent infinite loop
+    if (event.target.src !== 'https://picsum.photos/300/180?random=999') {
+      event.target.src = 'https://picsum.photos/300/180?random=999';
+    }
   }
 
   // Helper methods for score operations to avoid template type issues

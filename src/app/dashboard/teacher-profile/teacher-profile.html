@@ -88,8 +88,11 @@
   <h2>📚 Mes cours</h2>
   <div class="courses-gallery">
     <div class="course-card" *ngFor="let course of teacherCourses" (click)="navigateToCourse(course.id)">
-      <div class="course-thumbnail" *ngIf="course.image_url">
-        <img [src]="course.image_url" [alt]="course.titre" class="course-image" (error)="onImageError($event)">
+      <div class="course-thumbnail">
+        <img [src]="course.image_url || 'assets/placeholder-grey.svg'" [alt]="course.titre" class="course-image" (error)="onImageError($event)" *ngIf="course.image_url; else placeholderImage">
+        <ng-template #placeholderImage>
+          <div class="course-image-placeholder"></div>
+        </ng-template>
       </div>
       <div class="course-header">
         <h3>{{ course.titre }}</h3>
