@@ -452,6 +452,11 @@ export class ManageCoursesComponent implements OnInit {
   removeQuiz(index: number): void {
     if (this.oldCourse.quizzes) {
       this.oldCourse.quizzes.splice(index, 1);
+      // Clear test name if all quizzes are removed
+      if (this.oldCourse.quizzes.length === 0) {
+        this.testName = '';
+        this.showTestNameForm = false;
+      }
     }
   }
 
@@ -481,10 +486,13 @@ export class ManageCoursesComponent implements OnInit {
 
   cancelTestForm(): void {
     this.showTestForm = false;
-    this.showTestNameForm = false; // Also hide test name form
-    this.testName = '';
+    // Only clear testName if there are no quizzes, otherwise preserve it
+    if (this.oldCourse.quizzes.length === 0) {
+      this.testName = '';
+      this.showTestNameForm = false; // Hide test name form only when clearing testName
+    }
     this.currentQuiz = {
-      titre: '',
+      titre: this.testName, // Preserve the test name in the current quiz
       question: '',
       options: ['', '', '', ''],
       correctAnswer: null
@@ -498,7 +506,7 @@ export class ManageCoursesComponent implements OnInit {
     this.oldCourse.quizzes.push({ ...this.currentQuiz });
     this.showTestForm = false;
     this.currentQuiz = {
-      titre: this.testName,
+      titre: this.testName, // Preserve the test name
       question: '',
       options: ['', '', '', ''],
       correctAnswer: null
