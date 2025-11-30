@@ -490,9 +490,21 @@ export class CourseDetailComponent implements OnInit {
 
   // Student Quiz Taking Methods
   startQuiz(): void {
-    // Prevent starting quiz if student has already taken it
-    if (this.hasTakenTest) {
-      alert('You have already taken this test. Check your results above.');
+    // Prevent starting quiz if student has already taken it and passed
+    if (this.hasTakenTest && this.studentScore !== null && this.studentScore >= 12) {
+      alert('You have already passed this test. Check your results above.');
+      return;
+    }
+    
+    // Prevent starting quiz if student is not enrolled
+    if (!this.isEnrolled) {
+      alert('You need to enroll in this course before taking the test.');
+      return;
+    }
+    
+    // Prevent starting quiz if student hasn't started the course
+    if (!this.hasStartedCourse) {
+      alert('You need to start the course before taking the test.');
       return;
     }
     

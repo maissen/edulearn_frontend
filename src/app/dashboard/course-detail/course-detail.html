@@ -157,10 +157,13 @@
                 
                 <!-- Show the Start Test button for students who haven't taken the test or failed the test -->
                 @if (!hasTakenTest || (hasTakenTest && studentScore !== null && studentScore < 12)) {
-                  <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="(hasTakenTest && studentScore !== null && studentScore >= 12) || !hasStartedCourse">
-                    🚀 Start Test Now
-                  </button>
-                  <div *ngIf="!hasStartedCourse" class="start-course-notice" style="margin-top: 10px; color: #e74c3c; font-style: italic;">
+                  <div class="quiz-actions">
+                    <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="(hasTakenTest && studentScore !== null && studentScore >= 12) || !hasStartedCourse || !isEnrolled">
+                      🚀 Start Test Now
+                    </button>
+                  </div>
+                  <!-- Notice for students who haven't started the course -->
+                  <div *ngIf="!hasStartedCourse" class="start-course-notice" style="width: 100%; text-align: center; color: #e74c3c; font-style: italic; margin-top: 1rem; padding: 0.5rem; border-top: 1px solid #e2e8f0;">
                     You need to start the course before taking the test.
                   </div>
                 }
