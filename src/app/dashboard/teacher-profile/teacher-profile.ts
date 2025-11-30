@@ -22,6 +22,20 @@ interface TeacherProfile {
   courses: TeacherCourseFromProfile[];
 }
 
+interface EnrolledStudent {
+  username: string;
+  email: string;
+  enrolled_at: string;
+  status: string;
+}
+
+interface FinishedStudent {
+  username: string;
+  email: string;
+  finished_at: string;
+  final_grade: number;
+}
+
 interface TeacherCourseFromProfile {
   id: number;
   titre: string;
@@ -31,7 +45,10 @@ interface TeacherCourseFromProfile {
   image_url?: string;  // Now included in API response
   created_at: string;
   updated_at: string;
-  enrolled_students: number;
+  enrolled_students: EnrolledStudent[];
+  finished_students: FinishedStudent[];
+  total_enrolled: number;
+  total_finished: number;
 }
 
 @Component({

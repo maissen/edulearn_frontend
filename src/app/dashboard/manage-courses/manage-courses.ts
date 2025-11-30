@@ -345,13 +345,16 @@ export class ManageCoursesComponent implements OnInit {
 
   // ✏️ EDIT (pré-remplissage)
   onEditCourse(course: Cours): void {
+    // Handle both image_url and cover_image_url from API
+    const imageUrl = course.image_url || course.cover_image_url || '';
+    
     this.newCourse = {
       id: course.id,
       titre: course.titre,
       description: course.description,
       category: course.category,
       youtube_vd_url: course.youtube_vd_url,
-      image_url: course.image_url,
+      image_url: imageUrl, // Use the resolved image URL
       enseignant_id: course.enseignant_id
     };
     // Also update old interface for template compatibility
@@ -359,9 +362,9 @@ export class ManageCoursesComponent implements OnInit {
       id: course.id,
       title: course.titre,
       description: course.description,
-      category: course.category || 'general',
+      category: course.category || '',
       duration: 1,
-      image_url: course.image_url || '',
+      image_url: imageUrl, // Use the resolved image URL
       videoUrl: course.videoUrl || '',
       quizzes: []
     };

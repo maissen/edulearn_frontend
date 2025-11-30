@@ -47,7 +47,6 @@
         <p class="test-description">{{ test.test_description }}</p>
         <div class="test-meta">
           <span class="meta-item">Créé le: {{ test.test_created_at | date:'short' }}</span>
-          <span class="meta-item">Mis à jour: {{ test.test_updated_at | date:'short' }}</span>
         </div>
       </div>
       
@@ -70,8 +69,7 @@
                 <td>{{ student.student_email }}</td>
                 <td>
                   <span class="score-badge">
-                    {{ student.score }}/{{ student.total_questions }}
-                    ({{ getTestScorePercentage(student.score, student.total_questions) }}%)
+                    {{ student.score }}
                   </span>
                 </td>
                 <td>{{ student.correct_answers }}/{{ student.total_questions }}</td>
@@ -100,8 +98,42 @@
         <p class="course-description">{{ course.description }}</p>
         <div class="course-stats">
           <div class="stat-item">
-            <span class="stat-value">{{ course.enrolled_students }}</span>
-            <span class="stat-label">étudiants</span>
+            <span class="stat-value">{{ course.total_enrolled }}</span>
+            <span class="stat-label">étudiants inscrits</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ course.total_finished }}</span>
+            <span class="stat-label">étudiants terminés</span>
+          </div>
+        </div>
+        
+        <!-- Enrolled Students -->
+        <div class="students-section" *ngIf="course.enrolled_students && course.enrolled_students.length > 0">
+          <h4>Étudiants inscrits ({{ course.enrolled_students.length }})</h4>
+          <div class="students-list">
+            <div class="student-item" *ngFor="let student of course.enrolled_students">
+              <div class="student-info">
+                <span class="student-name">{{ student.username }}</span>
+                <span class="student-email">{{ student.email }}</span>
+                <span class="enrolled-date">Inscrit le: {{ student.enrolled_at | date:'short' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Finished Students -->
+        <div class="students-section" *ngIf="course.finished_students && course.finished_students.length > 0">
+          <h4>Étudiants ayant terminé ({{ course.finished_students.length }})</h4>
+          <div class="students-list">
+            <div class="student-item" *ngFor="let student of course.finished_students">
+              <div class="student-info">
+                <span class="student-name">{{ student.username }}</span>
+                <span class="student-email">{{ student.email }}</span>
+              </div>
+              <div class="student-grade">
+                <span class="finished-date">Terminé le: {{ student.finished_at | date:'short' }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

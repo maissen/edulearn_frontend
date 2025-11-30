@@ -10,6 +10,7 @@ export interface Cours {
   category?: string;
   youtube_vd_url?: string;
   image_url?: string;
+  cover_image_url?: string; // Added to match API response
   enseignant_id: number;
   duration?: string;
   videoUrl?: string;
