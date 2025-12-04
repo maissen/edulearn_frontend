@@ -28,8 +28,7 @@ export class Signup implements OnInit {
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['student', Validators.required],
-      classId: [''] // Only for students
+      role: ['student', Validators.required]
     });
   }
 
@@ -56,15 +55,9 @@ export class Signup implements OnInit {
   get email() { return this.signupForm.get('email'); }
   get password() { return this.signupForm.get('password'); }
   get role() { return this.signupForm.get('role'); }
-  get classId() { return this.signupForm.get('classId'); }
 
   onRoleChange() {
-    if (this.role?.value === 'student') {
-      this.classId?.setValidators([Validators.required]);
-    } else {
-      this.classId?.clearValidators();
-    }
-    this.classId?.updateValueAndValidity();
+    // No additional validation needed since we removed class selection
   }
 
   onSubmit() {
@@ -77,7 +70,7 @@ export class Signup implements OnInit {
     }
 
     this.loading = true;
-    const { username, email, password, role, classId } = this.signupForm.value;
+    const { username, email, password, role } = this.signupForm.value;
 
     let registerObservable;
 

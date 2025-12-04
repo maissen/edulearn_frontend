@@ -76,7 +76,6 @@
           <span class="teacher-info">By {{ c.teacher_username }}</span>
           <span class="completion-date">Completed: {{ c.completed_at | date:'shortDate' }}</span>
         </div>
-        <div class="completion-badge">✅ Completed</div>
         <button class="btn-review" (click)="openCourse(c.id)">Review Course</button>
       </div>
     </div>
@@ -98,7 +97,6 @@
         <h4 class="quiz-title">{{ quiz.test_title || 'test untitulé' }}</h4>
         <span class="course-info">{{ quiz.course_title }} • {{ quiz.course_category }}</span>
       </div>
-      <div class="test-name">Test: {{ quiz.test_title }}</div>
       <div class="quiz-stats">
         <div class="stat">
           <div class="stat-value">{{ formatScore(quiz) }}/20</div>

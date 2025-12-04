@@ -110,24 +110,6 @@
         </select>
       </div>
 
-      <!-- Class selection for students -->
-      <div class="form-group" *ngIf="role?.value === 'student'">
-        <label for="classId">Class</label>
-        <select id="classId" formControlName="classId" class="form-select" [class.invalid]="submitted && classId?.errors">
-          <option value="">Select your class</option>
-          <option value="1">Class 1</option>
-          <option value="2">Class 2</option>
-          <option value="3">Class 3</option>
-        </select>
-        @if (submitted && classId?.errors) {
-          <div class="error-message">
-            @if (classId?.errors?.['required']) {
-              <div>Class selection is required for students</div>
-            }
-          </div>
-        }
-      </div>
-
       @if (errorMessage) {
         <div class="error-message" style="margin-bottom: 1rem;">{{ errorMessage }}</div>
       }

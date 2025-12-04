@@ -1,6 +1,7 @@
 .auth-container {
   display: flex;
   min-height: 100vh;
+  max-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f8f9fa;
 }
