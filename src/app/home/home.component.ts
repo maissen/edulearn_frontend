@@ -26,20 +26,13 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Check if user has a token (even if expired, we'll handle it)
-    const token = this.authService.getToken();
-    if (token) {
-      if (this.authService.isAuthenticated()) {
-        console.log('User is authenticated, redirecting to dashboard');
-        this.redirectToDashboard();
-      } else {
-        // Token exists but is expired
-        console.log('Token exists but is expired, logging out');
-        this.authService.logout();
-        // Stay on home page, user can login again
-      }
+    // Check if user is authenticated and redirect if needed
+    if (this.authService.isAuthenticated()) {
+      console.log('User is authenticated, redirecting to dashboard');
+      this.redirectToDashboard();
+      return;
     }
-
+    
     // Fetch recent courses for guests
     this.fetchRecentCourses();
   }
@@ -51,13 +44,27 @@ export class HomeComponent implements OnInit {
     if (userRole === 'admin') {
       this.router.navigate(['/admin']);
     } else if (userRole === 'enseignant' || userRole === 'teacher') {
-      this.router.navigate(['/teacher']);
+      this.router.navigate(['/teacher/profile']);
     } else if (userRole === 'etudiant' || userRole === 'student') {
       this.router.navigate(['/student']);
     } else {
       console.warn('Unknown user role:', userRole);
       this.router.navigate(['/login']);
     }
+  }
+
+  // Fetch recent courses for display on home page
+  private fetchRecentCourses() {
+    this.coursService.getRecentCourses().subscribe({
+      next: (courses: RecentCourse[]) => {
+        this.recentCourses = courses;
+        this.isLoadingRecentCourses = false;
+      },
+      error: (error: any) => {
+        console.error('Error fetching recent courses:', error);
+        this.isLoadingRecentCourses = false;
+      }
+    });
   }
 
   // Navigate to the homepage
@@ -78,31 +85,6 @@ export class HomeComponent implements OnInit {
       }
     ).catch((err: any) => {
       console.error('Navigation error:', err);
-    });
-  }
-
-  // Navigate to the register page
-  goToRegister(): void {
-    this.router.navigate(['/signup']);
-  }
-
-  // Logout and return to home
-  logout(): void {
-    this.isLoggedIn = false;
-    this.router.navigate(['/home']);
-  }
-
-  // Fetch recent courses for display on home page
-  private fetchRecentCourses(): void {
-    this.coursService.getRecentCourses().subscribe({
-      next: (courses: RecentCourse[]) => {
-        this.recentCourses = courses;
-        this.isLoadingRecentCourses = false;
-      },
-      error: (error: any) => {
-        console.error('Error fetching recent courses:', error);
-        this.isLoadingRecentCourses = false;
-      }
     });
   }
 }

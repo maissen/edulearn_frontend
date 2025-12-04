@@ -1,67 +1,134 @@
 <div class="admin-dashboard">
-  <!-- Navigation Bar -->
-  <app-navbar></app-navbar>
+  <!-- Top Navigation with Logout Button -->
+  <div class="top-nav">
+    <div class="nav-logo">EduLearn Admin</div>
+    <div class="nav-actions">
+      <span class="user-name">Welcome, {{ userName }}</span>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </div>
 
   <!-- Hero Section -->
   <section class="hero-banner">
     <div class="hero-content">
-      <h1>Welcome, {{ userName }}!</h1>
+      <h1>Admin Dashboard</h1>
       <p>Manage your school platform from here.</p>
     </div>
   </section>
 
-  <!-- Statistics Section -->
-  <section class="stats-section">
-    <h2>Platform Statistics</h2>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-number">{{ stats.teachers }}</div>
-        <div class="stat-label">Teachers</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ stats.students }}</div>
-        <div class="stat-label">Students</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ stats.classes }}</div>
-        <div class="stat-label">Classes</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ stats.courses }}</div>
-        <div class="stat-label">Courses</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ stats.exams }}</div>
-        <div class="stat-label">Exams</div>
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="loading">
+    <p>Loading users...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+    <button (click)="loadAllUsers()" class="retry-btn">Retry</button>
+  </div>
+
+  <!-- Users Section -->
+  <section class="users-section" *ngIf="!loading && !error">
+    <!-- Teachers Table -->
+    <div class="table-container">
+      <h2>Teachers</h2>
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Module</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let teacher of paginatedTeachers">
+            <td>{{ teacher.id }}</td>
+            <td>{{ teacher.username }}</td>
+            <td>{{ teacher.email }}</td>
+            <td>{{ teacher.module }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="{'active': teacher.isActivated, 'inactive': !teacher.isActivated}">
+                {{ teacher.isActivated ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedTeachers.length === 0">
+            <td colspan="5" class="no-data">No teachers found</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Teachers Pagination -->
+      <div class="pagination-controls" *ngIf="allTeachers.length > itemsPerPage">
+        <button 
+          (click)="prevPageTeachers()" 
+          [disabled]="currentPageTeachers === 1"
+          class="pagination-btn">
+          Previous
+        </button>
+        <span class="pagination-info">
+          Page {{ currentPageTeachers }} of {{ getTotalPagesTeachers() }}
+        </span>
+        <button 
+          (click)="nextPageTeachers()" 
+          [disabled]="currentPageTeachers === getTotalPagesTeachers()"
+          class="pagination-btn">
+          Next
+        </button>
       </div>
     </div>
-  </section>
 
-  <!-- Quick Actions -->
-  <section class="actions-section">
-    <h2>Quick Actions</h2>
-    <div class="actions-grid">
-      <div class="action-card">
-        <h3>Manage Teachers</h3>
-        <p>Add, edit, or remove teachers</p>
-        <button class="action-btn">Go to Teachers</button>
-      </div>
-      <div class="action-card">
-        <h3>Manage Students</h3>
-        <p>Add, edit, or remove students</p>
-        <button class="action-btn">Go to Students</button>
-      </div>
-      <div class="action-card">
-        <h3>Manage Classes</h3>
-        <p>Create and manage classes</p>
-        <button class="action-btn">Go to Classes</button>
-      </div>
-      <div class="action-card">
-        <h3>Manage Courses</h3>
-        <p>View and manage all courses</p>
-        <button class="action-btn">Go to Courses</button>
+    <!-- Students Table -->
+    <div class="table-container">
+      <h2>Students</h2>
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Class ID</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of paginatedStudents">
+            <td>{{ student.id }}</td>
+            <td>{{ student.username }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.classe_id }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="{'active': student.isActivated, 'inactive': !student.isActivated}">
+                {{ student.isActivated ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedStudents.length === 0">
+            <td colspan="5" class="no-data">No students found</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Students Pagination -->
+      <div class="pagination-controls" *ngIf="allStudents.length > itemsPerPage">
+        <button 
+          (click)="prevPageStudents()" 
+          [disabled]="currentPageStudents === 1"
+          class="pagination-btn">
+          Previous
+        </button>
+        <span class="pagination-info">
+          Page {{ currentPageStudents }} of {{ getTotalPagesStudents() }}
+        </span>
+        <button 
+          (click)="nextPageStudents()" 
+          [disabled]="currentPageStudents === getTotalPagesStudents()"
+          class="pagination-btn">
+          Next
+        </button>
       </div>
     </div>
   </section>
 </div>
-

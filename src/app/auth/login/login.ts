@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -12,7 +12,7 @@ import { ProfileService } from '../../../services/profile.service';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnInit {
   loginForm: FormGroup;
   submitted = false;
   showPassword = false;
@@ -30,6 +30,25 @@ export class Login {
       password: ['', Validators.required],
       role: ['student', Validators.required]
     });
+  }
+
+  ngOnInit() {
+    // If user is already authenticated, redirect them to their dashboard
+    if (this.authService.isAuthenticated()) {
+      this.redirectToDashboard();
+    }
+  }
+
+  private redirectToDashboard() {
+    const userRole = this.authService.getUserRole();
+    
+    if (userRole === 'admin') {
+      this.router.navigate(['/admin']);
+    } else if (userRole === 'enseignant' || userRole === 'teacher') {
+      this.router.navigate(['/teacher/profile']);
+    } else {
+      this.router.navigate(['/student']);
+    }
   }
 
   get email() { return this.loginForm.get('email'); }
@@ -69,7 +88,7 @@ export class Login {
       next: (response: any) => {
         // After successful login, verify account is active by checking profile
         this.profileService.getProfile().subscribe({
-          next: (profile) => {
+          next: (profile: any) => {
             // If profile loads successfully, account is active, proceed with navigation
             this.loading = false;
             const userRole = response.user.role.toLowerCase();
@@ -78,7 +97,7 @@ export class Login {
             } else if (userRole === 'enseignant' || userRole === 'teacher') {
               this.router.navigate(['/teacher/profile']);
             } else {
-              this.router.navigate(['/profile']);
+              this.router.navigate(['/student']);
             }
           },
           error: (profileError: any) => {
@@ -97,7 +116,7 @@ export class Login {
               } else if (userRole === 'enseignant' || userRole === 'teacher') {
                 this.router.navigate(['/teacher/profile']);
               } else {
-                this.router.navigate(['/profile']);
+                this.router.navigate(['/student']);
               }
             }
           }

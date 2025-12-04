@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './signup.html',
   styleUrl: './signup.css'
 })
-export class Signup {
+export class Signup implements OnInit {
   signupForm: FormGroup;
   submitted = false;
   showPassword = false;
@@ -25,17 +25,47 @@ export class Signup {
     private authService: AuthService
   ) {
     this.signupForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['student', Validators.required]
+      role: ['student', Validators.required],
+      classId: [''] // Only for students
     });
   }
 
-  get email() { return this.signupForm.get('email'); }
+  ngOnInit() {
+    // If user is already authenticated, redirect them to their dashboard
+    if (this.authService.isAuthenticated()) {
+      this.redirectToDashboard();
+    }
+  }
+
+  private redirectToDashboard() {
+    const userRole = this.authService.getUserRole();
+    
+    if (userRole === 'admin') {
+      this.router.navigate(['/admin']);
+    } else if (userRole === 'enseignant' || userRole === 'teacher') {
+      this.router.navigate(['/teacher/profile']);
+    } else {
+      this.router.navigate(['/student']);
+    }
+  }
+
   get username() { return this.signupForm.get('username'); }
+  get email() { return this.signupForm.get('email'); }
   get password() { return this.signupForm.get('password'); }
   get role() { return this.signupForm.get('role'); }
+  get classId() { return this.signupForm.get('classId'); }
+
+  onRoleChange() {
+    if (this.role?.value === 'student') {
+      this.classId?.setValidators([Validators.required]);
+    } else {
+      this.classId?.clearValidators();
+    }
+    this.classId?.updateValueAndValidity();
+  }
 
   onSubmit() {
     this.submitted = true;
@@ -47,30 +77,32 @@ export class Signup {
     }
 
     this.loading = true;
-    const { email, username, password } = this.signupForm.value;
-    const role = this.signupForm.value.role;
+    const { username, email, password, role, classId } = this.signupForm.value;
 
     let registerObservable;
 
-    if (role === 'student') {
-      registerObservable = this.authService.registerStudent({ email, username, password });
-    } else if (role === 'teacher') {
-      registerObservable = this.authService.registerTeacher({ email, username, password });
-    } else {
-      this.errorMessage = 'Only student and teacher registration is available';
-      this.loading = false;
-      return;
+    switch (role) {
+      case 'student':
+        registerObservable = this.authService.registerStudent({ username, email, password });
+        break;
+      case 'teacher':
+        registerObservable = this.authService.registerTeacher({ username, email, password });
+        break;
+      default:
+        this.errorMessage = 'Only student and teacher registration is available';
+        this.loading = false;
+        return;
     }
 
     registerObservable.subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.loading = false;
         this.successMessage = response.message || 'Registration successful!';
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 2000);
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading = false;
 
         // Handle specific error cases

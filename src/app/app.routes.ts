@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard, TeacherGuard } from '../guards/auth.guard';
+import { NoAuthGuard } from '../guards/no-auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -9,11 +10,13 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadComponent: () => import('./auth/login/login').then(m => m.Login)
+    loadComponent: () => import('./auth/login/login').then(m => m.Login),
+    canActivate: [NoAuthGuard]
   },
   {
     path: 'signup',
-    loadComponent: () => import('./auth/signup/signup').then(m => m.Signup)
+    loadComponent: () => import('./auth/signup/signup').then(m => m.Signup),
+    canActivate: [NoAuthGuard]
   },
   {
     path: 'student',

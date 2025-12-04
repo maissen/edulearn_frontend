@@ -4,28 +4,28 @@
     <div class="hero-image">
       <svg width="100%" height="100%" viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="100%" height="100%" fill="url(#signupGradient)"/>
-        <circle cx="300" cy="200" r="60" fill="rgba(255,255,255,0.15)"/>
-        <path d="M200 350 L400 350 L400 450 L200 450 Z" fill="rgba(255,255,255,0.1)"/>
-        <path d="M250 500 L350 500 L350 550 L250 550 Z" fill="rgba(255,255,255,0.1)"/>
-        <path d="M220 600 L380 600 L380 650 L220 650 Z" fill="rgba(255,255,255,0.1)"/>
+        <circle cx="300" cy="250" r="80" fill="rgba(255,255,255,0.2)"/>
+        <path d="M250 400 L350 400 L350 500 L250 500 Z" fill="rgba(255,255,255,0.1)"/>
+        <path d="M200 550 L400 550 L400 600 L200 600 Z" fill="rgba(255,255,255,0.1)"/>
+        <path d="M220 650 L380 650 L380 680 L220 680 Z" fill="rgba(255,255,255,0.1)"/>
         <defs>
           <linearGradient id="signupGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#764ba2;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#667eea;stop-opacity:1" />
+            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
           </linearGradient>
         </defs>
       </svg>
     </div>
     <div class="overlay-text">
-      <h2>Votre savoir, notre mission.</h2>
-      <p>Fais de ta curiosité une force.</p>
+      <h2>Start your learning journey today.</h2>
+      <p>Join thousands of students and teachers already using EduLearn.</p>
     </div>
   </div>
 
   <!-- Colonne droite : Formulaire -->
   <div class="form-column">
     <div class="form-header">
-      <h3>Welcome to EduLearn!</h3>
+      <h3>Create an Account</h3>
       <div class="auth-tabs">
         <button class="tab" (click)="goToLogin()">Login</button>
         <button class="tab active">Register</button>
@@ -33,32 +33,34 @@
     </div>
 
     <div class="auth-description">
-      <p>Découvrez une expérience d’apprentissage intuitive, sécurisée et conçue pour vous aider à réussir.</p>
+      <p>Create your account to access personalized learning content and track your progress.</p>
     </div>
 
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
-      <!-- Choix Étudiant / Enseignant -->
-      <div class="role-selector">
-        <label>Je suis :</label>
-        <div class="role-options">
-          <div class="role-option">
-            <input type="radio" id="student" value="student" formControlName="role" checked>
-            <label for="student">Étudiant</label>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          formControlName="username" 
+          placeholder="Choose a username"
+          [class.invalid]="submitted && username?.errors">
+        @if (submitted && username?.errors) {
+          <div class="error-message">
+            @if (username?.errors?.['required']) {
+              <div>Username is required</div>
+            }
           </div>
-          <div class="role-option">
-            <input type="radio" id="teacher" value="teacher" formControlName="role">
-            <label for="teacher">Enseignant</label>
-          </div>
-        </div>
+        }
       </div>
 
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email">Email</label>
         <input 
           type="email" 
           id="email" 
           formControlName="email" 
-          placeholder="Enter your Email Address"
+          placeholder="Enter your email"
           [class.invalid]="submitted && email?.errors">
         @if (submitted && email?.errors) {
           <div class="error-message">
@@ -73,28 +75,13 @@
       </div>
 
       <div class="form-group">
-        <label for="username">User name</label>
-        <input 
-          type="text" 
-          id="username" 
-          formControlName="username" 
-          placeholder="Enter your User name"
-          [class.invalid]="submitted && username?.errors">
-        @if (submitted && username?.errors) {
-          <div class="error-message">
-            User name is required
-          </div>
-        }
-      </div>
-
-      <div class="form-group">
         <label for="password">Password</label>
         <div class="password-input-wrapper">
           <input 
             [type]="showPassword ? 'text' : 'password'" 
             id="password" 
             formControlName="password" 
-            placeholder="Enter your Password"
+            placeholder="Create a password"
             [class.invalid]="submitted && password?.errors">
           <span class="toggle-password" (click)="togglePasswordVisibility()">
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -110,6 +97,32 @@
             }
             @if (password?.errors?.['minlength']) {
               <div>Password must be at least 6 characters</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="role">Register as</label>
+        <select id="role" formControlName="role" class="form-select" (change)="onRoleChange()">
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+        </select>
+      </div>
+
+      <!-- Class selection for students -->
+      <div class="form-group" *ngIf="role?.value === 'student'">
+        <label for="classId">Class</label>
+        <select id="classId" formControlName="classId" class="form-select" [class.invalid]="submitted && classId?.errors">
+          <option value="">Select your class</option>
+          <option value="1">Class 1</option>
+          <option value="2">Class 2</option>
+          <option value="3">Class 3</option>
+        </select>
+        @if (submitted && classId?.errors) {
+          <div class="error-message">
+            @if (classId?.errors?.['required']) {
+              <div>Class selection is required for students</div>
             }
           </div>
         }
