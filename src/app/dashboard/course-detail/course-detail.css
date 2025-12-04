@@ -1188,7 +1188,7 @@
 
 /* Quiz Taking Modal */
 .quiz-taking-modal {
-  max-width: 700px;
+  max-width: 900px; /* Increased from 700px */
   width: 95%;
 }
 
@@ -1198,8 +1198,8 @@
 
 .progress-bar {
   background: #e2e8f0;
-  height: 8px;
-  border-radius: 4px;
+  height: 12px; /* Increased from 8px */
+  border-radius: 6px; /* Increased from 4px */
   overflow: hidden;
   margin-bottom: 0.5rem;
 }
@@ -1207,16 +1207,16 @@
 .progress-fill {
   background: linear-gradient(90deg, #667eea, #764ba2);
   height: 100%;
-  border-radius: 4px;
+  border-radius: 6px; /* Increased from 4px */
   transition: width 0.3s ease;
 }
 
 .progress-text {
   display: block;
   text-align: center;
-  font-size: 0.875rem;
-  color: #64748b;
-  font-weight: 500;
+  font-size: 1rem; /* Increased from 0.875rem */
+  color: #1e293b; /* Darker color for better visibility */
+  font-weight: 600; /* Increased from 500 */
 }
 
 .quiz-question-section {
@@ -1225,15 +1225,16 @@
 
 .question-card {
   background: #f8fafc;
-  border-radius: 12px;
-  padding: 2rem;
+  border-radius: 16px; /* Increased from 12px */
+  padding: 2.5rem; /* Increased from 2rem */
   margin-bottom: 2rem;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #e2e8f0; /* Increased from 1px */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Added shadow */
 }
 
 .question-text {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.5rem; /* Increased from 1.25rem */
+  font-weight: 700; /* Increased from 600 */
   color: #1e293b;
   margin-bottom: 1.5rem;
   line-height: 1.5;
@@ -1242,38 +1243,41 @@
 .options-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem; /* Increased from 1rem */
 }
 
 .option-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 1.25rem; /* Increased from 1rem */
+  padding: 1.25rem; /* Increased from 1rem */
   border: 2px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 12px; /* Increased from 8px */
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease; /* Slowed transition slightly */
   background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Added subtle shadow */
 }
 
 .option-item:hover {
   border-color: #667eea;
   background: #f8fafc;
+  transform: translateY(-2px); /* Added slight lift effect */
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.15); /* Enhanced shadow */
 }
 
 .option-item.selected {
   border-color: #667eea;
   background: #eef2ff;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2); /* Increased shadow intensity */
 }
 
 .option-radio {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px; /* Increased from 24px */
+  height: 28px; /* Increased from 24px */
   border: 2px solid #cbd5e1;
   border-radius: 50%;
   transition: all 0.2s ease;
@@ -1285,8 +1289,8 @@
 }
 
 .radio-circle {
-  width: 10px;
-  height: 10px;
+  width: 12px; /* Increased from 10px */
+  height: 12px; /* Increased from 10px */
   border-radius: 50%;
   background: white;
   transition: all 0.2s ease;
@@ -1301,24 +1305,26 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem; /* Increased from 0.75rem */
 }
 
 .option-key {
-  font-weight: 600;
+  font-weight: 700; /* Increased from 600 */
   color: #475569;
-  min-width: 24px;
+  min-width: 28px; /* Increased from 24px */
+  font-size: 1.1rem; /* Added font size */
 }
 
 .option-text {
   color: #1e293b;
-  font-weight: 500;
+  font-weight: 600; /* Increased from 500 */
+  font-size: 1.1rem; /* Added font size */
 }
 
 .quiz-navigation {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.5rem; /* Increased from 1rem */
   margin-top: 2rem;
 }
 

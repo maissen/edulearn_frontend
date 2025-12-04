@@ -3,7 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateAdminRequest, CreateResponse, DeleteResponse, TeacherCoursesResponse, TeacherWithCourses, TeacherCourse, LogEntry, BackupEntry, BackupsResponse, CreateBackupResponse, DeleteBackupResponse, StatisticsResponse } from '../../../services/admin.service';
+import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateAdminRequest, CreateResponse, CreateAdminResponse, DeleteResponse, TeacherCoursesResponse, TeacherWithCourses, TeacherCourse, LogEntry, BackupEntry, BackupsResponse, CreateBackupResponse, DeleteBackupResponse, StatisticsResponse } from '../../../services/admin.service';
 
 // Extend TeacherCourse interface to include teacher information
 interface TeacherCourseWithTeacherInfo extends TeacherCourse {
@@ -611,9 +611,28 @@ export class AdminComponent implements OnInit {
   }
 
   createAdmin() {
+    // Basic validation
+    if (!this.newAdmin.username || !this.newAdmin.email || !this.newAdmin.password) {
+      this.showSnackbarMessage('Please fill in all required fields', 'error');
+      return;
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.newAdmin.email)) {
+      this.showSnackbarMessage('Please enter a valid email address', 'error');
+      return;
+    }
+    
+    // Password validation
+    if (this.newAdmin.password.length < 6) {
+      this.showSnackbarMessage('Password must be at least 6 characters long', 'error');
+      return;
+    }
+    
     this.actionLoading = true;
     this.adminService.createAdmin(this.newAdmin).subscribe({
-      next: (response: CreateResponse) => {
+      next: (response: CreateAdminResponse) => {
         this.actionLoading = false;
         this.closeCreateAdminForm();
         this.showSnackbarMessage(response.message, 'success');
@@ -624,7 +643,9 @@ export class AdminComponent implements OnInit {
         this.actionLoading = false;
         console.error('Error creating admin:', err);
         
-        if (err.status === 403) {
+        if (err.status === 409) {
+          this.showSnackbarMessage('An admin with this email or username already exists', 'error');
+        } else if (err.status === 403) {
           this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
         } else if (err.status === 401) {
           this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');

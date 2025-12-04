@@ -9,12 +9,18 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  font-family: Arial, sans-serif;
 }
 
 .nav-logo {
   font-size: 20px;
   font-weight: 600;
   color: #4a6cf7;
+  text-decoration: none;
+}
+
+.nav-logo:hover {
+  color: #3a5ce5;
 }
 
 .nav-menu {
@@ -65,6 +71,7 @@
   cursor: pointer;
   font-weight: 500;
   transition: background 0.2s;
+  font-family: Arial, sans-serif;
 }
 
 .logout-btn:hover {

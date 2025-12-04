@@ -67,9 +67,9 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Navigate to the homepage
+  // Navigate to the profile page
   goHome(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/profile']);
   }
 
   // Navigate to the login page

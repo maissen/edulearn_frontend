@@ -97,6 +97,17 @@ export interface CreateAdminRequest {
   password: string;
 }
 
+export interface CreateAdminResponse {
+  message: string;
+  admin: {
+    id: number;
+    username: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
 export interface CreateResponse {
   message: string;
   teacherId?: number;
@@ -291,9 +302,9 @@ export class AdminService {
   /**
    * Create a new admin account
    * @param admin Admin data
-   * @returns Observable of CreateResponse
+   * @returns Observable of CreateAdminResponse
    */
-  createAdmin(admin: CreateAdminRequest): Observable<CreateResponse> {
+  createAdmin(admin: CreateAdminRequest): Observable<CreateAdminResponse> {
     const token = this.authService.getToken();
     let headers = new HttpHeaders();
     
@@ -301,7 +312,7 @@ export class AdminService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     
-    return this.http.post<CreateResponse>(
+    return this.http.post<CreateAdminResponse>(
       `${this.apiUrl}/admins`,
       admin,
       { headers }

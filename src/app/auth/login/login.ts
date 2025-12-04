@@ -47,7 +47,7 @@ export class Login implements OnInit {
     } else if (userRole === 'enseignant' || userRole === 'teacher') {
       this.router.navigate(['/teacher/profile']);
     } else {
-      this.router.navigate(['/student']);
+      this.router.navigate(['/profile']);
     }
   }
 
@@ -97,7 +97,7 @@ export class Login implements OnInit {
             } else if (userRole === 'enseignant' || userRole === 'teacher') {
               this.router.navigate(['/teacher/profile']);
             } else {
-              this.router.navigate(['/student']);
+              this.router.navigate(['/profile']);
             }
           },
           error: (profileError: any) => {
@@ -116,7 +116,7 @@ export class Login implements OnInit {
               } else if (userRole === 'enseignant' || userRole === 'teacher') {
                 this.router.navigate(['/teacher/profile']);
               } else {
-                this.router.navigate(['/student']);
+                this.router.navigate(['/profile']);
               }
             }
           }

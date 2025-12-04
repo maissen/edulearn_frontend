@@ -1,5 +1,5 @@
 <nav class="top-nav">
-  <div class="nav-logo">EduLearn</div>
+  <a routerLink="/home" class="nav-logo">EduLearn</a>
   <div class="nav-menu">
     <!-- Student Links -->
     <ng-container *ngIf="isStudent()">
@@ -10,7 +10,7 @@
 
     <!-- Teacher Links -->
     <ng-container *ngIf="isTeacher()">
-      <a routerLink="/coursesManage" routerLinkActive="active">Gérer mes cours</a>
+      <a routerLink="/coursesManage" routerLinkActive="active">Créer un cours</a>
       <a routerLink="/teacher/profile" routerLinkActive="active">Profil</a>
     </ng-container>
 

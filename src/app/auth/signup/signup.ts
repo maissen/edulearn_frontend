@@ -47,7 +47,7 @@ export class Signup implements OnInit {
     } else if (userRole === 'enseignant' || userRole === 'teacher') {
       this.router.navigate(['/teacher/profile']);
     } else {
-      this.router.navigate(['/student']);
+      this.router.navigate(['/profile']);
     }
   }
 

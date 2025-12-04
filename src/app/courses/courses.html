@@ -59,8 +59,7 @@
           <h3 class="course-title">{{ course.title }}</h3>
           <p class="course-description">{{ course.title }} - Learn the fundamentals and advanced concepts</p>
           <div class="course-meta">
-            <span class="lesson-info">Lesson {{ course.currentLesson }} of {{ course.totalLessons }}</span>
-            <!-- Removed rating stars -->
+
           </div>
           <div class="enrollment-status" *ngIf="getEnrollmentStatus(course.id)">
             <span class="status-badge" [ngClass]="{
@@ -115,8 +114,7 @@
           <h3 class="course-title">{{ course.title }}</h3>
           <p class="course-description">{{ course.title }} - Learn the fundamentals and advanced concepts</p>
           <div class="course-meta">
-            <span class="lesson-info">Lesson {{ course.currentLesson }} of {{ course.totalLessons }}</span>
-            <!-- Removed rating stars -->
+
           </div>
           <div class="enrollment-status" *ngIf="getEnrollmentStatus(course.id)">
             <span class="status-badge" [ngClass]="{

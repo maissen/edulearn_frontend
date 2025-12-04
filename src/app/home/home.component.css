@@ -319,6 +319,14 @@
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
   border-radius: 20px;
   padding: 2rem;
+  overflow: hidden;
+}
+
+.hero-background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
 }
 
 /* ============================================
@@ -341,6 +349,10 @@
   font-weight: 800;
   color: #2d3748;
   margin-bottom: 3rem;
+}
+
+.section-title.dark {
+  color: #000000;
 }
 
 .features-grid {
@@ -442,6 +454,7 @@
   background: #2d3748;
   color: white;
   text-align: center;
+  margin-bottom: 0;
 }
 
 .cta-content h2 {
@@ -475,6 +488,7 @@
   background: #1a202c;
   color: white;
   padding: 3rem 2rem 1.5rem;
+  margin-top: 0;
 }
 
 .footer-content {

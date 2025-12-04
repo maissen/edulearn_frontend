@@ -3,7 +3,7 @@ import { AuthGuard, TeacherGuard } from '../guards/auth.guard';
 import { NoAuthGuard } from '../guards/no-auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', redirectTo: '/profile', pathMatch: 'full' },
   {
     path: 'home',
     loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)

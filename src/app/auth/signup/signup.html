@@ -2,19 +2,7 @@
   <!-- Colonne gauche : Image -->
   <div class="image-column">
     <div class="hero-image">
-      <svg width="100%" height="100%" viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="url(#signupGradient)"/>
-        <circle cx="300" cy="250" r="80" fill="rgba(255,255,255,0.2)"/>
-        <path d="M250 400 L350 400 L350 500 L250 500 Z" fill="rgba(255,255,255,0.1)"/>
-        <path d="M200 550 L400 550 L400 600 L200 600 Z" fill="rgba(255,255,255,0.1)"/>
-        <path d="M220 650 L380 650 L380 680 L220 680 Z" fill="rgba(255,255,255,0.1)"/>
-        <defs>
-          <linearGradient id="signupGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-          </linearGradient>
-        </defs>
-      </svg>
+      <img src="https://edumentonline.com/wp-content/uploads/2024/03/Delaware-Student-Success-About-the-Delaware-Higher-Education-Office.jpg" alt="Education Background" class="background-image">
     </div>
     <div class="overlay-text">
       <h2>Start your learning journey today.</h2>
@@ -24,107 +12,115 @@
 
   <!-- Colonne droite : Formulaire -->
   <div class="form-column">
-    <div class="form-header">
-      <h3>Create an Account</h3>
-      <div class="auth-tabs">
-        <button class="tab" (click)="goToLogin()">Login</button>
-        <button class="tab active">Register</button>
-      </div>
-    </div>
-
-    <div class="auth-description">
-      <p>Create your account to access personalized learning content and track your progress.</p>
-    </div>
-
-    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input 
-          type="text" 
-          id="username" 
-          formControlName="username" 
-          placeholder="Choose a username"
-          [class.invalid]="submitted && username?.errors">
-        @if (submitted && username?.errors) {
-          <div class="error-message">
-            @if (username?.errors?.['required']) {
-              <div>Username is required</div>
-            }
-          </div>
-        }
-      </div>
-
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input 
-          type="email" 
-          id="email" 
-          formControlName="email" 
-          placeholder="Enter your email"
-          [class.invalid]="submitted && email?.errors">
-        @if (submitted && email?.errors) {
-          <div class="error-message">
-            @if (email?.errors?.['required']) {
-              <div>Email is required</div>
-            }
-            @if (email?.errors?.['email']) {
-              <div>Please enter a valid email</div>
-            }
-          </div>
-        }
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="password-input-wrapper">
-          <input 
-            [type]="showPassword ? 'text' : 'password'" 
-            id="password" 
-            formControlName="password" 
-            placeholder="Create a password"
-            [class.invalid]="submitted && password?.errors">
-          <span class="toggle-password" (click)="togglePasswordVisibility()">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M1 8s0-.5.1-.9C1.1 7.1 1.5 6.5 2 6h12c.5 0 .9.6 1 1.1.1.4.1.9.1 1.1 0 .5-.1.9-.1 1.1-.1.4-.5.9-1 1.1H2c-.5 0-.9-.6-1-1.1-.1-.4-.1-.9-.1-1.1zm13 0c0-.5-.1-.9-.1-1.1-.1-.4-.5-.9-1-1.1H2c-.5 0-.9.6-1 1.1-.1.4-.1.9-.1 1.1 0 .5.1.9.1 1.1.1.4.5.9 1 1.1h12c.5 0 .9-.6 1-1.1.1-.4.1-.9.1-1.1z"/>
-              <path d="M1 8s0-.5.1-.9C1.1 7.1 1.5 6.5 2 6h12c.5 0 .9.6 1 1.1.1.4.1.9.1 1.1 0 .5-.1.9-.1 1.1-.1.4-.5.9-1 1.1H2c-.5 0-.9-.6-1-1.1-.1-.4-.1-.9-.1-1.1zm13 0c0-.5-.1-.9-.1-1.1-.1-.4-.5-.9-1-1.1H2c-.5 0-.9.6-1 1.1-.1.4-.1.9-.1 1.1 0 .5.1.9.1 1.1.1.4.5.9 1 1.1h12c.5 0 .9-.6 1-1.1.1-.4.1-.9.1-1.1z"/>
-            </svg>
-          </span>
+    <div class="form-wrapper">
+      <div class="form-header">
+        <h3>Create an Account</h3>
+        <div class="auth-tabs">
+          <button class="tab" (click)="goToLogin()">Login</button>
+          <button class="tab active">Register</button>
         </div>
-        @if (submitted && password?.errors) {
-          <div class="error-message">
-            @if (password?.errors?.['required']) {
-              <div>Password is required</div>
-            }
-            @if (password?.errors?.['minlength']) {
-              <div>Password must be at least 6 characters</div>
-            }
+      </div>
+
+      <div class="auth-description">
+        <p>Create your account to access personalized learning content and track your progress.</p>
+      </div>
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            formControlName="username" 
+            placeholder="Choose a username"
+            [class.invalid]="submitted && username?.errors">
+          @if (submitted && username?.errors) {
+            <div class="error-message">
+              @if (username?.errors?.['required']) {
+                <div>Username is required</div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            placeholder="Enter your email"
+            [class.invalid]="submitted && email?.errors">
+          @if (submitted && email?.errors) {
+            <div class="error-message">
+              @if (email?.errors?.['required']) {
+                <div>Email is required</div>
+              }
+              @if (email?.errors?.['email']) {
+                <div>Please enter a valid email</div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-input-wrapper">
+            <input 
+              [type]="showPassword ? 'text' : 'password'" 
+              id="password" 
+              formControlName="password" 
+              placeholder="Create a password"
+              [class.invalid]="submitted && password?.errors">
+            <span class="toggle-password" (click)="togglePasswordVisibility()">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M1 8s0-.5.1-.9C1.1 7.1 1.5 6.5 2 6h12c.5 0 .9.6 1 1.1.1.4.1.9.1 1.1 0 .5-.1.9-.1 1.1-.1.4-.5.9-1 1.1H2c-.5 0-.9-.6-1-1.1-.1-.4-.1-.9-.1-1.1zm13 0c0-.5-.1-.9-.1-1.1-.1-.4-.5-.9-1-1.1H2c-.5 0-.9.6-1 1.1-.1.4-.1.9-.1 1.1 0 .5.1.9.1 1.1.1.4.5.9 1 1.1h12c.5 0 .9-.6 1-1.1.1-.4.1-.9.1-1.1z"/>
+                <path d="M1 8s0-.5.1-.9C1.1 7.1 1.5 6.5 2 6h12c.5 0 .9.6 1 1.1.1.4.1.9.1 1.1 0 .5-.1.9-.1 1.1-.1.4-.5.9-1 1.1H2c-.5 0-.9-.6-1-1.1-.1-.4-.1-.9-.1-1.1zm13 0c0-.5-.1-.9-.1-1.1-.1-.4-.5-.9-1-1.1H2c-.5 0-.9.6-1 1.1-.1.4-.1.9-.1 1.1 0 .5.1.9.1 1.1.1.4.5.9 1 1.1h12c.5 0 .9-.6 1-1.1.1-.4.1-.9.1-1.1z"/>
+              </svg>
+            </span>
           </div>
+          @if (submitted && password?.errors) {
+            <div class="error-message">
+              @if (password?.errors?.['required']) {
+                <div>Password is required</div>
+              }
+              @if (password?.errors?.['minlength']) {
+                <div>Password must be at least 6 characters</div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Register as</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="student-role" formControlName="role" value="student">
+              <label for="student-role">Student</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="teacher-role" formControlName="role" value="teacher">
+              <label for="teacher-role">Teacher</label>
+            </div>
+          </div>
+        </div>
+
+        @if (errorMessage) {
+          <div class="error-message" style="margin-bottom: 1rem;">{{ errorMessage }}</div>
         }
+
+        @if (successMessage) {
+          <div class="success-message" style="margin-bottom: 1rem; color: green;">{{ successMessage }}</div>
+        }
+
+        <button type="submit" class="auth-button" [disabled]="loading">
+          {{ loading ? 'Registering...' : 'Register' }}
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a (click)="goToLogin()" class="signup-link">Login</a></p>
       </div>
-
-      <div class="form-group">
-        <label for="role">Register as</label>
-        <select id="role" formControlName="role" class="form-select" (change)="onRoleChange()">
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-        </select>
-      </div>
-
-      @if (errorMessage) {
-        <div class="error-message" style="margin-bottom: 1rem;">{{ errorMessage }}</div>
-      }
-
-      @if (successMessage) {
-        <div class="success-message" style="margin-bottom: 1rem; color: green;">{{ successMessage }}</div>
-      }
-
-      <button type="submit" class="auth-button" [disabled]="loading">
-        {{ loading ? 'Registering...' : 'Register' }}
-      </button>
-    </form>
-
-    <div class="auth-footer">
-      <p>Already have an account? <a (click)="goToLogin()" class="signup-link">Login</a></p>
     </div>
   </div>
 </div>
