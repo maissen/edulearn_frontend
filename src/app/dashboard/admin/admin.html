@@ -43,6 +43,43 @@
         <h2>Teachers</h2>
         <button class="create-btn" (click)="openCreateTeacherForm()">Create New Teacher</button>
       </div>
+      
+      <!-- Teacher Filter -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <button 
+            class="filter-btn" 
+            [class.active]="teacherFilter === 'all'"
+            (click)="updateTeacherFilter('all')">
+            All Teachers
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="teacherFilter === 'active'"
+            (click)="updateTeacherFilter('active')">
+            Active Only
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="teacherFilter === 'inactive'"
+            (click)="updateTeacherFilter('inactive')">
+            Inactive Only
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="teacherFilter === 'newest'"
+            (click)="updateTeacherFilter('newest')">
+            Newest First
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="teacherFilter === 'oldest'"
+            (click)="updateTeacherFilter('oldest')">
+            Oldest First
+          </button>
+        </div>
+      </div>
+      
       <table class="users-table">
         <thead>
           <tr>
@@ -88,7 +125,7 @@
       </table>
       
       <!-- Teachers Pagination -->
-      <div class="pagination-controls" *ngIf="allTeachers.length > itemsPerPage">
+      <div class="pagination-controls" *ngIf="getTeacherFilteredCount() > itemsPerPage">
         <button 
           (click)="prevPageTeachers()" 
           [disabled]="currentPageTeachers === 1"
@@ -113,6 +150,43 @@
         <h2>Students</h2>
         <button class="create-btn" (click)="openCreateStudentForm()">Create New Student</button>
       </div>
+      
+      <!-- Student Filter -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <button 
+            class="filter-btn" 
+            [class.active]="studentFilter === 'all'"
+            (click)="updateStudentFilter('all')">
+            All Students
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="studentFilter === 'active'"
+            (click)="updateStudentFilter('active')">
+            Active Only
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="studentFilter === 'inactive'"
+            (click)="updateStudentFilter('inactive')">
+            Inactive Only
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="studentFilter === 'newest'"
+            (click)="updateStudentFilter('newest')">
+            Newest First
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="studentFilter === 'oldest'"
+            (click)="updateStudentFilter('oldest')">
+            Oldest First
+          </button>
+        </div>
+      </div>
+      
       <table class="users-table">
         <thead>
           <tr>
@@ -158,7 +232,7 @@
       </table>
       
       <!-- Students Pagination -->
-      <div class="pagination-controls" *ngIf="allStudents.length > itemsPerPage">
+      <div class="pagination-controls" *ngIf="getStudentFilteredCount() > itemsPerPage">
         <button 
           (click)="prevPageStudents()" 
           [disabled]="currentPageStudents === 1"
@@ -181,6 +255,28 @@
     <div class="table-container">
       <div class="table-header">
         <h2>Courses</h2>
+      </div>
+      
+      <!-- Course Filter -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <select [(ngModel)]="courseFilterType" class="filter-select" (change)="updateCourseFilter()">
+            <option value="teacher">Filter by Teacher</option>
+            <option value="category">Filter by Category</option>
+          </select>
+          <input 
+            type="text" 
+            [(ngModel)]="courseFilter" 
+            (input)="updateCourseFilter()"
+            placeholder="Enter filter text..." 
+            class="filter-input">
+          <button 
+            *ngIf="courseFilter" 
+            (click)="clearCourseFilter()" 
+            class="clear-filter-btn">
+            Clear
+          </button>
+        </div>
       </div>
       
       <!-- Course Loading indicator -->
@@ -226,7 +322,7 @@
       </table>
       
       <!-- Courses Pagination -->
-      <div class="pagination-controls" *ngIf="allCourses.length > itemsPerPage && !courseLoading">
+      <div class="pagination-controls" *ngIf="getCourseFilteredCount() > itemsPerPage && !courseLoading">
         <button 
           (click)="prevPageCourses()" 
           [disabled]="currentPageCourses === 1"

@@ -32,6 +32,13 @@ export class AdminComponent implements OnInit {
   allStudents: StudentUser[] = [];
   allCourses: TeacherCourseWithTeacherInfo[] = [];
   
+  // Filter properties
+  courseFilter = '';
+  courseFilterType: 'teacher' | 'category' = 'teacher';
+  studentStatusFilter: 'all' | 'active' | 'inactive' = 'all';
+  teacherFilter: 'all' | 'active' | 'inactive' | 'newest' | 'oldest' = 'all';
+  studentFilter: 'all' | 'active' | 'inactive' | 'newest' | 'oldest' = 'all';
+  
   // Paginated data
   paginatedTeachers: TeacherUser[] = [];
   paginatedStudents: StudentUser[] = [];
@@ -402,13 +409,41 @@ export class AdminComponent implements OnInit {
 
   // Course pagination methods
   updatePaginatedCourses() {
+    // Apply filter first
+    let filteredCourses = this.allCourses;
+    
+    if (this.courseFilter) {
+      if (this.courseFilterType === 'teacher') {
+        filteredCourses = this.allCourses.filter(course => 
+          course.teacherName.toLowerCase().includes(this.courseFilter.toLowerCase())
+        );
+      } else if (this.courseFilterType === 'category') {
+        filteredCourses = this.allCourses.filter(course => 
+          course.category.toLowerCase().includes(this.courseFilter.toLowerCase())
+        );
+      }
+    }
+    
     const startIndex = (this.currentPageCourses - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedCourses = this.allCourses.slice(startIndex, endIndex);
+    this.paginatedCourses = filteredCourses.slice(startIndex, endIndex);
+  }
+
+  // Update filter
+  updateCourseFilter() {
+    this.currentPageCourses = 1; // Reset to first page when filter changes
+    this.updatePaginatedCourses();
+  }
+
+  // Clear filter
+  clearCourseFilter() {
+    this.courseFilter = '';
+    this.currentPageCourses = 1;
+    this.updatePaginatedCourses();
   }
 
   nextPageCourses() {
-    if (this.currentPageCourses * this.itemsPerPage < this.allCourses.length) {
+    if (this.currentPageCourses * this.itemsPerPage < this.getCourseFilteredCount()) {
       this.currentPageCourses++;
       this.updatePaginatedCourses();
     }
@@ -421,19 +456,66 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  getCourseFilteredCount(): number {
+    if (!this.courseFilter) {
+      return this.allCourses.length;
+    }
+    
+    if (this.courseFilterType === 'teacher') {
+      return this.allCourses.filter(course => 
+        course.teacherName.toLowerCase().includes(this.courseFilter.toLowerCase())
+      ).length;
+    } else if (this.courseFilterType === 'category') {
+      return this.allCourses.filter(course => 
+        course.category.toLowerCase().includes(this.courseFilter.toLowerCase())
+      ).length;
+    }
+    
+    return this.allCourses.length;
+  }
+
   getTotalPagesCourses(): number {
-    return Math.ceil(this.allCourses.length / this.itemsPerPage);
+    return Math.ceil(this.getCourseFilteredCount() / this.itemsPerPage);
   }
 
   // Teacher pagination methods
   updatePaginatedTeachers() {
+    // Apply filter first
+    let filteredTeachers = this.allTeachers;
+    
+    if (this.teacherFilter !== 'all') {
+      if (this.teacherFilter === 'active' || this.teacherFilter === 'inactive') {
+        const isActive = this.teacherFilter === 'active';
+        filteredTeachers = this.allTeachers.filter(teacher => 
+          teacher.isActivated === isActive
+        );
+      } else if (this.teacherFilter === 'newest') {
+        // Sort by creation date descending (newest first)
+        filteredTeachers = [...this.allTeachers].sort((a, b) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      } else if (this.teacherFilter === 'oldest') {
+        // Sort by creation date ascending (oldest first)
+        filteredTeachers = [...this.allTeachers].sort((a, b) => 
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+      }
+    }
+    
     const startIndex = (this.currentPageTeachers - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedTeachers = this.allTeachers.slice(startIndex, endIndex);
+    this.paginatedTeachers = filteredTeachers.slice(startIndex, endIndex);
+  }
+
+  // Update teacher filter
+  updateTeacherFilter(filter: 'all' | 'active' | 'inactive' | 'newest' | 'oldest') {
+    this.teacherFilter = filter;
+    this.currentPageTeachers = 1; // Reset to first page when filter changes
+    this.updatePaginatedTeachers();
   }
 
   nextPageTeachers() {
-    if (this.currentPageTeachers * this.itemsPerPage < this.allTeachers.length) {
+    if (this.currentPageTeachers * this.itemsPerPage < this.getTeacherFilteredCount()) {
       this.currentPageTeachers++;
       this.updatePaginatedTeachers();
     }
@@ -446,19 +528,64 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  getTeacherFilteredCount(): number {
+    if (this.teacherFilter === 'all') {
+      return this.allTeachers.length;
+    }
+    
+    if (this.teacherFilter === 'active' || this.teacherFilter === 'inactive') {
+      const isActive = this.teacherFilter === 'active';
+      return this.allTeachers.filter(teacher => 
+        teacher.isActivated === isActive
+      ).length;
+    }
+    
+    // For sorting filters, return all teachers
+    return this.allTeachers.length;
+  }
+
   getTotalPagesTeachers(): number {
-    return Math.ceil(this.allTeachers.length / this.itemsPerPage);
+    return Math.ceil(this.getTeacherFilteredCount() / this.itemsPerPage);
   }
 
   // Student pagination methods
   updatePaginatedStudents() {
+    // Apply filter first
+    let filteredStudents = this.allStudents;
+    
+    if (this.studentFilter !== 'all') {
+      if (this.studentFilter === 'active' || this.studentFilter === 'inactive') {
+        const isActive = this.studentFilter === 'active';
+        filteredStudents = this.allStudents.filter(student => 
+          student.isActivated === isActive
+        );
+      } else if (this.studentFilter === 'newest') {
+        // Sort by creation date descending (newest first)
+        filteredStudents = [...this.allStudents].sort((a, b) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      } else if (this.studentFilter === 'oldest') {
+        // Sort by creation date ascending (oldest first)
+        filteredStudents = [...this.allStudents].sort((a, b) => 
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+      }
+    }
+    
     const startIndex = (this.currentPageStudents - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedStudents = this.allStudents.slice(startIndex, endIndex);
+    this.paginatedStudents = filteredStudents.slice(startIndex, endIndex);
+  }
+
+  // Update student filter
+  updateStudentFilter(filter: 'all' | 'active' | 'inactive' | 'newest' | 'oldest') {
+    this.studentFilter = filter;
+    this.currentPageStudents = 1; // Reset to first page when filter changes
+    this.updatePaginatedStudents();
   }
 
   nextPageStudents() {
-    if (this.currentPageStudents * this.itemsPerPage < this.allStudents.length) {
+    if (this.currentPageStudents * this.itemsPerPage < this.getStudentFilteredCount()) {
       this.currentPageStudents++;
       this.updatePaginatedStudents();
     }
@@ -471,8 +598,24 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  getStudentFilteredCount(): number {
+    if (this.studentFilter === 'all') {
+      return this.allStudents.length;
+    }
+    
+    if (this.studentFilter === 'active' || this.studentFilter === 'inactive') {
+      const isActive = this.studentFilter === 'active';
+      return this.allStudents.filter(student => 
+        student.isActivated === isActive
+      ).length;
+    }
+    
+    // For sorting filters, return all students
+    return this.allStudents.length;
+  }
+
   getTotalPagesStudents(): number {
-    return Math.ceil(this.allStudents.length / this.itemsPerPage);
+    return Math.ceil(this.getStudentFilteredCount() / this.itemsPerPage);
   }
 
   logout() {
