@@ -114,6 +114,15 @@ export class TeacherProfileComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error loading profile:', error);
+        
+        // Handle deactivated account error specifically
+        if (error.status === 403 && error.error?.message?.includes('deactivated')) {
+          // Clear auth data and redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+          return;
+        }
+        
         const user = this.authService.getUser();
         if (user) {
           this.teacherName = user.username || 'Teacher';

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { ProfileService } from '../../../services/profile.service';
 
 @Component({
   selector: 'app-login',
@@ -17,12 +18,12 @@ export class Login {
   showPassword = false;
   errorMessage: string = '';
   loading = false;
-  role: 'student' | 'teacher' | 'admin' = 'student';
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private profileService: ProfileService
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -33,7 +34,6 @@ export class Login {
 
   get email() { return this.loginForm.get('email'); }
   get password() { return this.loginForm.get('password'); }
-  get roleControl() { return this.loginForm.get('role'); }
 
   onSubmit() {
     this.submitted = true;
@@ -66,21 +66,46 @@ export class Login {
     }
 
     loginObservable.subscribe({
-      next: (response) => {
-        this.loading = false;
-
-        // Route based on user role
-        const userRole = response.user.role.toLowerCase();
-        if (userRole === 'admin') {
-          this.router.navigate(['/admin']);
-        } else if (userRole === 'enseignant' || userRole === 'teacher') {
-          this.router.navigate(['/teacher/profile']);
-        } else {
-          this.router.navigate(['/profile']);
-        }
+      next: (response: any) => {
+        // After successful login, verify account is active by checking profile
+        this.profileService.getProfile().subscribe({
+          next: (profile) => {
+            // If profile loads successfully, account is active, proceed with navigation
+            this.loading = false;
+            const userRole = response.user.role.toLowerCase();
+            if (userRole === 'admin') {
+              this.router.navigate(['/admin']);
+            } else if (userRole === 'enseignant' || userRole === 'teacher') {
+              this.router.navigate(['/teacher/profile']);
+            } else {
+              this.router.navigate(['/profile']);
+            }
+          },
+          error: (profileError: any) => {
+            // If profile loading fails, check if it's due to deactivated account
+            this.loading = false;
+            if (profileError.status === 403 && profileError.error?.message?.includes('deactivated')) {
+              // Account is deactivated, show error on login page
+              this.errorMessage = profileError.error.message;
+              // Clear auth data since login should not proceed
+              this.authService.logout();
+            } else {
+              // Some other error occurred, still navigate but user will see error on profile page
+              const userRole = response.user.role.toLowerCase();
+              if (userRole === 'admin') {
+                this.router.navigate(['/admin']);
+              } else if (userRole === 'enseignant' || userRole === 'teacher') {
+                this.router.navigate(['/teacher/profile']);
+              } else {
+                this.router.navigate(['/profile']);
+              }
+            }
+          }
+        });
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading = false;
+        // Handle login errors (wrong credentials, etc.)
         this.errorMessage = error.error?.message || 'Login failed. Please check your credentials.';
         console.error('Login error:', error);
       }

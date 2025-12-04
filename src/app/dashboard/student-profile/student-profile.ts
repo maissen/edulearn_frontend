@@ -92,8 +92,18 @@ export class StudentProfileComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error loading profile:', error);
-        this.errorMessage = 'Failed to load profile';
         this.loading = false;
+        
+        // Handle deactivated account error specifically
+        if (error.status === 403 && error.error?.message?.includes('deactivated')) {
+          this.errorMessage = error.error.message;
+          // Clear auth data and redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+          return;
+        }
+        
+        this.errorMessage = 'Failed to load profile';
         // Fallback to auth service user data
         const user = this.authService.getUser();
         if (user) {
