@@ -40,6 +40,39 @@ export interface AdminUsersResponse {
   students: StudentUser[];
 }
 
+export interface TestInfo {
+  id: number;
+  title: string;
+  description: string;
+  question_count: number;
+}
+
+export interface TeacherCourse {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  youtube_url: string;
+  image_url: string;
+  created_at: string;
+  updated_at: string;
+  test: TestInfo;
+  enrolled_student_count: number;
+  average_test_score: number;
+}
+
+export interface TeacherWithCourses {
+  id: number;
+  username: string;
+  email: string;
+  module: string;
+  courses: TeacherCourse[];
+}
+
+export interface TeacherCoursesResponse {
+  teachers: TeacherWithCourses[];
+}
+
 export interface ActivationResponse {
   message: string;
   isActivated: boolean;
@@ -92,6 +125,21 @@ export class AdminService {
     }
     
     return this.http.get<AdminUsersResponse>(`${this.apiUrl}/users`, { headers });
+  }
+
+  /**
+   * Get all courses of teachers with all details
+   * @returns Observable of TeacherCoursesResponse
+   */
+  getTeacherCourses(): Observable<TeacherCoursesResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.get<TeacherCoursesResponse>(`${this.apiUrl}/teacher-courses`, { headers });
   }
 
   /**
@@ -210,6 +258,25 @@ export class AdminService {
     
     return this.http.delete<DeleteResponse>(
       `${this.apiUrl}/students/${id}`,
+      { headers }
+    );
+  }
+
+  /**
+   * Delete a course and all related data
+   * @param id Course ID
+   * @returns Observable of DeleteResponse
+   */
+  deleteCourse(id: number): Observable<DeleteResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.delete<DeleteResponse>(
+      `${this.apiUrl}/courses/${id}`,
       { headers }
     );
   }

@@ -3,7 +3,13 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateResponse, DeleteResponse } from '../../../services/admin.service';
+import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateResponse, DeleteResponse, TeacherCoursesResponse, TeacherWithCourses, TeacherCourse } from '../../../services/admin.service';
+
+// Extend TeacherCourse interface to include teacher information
+interface TeacherCourseWithTeacherInfo extends TeacherCourse {
+  teacherName: string;
+  teacherId: number;
+}
 
 @Component({
   selector: 'app-admin',
@@ -18,18 +24,22 @@ export class AdminComponent implements OnInit {
   // Pagination properties
   currentPageTeachers = 1;
   currentPageStudents = 1;
+  currentPageCourses = 1;
   itemsPerPage = 5;
   
   // Data arrays
   allTeachers: TeacherUser[] = [];
   allStudents: StudentUser[] = [];
+  allCourses: TeacherCourseWithTeacherInfo[] = [];
   
   // Paginated data
   paginatedTeachers: TeacherUser[] = [];
   paginatedStudents: StudentUser[] = [];
+  paginatedCourses: TeacherCourseWithTeacherInfo[] = [];
   
   // Loading and error states
   loading = false;
+  courseLoading = false;
   error = '';
   actionLoading = false;
   successMessage = '';
@@ -38,11 +48,16 @@ export class AdminComponent implements OnInit {
   showCreateTeacherForm = false;
   showCreateStudentForm = false;
   showDeleteConfirm = false;
+  showCourseDeleteConfirm = false;
   
   // Delete confirmation data
-  deleteItemType = ''; // 'teacher' or 'student'
+  deleteItemType = ''; // 'teacher', 'student', or 'course'
   deleteItemId = 0;
   deleteItemName = '';
+  
+  // Course delete confirmation data
+  deleteCourseId = 0;
+  deleteCourseTitle = '';
   
   // Form data
   newTeacher: CreateTeacherRequest = {
@@ -70,6 +85,7 @@ export class AdminComponent implements OnInit {
       this.userName = user.username || 'Admin';
     }
     this.loadAllUsers();
+    this.loadAllCourses();
   }
 
   loadAllUsers() {
@@ -101,6 +117,50 @@ export class AdminComponent implements OnInit {
           this.error = 'Network error. Please check your connection and try again.';
         } else {
           this.error = 'Failed to load users. Please try again.';
+        }
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
+  }
+
+  loadAllCourses() {
+    this.courseLoading = true;
+    this.error = '';
+    this.successMessage = '';
+    
+    this.adminService.getTeacherCourses().subscribe({
+      next: (response: TeacherCoursesResponse) => {
+        this.courseLoading = false;
+        // Flatten the courses from all teachers into a single array
+        const coursesWithTeacherInfo: TeacherCourseWithTeacherInfo[] = [];
+        response.teachers.forEach(teacher => {
+          teacher.courses.forEach(course => {
+            coursesWithTeacherInfo.push({
+              ...course,
+              teacherName: teacher.username,
+              teacherId: teacher.id
+            });
+          });
+        });
+        this.allCourses = coursesWithTeacherInfo;
+        this.updatePaginatedCourses();
+      },
+      error: (err: any) => {
+        this.courseLoading = false;
+        console.error('Error loading courses:', err);
+        
+        // More specific error handling
+        if (err.status === 403) {
+          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+        } else if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+          // Automatically redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.error = 'Network error. Please check your connection and try again.';
+        } else {
+          this.error = 'Failed to load courses. Please try again.';
         }
         setTimeout(() => this.error = '', 3000);
       }
@@ -250,6 +310,20 @@ export class AdminComponent implements OnInit {
     this.deleteItemName = '';
   }
 
+  // Open course delete confirmation dialog
+  openCourseDeleteConfirm(courseId: number, courseTitle: string) {
+    this.deleteCourseId = courseId;
+    this.deleteCourseTitle = courseTitle;
+    this.showCourseDeleteConfirm = true;
+  }
+
+  // Close course delete confirmation dialog
+  closeCourseDeleteConfirm() {
+    this.showCourseDeleteConfirm = false;
+    this.deleteCourseId = 0;
+    this.deleteCourseTitle = '';
+  }
+
   // Confirm and execute delete
   confirmDelete() {
     if (this.deleteItemType === 'teacher') {
@@ -258,6 +332,12 @@ export class AdminComponent implements OnInit {
       this.deleteStudent(this.deleteItemId);
     }
     this.closeDeleteConfirm();
+  }
+
+  // Confirm and execute course delete
+  confirmCourseDelete() {
+    this.deleteCourse(this.deleteCourseId);
+    this.closeCourseDeleteConfirm();
   }
 
   // Delete teacher
@@ -298,6 +378,51 @@ export class AdminComponent implements OnInit {
         setTimeout(() => this.error = '', 3000);
       }
     });
+  }
+
+  // Delete course
+  deleteCourse(id: number) {
+    this.actionLoading = true;
+    this.adminService.deleteCourse(id).subscribe({
+      next: (response: DeleteResponse) => {
+        this.actionLoading = false;
+        this.successMessage = response.message;
+        setTimeout(() => this.successMessage = '', 3000);
+        // Reload courses to reflect the deletion
+        this.loadAllCourses();
+      },
+      error: (err: any) => {
+        this.actionLoading = false;
+        console.error('Error deleting course:', err);
+        this.error = err.error?.message || 'Failed to delete course. Please try again.';
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
+  }
+
+  // Course pagination methods
+  updatePaginatedCourses() {
+    const startIndex = (this.currentPageCourses - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedCourses = this.allCourses.slice(startIndex, endIndex);
+  }
+
+  nextPageCourses() {
+    if (this.currentPageCourses * this.itemsPerPage < this.allCourses.length) {
+      this.currentPageCourses++;
+      this.updatePaginatedCourses();
+    }
+  }
+
+  prevPageCourses() {
+    if (this.currentPageCourses > 1) {
+      this.currentPageCourses--;
+      this.updatePaginatedCourses();
+    }
+  }
+
+  getTotalPagesCourses(): number {
+    return Math.ceil(this.allCourses.length / this.itemsPerPage);
   }
 
   // Teacher pagination methods

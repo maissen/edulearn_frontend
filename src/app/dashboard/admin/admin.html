@@ -176,6 +176,74 @@
         </button>
       </div>
     </div>
+
+    <!-- Courses Table -->
+    <div class="table-container">
+      <div class="table-header">
+        <h2>Courses</h2>
+      </div>
+      
+      <!-- Course Loading indicator -->
+      <div *ngIf="courseLoading" class="loading">
+        <p>Loading courses...</p>
+      </div>
+      
+      <table class="users-table" *ngIf="!courseLoading">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Teacher</th>
+            <th>Test Questions</th>
+            <th>Enrolled Students</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of paginatedCourses">
+            <td>{{ course.id }}</td>
+            <td>{{ course.title }}</td>
+            <td>{{ course.description }}</td>
+            <td>{{ course.category }}</td>
+            <td>{{ course.teacherName }}</td>
+            <td>{{ course.test.question_count || 0 }}</td>
+            <td>{{ course.enrolled_student_count }}</td>
+            <td class="action-buttons">
+              <button 
+                class="delete-btn"
+                (click)="openCourseDeleteConfirm(course.id, course.title)"
+                [disabled]="actionLoading">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedCourses.length === 0">
+            <td colspan="8" class="no-data">No courses found</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Courses Pagination -->
+      <div class="pagination-controls" *ngIf="allCourses.length > itemsPerPage && !courseLoading">
+        <button 
+          (click)="prevPageCourses()" 
+          [disabled]="currentPageCourses === 1"
+          class="pagination-btn">
+          Previous
+        </button>
+        <span class="pagination-info">
+          Page {{ currentPageCourses }} of {{ getTotalPagesCourses() }}
+        </span>
+        <button 
+          (click)="nextPageCourses()" 
+          [disabled]="currentPageCourses === getTotalPagesCourses()"
+          class="pagination-btn">
+          Next
+        </button>
+      </div>
+    </div>
   </section>
 
   <!-- Create Teacher Modal -->
@@ -195,7 +263,8 @@
               [(ngModel)]="newTeacher.username" 
               name="teacherUsername" 
               class="form-control" 
-              required>
+              required
+              placeholder="Enter teacher's username">
           </div>
           
           <div class="form-group">
@@ -206,7 +275,8 @@
               [(ngModel)]="newTeacher.email" 
               name="teacherEmail" 
               class="form-control" 
-              required>
+              required
+              placeholder="Enter teacher's email">
           </div>
           
           <div class="form-group">
@@ -217,7 +287,8 @@
               [(ngModel)]="newTeacher.password" 
               name="teacherPassword" 
               class="form-control" 
-              required>
+              required
+              placeholder="Enter teacher's password">
           </div>
           
           <div class="form-group">
@@ -227,7 +298,8 @@
               id="teacherModule" 
               [(ngModel)]="newTeacher.module" 
               name="teacherModule" 
-              class="form-control">
+              class="form-control"
+              placeholder="Enter teacher's module (optional)">
           </div>
           
           <div class="modal-footer">
@@ -260,7 +332,8 @@
               [(ngModel)]="newStudent.username" 
               name="studentUsername" 
               class="form-control" 
-              required>
+              required
+              placeholder="Enter student's username">
           </div>
           
           <div class="form-group">
@@ -271,7 +344,8 @@
               [(ngModel)]="newStudent.email" 
               name="studentEmail" 
               class="form-control" 
-              required>
+              required
+              placeholder="Enter student's email">
           </div>
           
           <div class="form-group">
@@ -282,7 +356,8 @@
               [(ngModel)]="newStudent.password" 
               name="studentPassword" 
               class="form-control" 
-              required>
+              required
+              placeholder="Enter student's password">
           </div>
           
           <div class="modal-footer">
@@ -319,6 +394,27 @@
     </div>
   </div>
 
+  <!-- Course Delete Confirmation Modal -->
+  <div class="modal" *ngIf="showCourseDeleteConfirm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirm Course Deletion</h3>
+        <span class="close" (click)="closeCourseDeleteConfirm()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete the course <strong>{{ deleteCourseTitle }}</strong>? This action cannot be undone and will permanently remove all associated data including tests, questions, enrollments, and test results.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeCourseDeleteConfirm()" [disabled]="actionLoading">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmCourseDelete()" [disabled]="actionLoading">
+          {{ actionLoading ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Background Overlay -->
-  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm || showDeleteConfirm" (click)="closeCreateTeacherForm(); closeCreateStudentForm(); closeDeleteConfirm()"></div>
+  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm || showDeleteConfirm || showCourseDeleteConfirm"></div>
 </div>
