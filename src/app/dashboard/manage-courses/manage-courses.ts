@@ -159,7 +159,7 @@ export class ManageCoursesComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error loading courses:', error);
-        this.errorMessage = 'Failed to load courses';
+        this.errorMessage = 'Échec du chargement des cours';
         this.loading = false;
       }
     });
@@ -185,17 +185,17 @@ export class ManageCoursesComponent implements OnInit {
 
     // Validation
     if (!this.newCourse.titre?.trim()) {
-      this.formErrors['title'] = 'Course title is required';
+      this.formErrors['title'] = 'Le titre du cours est requis';
       this.isSubmitting = false;
       return;
     }
     if (!this.newCourse.description?.trim()) {
-      this.formErrors['description'] = 'Course description is required';
+      this.formErrors['description'] = 'La description du cours est requise';
       this.isSubmitting = false;
       return;
     }
     if (!this.newCourse.enseignant_id) {
-      this.errorMessage = 'Teacher ID is required';
+      this.errorMessage = 'L’ID de l’enseignant est requis';
       this.isSubmitting = false;
       return;
     }
@@ -203,7 +203,7 @@ export class ManageCoursesComponent implements OnInit {
     // Validate test name if a test has been started
     // Only show this error when creating a new course, not when editing
     if (this.mode === 'create' && this.testName?.trim() && !this.currentQuiz.titre && this.oldCourse.quizzes.length === 0) {
-      this.errorMessage = 'Please click "Add Question" to create the test or clear the test name field';
+      this.errorMessage = 'Cliquez sur « Ajouter une question » pour créer le test ou videz le champ du nom du test';
       this.isSubmitting = false;
       return;
     }
@@ -239,8 +239,8 @@ export class ManageCoursesComponent implements OnInit {
 
         this.coursService.createCoursWithTest(createData).subscribe({
           next: (response: any) => {
-            this.successMessage = response.message || 'Course and test created successfully';
-            this.showSnackbarMessage('Course and test have been created successfully!', 'success');
+            this.successMessage = response.message || 'Cours et test créés avec succès';
+            this.showSnackbarMessage('Le cours et le test ont été créés avec succès !', 'success');
             this.loadCourses();
             this.resetForm();
             this.loading = false;
@@ -248,7 +248,7 @@ export class ManageCoursesComponent implements OnInit {
           },
           error: (error: any) => {
             console.error('Error creating course with test:', error);
-            this.errorMessage = error.error?.message || 'Failed to create course and test. Please check your authentication.';
+            this.errorMessage = error.error?.message || 'Échec de la création du cours et du test. Veuillez vérifier votre authentification.';
             this.showSnackbarMessage(this.errorMessage, 'error');
             this.loading = false;
             this.isSubmitting = false;
@@ -258,8 +258,8 @@ export class ManageCoursesComponent implements OnInit {
         // Create course only (without test)
         this.coursService.createCours(this.newCourse as Cours).subscribe({
           next: (response: any) => {
-            this.successMessage = response.message || 'Course created successfully';
-            this.showSnackbarMessage('Course has been created successfully!', 'success');
+            this.successMessage = response.message || 'Cours créé avec succès';
+            this.showSnackbarMessage('Le cours a été créé avec succès !', 'success');
             this.loadCourses();
             this.resetForm();
             this.loading = false;
@@ -267,7 +267,7 @@ export class ManageCoursesComponent implements OnInit {
           },
           error: (error: any) => {
             console.error('Error creating course:', error);
-            this.errorMessage = error.error?.message || 'Failed to create course. Please check your authentication.';
+            this.errorMessage = error.error?.message || 'Échec de la création du cours. Veuillez vérifier votre authentification.';
             this.showSnackbarMessage(this.errorMessage, 'error');
             this.loading = false;
             this.isSubmitting = false;
@@ -307,15 +307,15 @@ export class ManageCoursesComponent implements OnInit {
 
         this.coursService.updateCoursWithTest(this.newCourse.id, updateData).subscribe({
           next: (response: any) => {
-            this.successMessage = response.message || 'Course and test updated successfully';
-            this.showSnackbarMessage('Course and test have been updated successfully!', 'success');
+            this.successMessage = response.message || 'Cours et test mis à jour avec succès';
+            this.showSnackbarMessage('Le cours et le test ont été mis à jour avec succès !', 'success');
             this.loadCourses();
             this.loading = false;
             this.isSubmitting = false;
           },
           error: (error: any) => {
             console.error('Error updating course with test:', error);
-            this.errorMessage = error.error?.message || 'Failed to update course and test. Please check your authentication.';
+            this.errorMessage = error.error?.message || 'Échec de la mise à jour du cours et du test. Veuillez vérifier votre authentification.';
             this.showSnackbarMessage(this.errorMessage, 'error');
             this.loading = false;
             this.isSubmitting = false;
@@ -325,15 +325,15 @@ export class ManageCoursesComponent implements OnInit {
         // Update course only (without test)
         this.coursService.updateCours(this.newCourse.id, this.newCourse as Cours).subscribe({
           next: (response: any) => {
-            this.successMessage = response.message || 'Course updated successfully';
-            this.showSnackbarMessage('Course has been updated successfully!', 'success');
+            this.successMessage = response.message || 'Cours mis à jour avec succès';
+            this.showSnackbarMessage('Le cours a été mis à jour avec succès !', 'success');
             this.loadCourses();
             this.loading = false;
             this.isSubmitting = false;
           },
           error: (error: any) => {
             console.error('Error updating course:', error);
-            this.errorMessage = error.error?.message || 'Failed to update course. Please check your authentication.';
+            this.errorMessage = error.error?.message || 'Échec de la mise à jour du cours. Veuillez vérifier votre authentification.';
             this.showSnackbarMessage(this.errorMessage, 'error');
             this.loading = false;
             this.isSubmitting = false;
@@ -385,16 +385,16 @@ export class ManageCoursesComponent implements OnInit {
   // 🗑️ DELETE
   onDeleteCourse(courseId: number): void {
     const course = this.courses.find(c => c.id === courseId);
-    const courseTitle = course?.titre || 'this course';
+    const courseTitle = course?.titre || 'ce cours';
 
-    if (confirm(`⚠️ Are you sure you want to delete "${courseTitle}"?\n\nThis action cannot be undone.`)) {
+    if (confirm(`⚠️ Êtes-vous sûr de vouloir supprimer "${courseTitle}" ?\n\nCette action est irréversible.`)) {
       this.loading = true;
       this.errorMessage = '';
       this.successMessage = '';
 
       this.coursService.deleteCours(courseId).subscribe({
         next: (response: any) => {
-          this.successMessage = response.message || 'Course deleted successfully';
+          this.successMessage = response.message || 'Cours supprimé avec succès';
           this.loadCourses();
           if (this.mode === 'edit' && this.newCourse.id === courseId) {
             this.resetForm();
@@ -403,7 +403,7 @@ export class ManageCoursesComponent implements OnInit {
         },
         error: (error: any) => {
           console.error('Error deleting course:', error);
-          this.errorMessage = error.error?.message || 'Failed to delete course. Please check your authentication.';
+          this.errorMessage = error.error?.message || 'Échec de la suppression du cours. Veuillez vérifier votre authentification.';
           this.loading = false;
         }
       });
@@ -573,7 +573,7 @@ export class ManageCoursesComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error loading course for editing:', error);
-        this.errorMessage = 'Failed to load course for editing';
+        this.errorMessage = 'Échec du chargement du cours pour modification';
         this.loading = false;
       }
     });

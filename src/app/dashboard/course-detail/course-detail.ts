@@ -149,7 +149,7 @@ export class CourseDetailComponent implements OnInit {
     this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
     const user = this.authService.getUser();
     if (user) {
-      this.userName = user.username || 'User';
+      this.userName = user.username || 'Utilisateur';
       this.isTeacher = this.authService.isTeacher();
     }
   }
@@ -160,7 +160,7 @@ export class CourseDetailComponent implements OnInit {
   }
 
   get instructor() {
-    return this.course?.instructor || { name: 'Instructor', avatarUrl: 'https://i.pravatar.cc/150?u=instructor', bio: 'Experienced educator.', rating: 4.8 };
+    return this.course?.instructor || { name: 'Enseignant', avatarUrl: 'https://i.pravatar.cc/150?u=instructor', bio: 'Éducateur expérimenté.', rating: 4.8 };
   }
 
   get relatedCourses() {
@@ -188,7 +188,7 @@ export class CourseDetailComponent implements OnInit {
         this.loadCourse();
       }
     } else {
-      this.errorMessage = 'Course ID not found';
+      this.errorMessage = 'Identifiant du cours introuvable';
       this.loading = false;
     }
   }
@@ -291,7 +291,7 @@ export class CourseDetailComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error loading course:', error);
-        this.errorMessage = 'Failed to load course';
+        this.errorMessage = 'Échec du chargement du cours';
         this.loading = false;
       }
     });
@@ -381,7 +381,7 @@ export class CourseDetailComponent implements OnInit {
 
   editQuiz(index: number): void {
     // For now, editing is not implemented - teachers would need to delete and recreate
-    alert('Editing tests is not currently supported. Please delete and create a new test.');
+    alert('La modification des tests n’est pas actuellement prise en charge. Supprimez et créez un nouveau test.');
   }
 
   closeQuizModal(): void {
@@ -434,12 +434,12 @@ export class CourseDetailComponent implements OnInit {
 
   saveQuiz(): void {
     if (!this.isTestFormValid()) {
-      alert('Please fill in all required fields for the test and questions.');
+      alert('Veuillez renseigner tous les champs requis pour le test et les questions.');
       return;
     }
 
     if (!this.courseId) {
-      alert('Course ID not available.');
+      alert('Identifiant du cours non disponible.');
       return;
     }
 
@@ -461,15 +461,15 @@ export class CourseDetailComponent implements OnInit {
     // Call the QuizService to create the test
     this.quizService.createTest(testData).subscribe({
       next: (result: any) => {
-        console.log('Test created successfully:', result);
-        alert('Test created successfully!');
+        console.log('Test créé avec succès :', result);
+        alert('Test créé avec succès !');
         this.closeQuizModal();
         // Reload course data to get the updated test
         this.loadCourse();
       },
       error: (error: any) => {
-        console.error('Error creating test:', error);
-        alert('Failed to create test. Please try again.');
+        console.error('Erreur lors de la création du test :', error);
+        alert('Échec de la création du test. Veuillez réessayer.');
       }
     });
   }
@@ -477,17 +477,17 @@ export class CourseDetailComponent implements OnInit {
   deleteQuiz(index: number): void {
     // Use the test ID for deletion
     if (!this.course?.test?.id) {
-      alert('No test to delete.');
+      alert('Aucun test à supprimer.');
       return;
     }
-    if (confirm('Are you sure you want to delete this test? This action cannot be undone.')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce test ? Cette action est irréversible.')) {
       this.quizService.deleteTest(this.course.test.id).subscribe({
         next: (res: any) => {
-          alert(res.message || 'Test deleted!');
+          alert(res.message || 'Test supprimé !');
           this.loadCourse();
         },
         error: (err: any) => {
-          alert('Failed to delete test.');
+          alert('Échec de la suppression du test.');
         }
       });
     }
@@ -497,24 +497,24 @@ export class CourseDetailComponent implements OnInit {
   startQuiz(): void {
     // Prevent starting quiz if student has already taken it and passed
     if (this.hasTakenTest && this.studentScore !== null && this.studentScore >= 12) {
-      alert('You have already passed this test. Check your results above.');
+      alert('Vous avez déjà réussi ce test. Consultez vos résultats ci-dessus.');
       return;
     }
     
     // Prevent starting quiz if student is not enrolled
     if (!this.isEnrolled) {
-      alert('You need to enroll in this course before taking the test.');
+      alert('Vous devez vous inscrire à ce cours avant de passer le test.');
       return;
     }
     
     // Prevent starting quiz if student hasn't started the course
     if (!this.hasStartedCourse) {
-      alert('You need to start the course before taking the test.');
+      alert('Vous devez démarrer le cours avant de passer le test.');
       return;
     }
     
     if (this.quizQuestions.length === 0) {
-      alert('No questions available for this quiz. Please try again later.');
+      alert('Aucune question disponible pour ce quiz. Veuillez réessayer plus tard.');
       return;
     }
 
@@ -542,7 +542,7 @@ export class CourseDetailComponent implements OnInit {
   nextQuestion(): void {
     const currentQuestion = this.getCurrentQuestion();
     if (!currentQuestion || !this.selectedAnswers[currentQuestion.id]) {
-      alert('Please select an answer before proceeding.');
+      alert('Veuillez sélectionner une réponse avant de continuer.');
       return;
     }
 
@@ -586,7 +586,7 @@ export class CourseDetailComponent implements OnInit {
    */
   submitAllQuizzes(): void {
     if (!this.course || !this.course.test) {
-      alert('No test available for this course.');
+      alert('Aucun test disponible pour ce cours.');
       return;
     }
 
@@ -596,7 +596,7 @@ export class CourseDetailComponent implements OnInit {
     })).filter(s => s.answer); // Only include answered
 
     if (!submissions.length) {
-      alert('Please answer at least one question before submitting.');
+      alert('Veuillez répondre à au moins une question avant de soumettre.');
       return;
     }
 
@@ -624,11 +624,11 @@ export class CourseDetailComponent implements OnInit {
         } else if (response && response.error) {
           alert(response.error);
         } else {
-          alert('Unexpected/empty response from server.');
+          alert('Réponse inattendue/vider du serveur.');
         }
       },
       error: (error: any) => {
-        let msg = 'Failed to submit test. Please try again.';
+        let msg = 'Échec de la soumission du test. Veuillez réessayer.';
         if (error && error.error && error.error.error) {
           msg = error.error.error;
         }
@@ -698,8 +698,8 @@ export class CourseDetailComponent implements OnInit {
         this.hasStartedCourse = true;
       },
       error: (error: any) => {
-        console.error('Error starting course:', error);
-        alert('Failed to start the course. Please try again.');
+        console.error('Erreur lors du démarrage du cours :', error);
+        alert('Échec du démarrage du cours. Veuillez réessayer.');
       }
     });
   }
@@ -718,8 +718,8 @@ export class CourseDetailComponent implements OnInit {
         }
       },
       error: (error: any) => {
-        console.error('Error completing course:', error);
-        alert('Failed to complete the course. Please try again.');
+        console.error('Erreur lors de la finalisation du cours :', error);
+        alert('Échec de la finalisation du cours. Veuillez réessayer.');
       }
     });
   }

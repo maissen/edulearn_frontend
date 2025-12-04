@@ -83,7 +83,7 @@ export class CategoryPageComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading courses:', error);
-        this.errorMessage = 'Failed to load courses';
+        this.errorMessage = 'Échec du chargement des cours';
         this.loading = false;
       }
     });

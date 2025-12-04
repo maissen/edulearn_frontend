@@ -4,21 +4,21 @@
 <!-- Hero Section -->
 <div class="hero-section" *ngIf="!loading && !errorMessage">
   <div class="hero-content">
-    <h1>Discover Amazing Courses</h1>
-    <p>Explore our wide range of courses organized by category</p>
+    <h1>Découvrez des cours exceptionnels</h1>
+    <p>Explorez notre vaste gamme de cours organisés par catégorie</p>
     <div class="search-container">
       <input 
         type="text" 
         [(ngModel)]="searchTerm" 
         (input)="onSearchChange()"
-        placeholder="Search courses by name..." 
+        placeholder="Rechercher des cours par nom..." 
         class="search-input"
       >
     </div>
     <div class="category-filter">
       <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="category-select">
         <option *ngFor="let category of categories" [value]="category">
-          {{ category === 'All' ? 'All Categories' : category }}
+          {{ category === 'All' ? 'Toutes les catégories' : category }}
         </option>
       </select>
     </div>
@@ -28,15 +28,15 @@
 <!-- Loading State -->
 <div class="loading-container" *ngIf="loading">
   <div class="loading-spinner"></div>
-  <p>Loading courses...</p>
+  <p>Chargement des cours...</p>
 </div>
 
 <!-- Error State -->
 <div class="error-container" *ngIf="errorMessage && !loading">
   <div class="error-message">
-    <h3>Oops! Something went wrong</h3>
+    <h3>Oups ! Quelque chose s'est mal passé</h3>
     <p>{{ errorMessage }}</p>
-    <button (click)="loadCourses()" class="retry-btn">Try Again</button>
+    <button (click)="loadCourses()" class="retry-btn">Réessayer</button>
   </div>
 </div>
 
@@ -46,49 +46,34 @@
   <!-- Display filtered courses when a specific category is selected -->
   <section class="filtered-courses" *ngIf="selectedCategory !== 'All'">
     <div class="section-header">
-      <h2 class="section-title">{{ selectedCategory }} Courses</h2>
-      <p class="section-subtitle">Discover all courses in {{ selectedCategory }}</p>
+      <h2 class="section-title">Cours de {{ selectedCategory }}</h2>
+      <p class="section-subtitle">Découvrez tous les cours dans {{ selectedCategory }}</p>
     </div>
     <div class="course-grid">
       <div class="course-card" *ngFor="let course of filteredCourses" (click)="openCourse(course.id)">
         <div class="course-image-container">
-          <img *ngIf="course.image" [src]="course.image" [alt]="course.title" class="course-image" (error)="onImageError($event)">
-          <div *ngIf="!course.image" class="course-image-placeholder"></div>
+          <img [src]="course.image || 'https://picsum.photos/300/180?random=999'" [alt]="course.title" class="course-image" (error)="onImageError($event)">
+          <span class="course-category">{{ course.category }}</span>
         </div>
         <div class="course-content">
           <h3 class="course-title">{{ course.title }}</h3>
-          <p class="course-description">{{ course.title }} - Learn the fundamentals and advanced concepts</p>
+          <p class="course-description">{{ course.title }} - Découvrez les fondamentaux et les concepts avancés</p>
           <div class="course-meta">
-
-          </div>
-          <div class="enrollment-status" *ngIf="getEnrollmentStatus(course.id)">
-            <span class="status-badge" [ngClass]="{
-              'not-enrolled': !getEnrollmentStatus(course.id)?.isEnrolled,
-              'in-progress': getEnrollmentStatus(course.id)?.status === 'in_progress',
-              'completed': getEnrollmentStatus(course.id)?.status === 'completed'
-            }">
-              <span class="status-icon">
-                <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
-                  <span *ngSwitchCase="'in_progress'">⏳</span>
-                  <span *ngSwitchCase="'completed'">✅</span>
-                  <span *ngSwitchDefault>📚</span>
-                </ng-container>
-              </span>
-              <span class="status-text">
-                <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
-                  <span *ngSwitchCase="'in_progress'">In Progress</span>
-                  <span *ngSwitchCase="'completed'">Completed</span>
-                  <span *ngSwitchDefault>Not Enrolled</span>
-                </ng-container>
-              </span>
+            <span class="course-duration">⏱️ 2 heures</span>
+            <span class="course-status" [ngClass]="getEnrollmentStatus(course.id)?.status || 'not-enrolled'">
+              <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
+                <span *ngSwitchCase="'in_progress'">En cours</span>
+                <span *ngSwitchCase="'completed'">Terminé</span>
+                <span *ngSwitchDefault>Non inscrit</span>
+              </ng-container>
             </span>
           </div>
           <div class="course-footer">
             <span class="progress-text" *ngIf="getEnrollmentStatus(course.id)?.isEnrolled && getEnrollmentStatus(course.id)?.status === 'in_progress'">
-              {{ getEnrollmentStatus(course.id)?.progressPercentage }}% Complete
+              {{ getEnrollmentStatus(course.id)?.progressPercentage }}% Terminé
             </span>
             <span class="enrollment-count" *ngIf="!getEnrollmentStatus(course.id)?.isEnrolled || getEnrollmentStatus(course.id)?.status !== 'in_progress'">
-              {{ Math.floor(Math.random() * 500) + 50 }} students enrolled
+              {{ Math.floor(Math.random() * 500) + 50 }} étudiants inscrits
             </span>
           </div>
           <!-- Moved category to bottom -->
@@ -101,49 +86,34 @@
   <!-- Display filtered courses when "All" is selected -->
   <section class="filtered-courses" *ngIf="selectedCategory === 'All'">
     <div class="section-header">
-      <h2 class="section-title">All Courses</h2>
-      <p class="section-subtitle">Discover all courses across all categories</p>
+      <h2 class="section-title">Tous les cours</h2>
+      <p class="section-subtitle">Découvrez tous les cours dans toutes les catégories</p>
     </div>
     <div class="course-grid">
       <div class="course-card" *ngFor="let course of filteredCourses" (click)="openCourse(course.id)">
         <div class="course-image-container">
-          <img *ngIf="course.image" [src]="course.image" [alt]="course.title" class="course-image" (error)="onImageError($event)">
-          <div *ngIf="!course.image" class="course-image-placeholder"></div>
+          <img [src]="course.image || 'https://picsum.photos/300/180?random=999'" [alt]="course.title" class="course-image" (error)="onImageError($event)">
+          <span class="course-category">{{ course.category }}</span>
         </div>
         <div class="course-content">
           <h3 class="course-title">{{ course.title }}</h3>
-          <p class="course-description">{{ course.title }} - Learn the fundamentals and advanced concepts</p>
+          <p class="course-description">{{ course.title }}</p>
           <div class="course-meta">
-
-          </div>
-          <div class="enrollment-status" *ngIf="getEnrollmentStatus(course.id)">
-            <span class="status-badge" [ngClass]="{
-              'not-enrolled': !getEnrollmentStatus(course.id)?.isEnrolled,
-              'in-progress': getEnrollmentStatus(course.id)?.status === 'in_progress',
-              'completed': getEnrollmentStatus(course.id)?.status === 'completed'
-            }">
-              <span class="status-icon">
-                <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
-                  <span *ngSwitchCase="'in_progress'">⏳</span>
-                  <span *ngSwitchCase="'completed'">✅</span>
-                  <span *ngSwitchDefault>📚</span>
-                </ng-container>
-              </span>
-              <span class="status-text">
-                <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
-                  <span *ngSwitchCase="'in_progress'">In Progress</span>
-                  <span *ngSwitchCase="'completed'">Completed</span>
-                  <span *ngSwitchDefault>Not Enrolled</span>
-                </ng-container>
-              </span>
+            <span class="course-duration">⏱️ 2 heures</span>
+            <span class="course-status" [ngClass]="getEnrollmentStatus(course.id)?.status || 'not-enrolled'">
+              <ng-container [ngSwitch]="getEnrollmentStatus(course.id)?.status">
+                <span *ngSwitchCase="'in_progress'">En cours</span>
+                <span *ngSwitchCase="'completed'">Terminé</span>
+                <span *ngSwitchDefault>Non inscrit</span>
+              </ng-container>
             </span>
           </div>
           <div class="course-footer">
             <span class="progress-text" *ngIf="getEnrollmentStatus(course.id)?.isEnrolled && getEnrollmentStatus(course.id)?.status === 'in_progress'">
-              {{ getEnrollmentStatus(course.id)?.progressPercentage }}% Complete
+              {{ getEnrollmentStatus(course.id)?.progressPercentage }}% Terminé
             </span>
             <span class="enrollment-count" *ngIf="!getEnrollmentStatus(course.id)?.isEnrolled || getEnrollmentStatus(course.id)?.status !== 'in_progress'">
-              {{ Math.floor(Math.random() * 500) + 50 }} students enrolled
+              {{ Math.floor(Math.random() * 500) + 50 }} étudiants inscrits
             </span>
           </div>
           <!-- Moved category to bottom -->

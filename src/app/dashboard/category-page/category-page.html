@@ -8,7 +8,7 @@
   
   <!-- Header -->
   <header class="page-header">
-    <h1>{{ categoryName }} Courses</h1>
+    <h1>Cours de {{ categoryName }}</h1>
     <p>Explorez nos meilleurs cours dans la catégorie "{{ categoryName }}"</p>
   </header>
 
@@ -30,7 +30,7 @@
         </div>
         <div class="course-footer">
           <span class="price">${{ course.price }}</span>
-          <button class="btn-enroll" (click)="$event.stopPropagation()">Enroll Now</button>
+          <button class="btn-enroll" (click)="$event.stopPropagation()">S'inscrire maintenant</button>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@
 
   <!-- Recommended -->
   <section class="recommended-section">
-    <h2>💡 Recommended for you</h2>
+    <h2>💡 Recommandés pour vous</h2>
     <div class="course-grid">
       <div class="course-card" *ngFor="let course of courses.slice(0, 3)">
         <img [src]="course.imageUrl" [alt]="course.title" class="course-image">
@@ -52,7 +52,7 @@
           </div>
           <div class="course-footer">
             <span class="price">${{ course.price }}</span>
-            <button class="btn-enroll">Enroll Now</button>
+            <button class="btn-enroll">S'inscrire maintenant</button>
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
   <!-- Professeurs -->
   <!-- Professeurs -->
 <section class="professors-section">
-  <h2>🧑‍🏫 Available Professors</h2>
+  <h2>🧑‍🏫 Professeurs disponibles</h2>
   <div class="professor-grid">
     <div class="professor-card" *ngFor="let course of uniqueInstructors">
       <img 
@@ -71,7 +71,7 @@
         class="professor-image">
       <div class="professor-info">
         <h3>{{ course.instructor }}</h3>
-        <p>Teaches {{ course.title }}</p>
+        <p>Enseigne {{ course.title }}</p>
       </div>
     </div>
   </div>

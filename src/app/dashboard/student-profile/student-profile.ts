@@ -103,11 +103,11 @@ export class StudentProfileComponent implements OnInit {
           return;
         }
         
-        this.errorMessage = 'Failed to load profile';
+        this.errorMessage = 'Échec du chargement du profil';
         // Fallback to auth service user data
         const user = this.authService.getUser();
         if (user) {
-          this.studentName = user.username || 'Student';
+          this.studentName = user.username || 'Étudiant';
           this.studentEmail = user.email || '';
           this.editForm.username = user.username || '';
           this.editForm.email = user.email || '';

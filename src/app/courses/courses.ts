@@ -51,7 +51,7 @@ export class CoursesComponent implements OnInit {
   ) {
     const user = this.authService.getUser();
     if (user) {
-      this.userName = user.username || 'User';
+      this.userName = user.username || 'Utilisateur';
     }
   }
 
@@ -131,7 +131,7 @@ export class CoursesComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading courses:', error);
-        this.errorMessage = 'Failed to load courses. Please try again later.';
+        this.errorMessage = 'Échec du chargement des cours. Veuillez réessayer plus tard.';
         this.loading = false;
       }
     });

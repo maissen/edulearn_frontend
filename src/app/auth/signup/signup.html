@@ -5,8 +5,8 @@
       <img src="https://edumentonline.com/wp-content/uploads/2024/03/Delaware-Student-Success-About-the-Delaware-Higher-Education-Office.jpg" alt="Education Background" class="background-image">
     </div>
     <div class="overlay-text">
-      <h2>Start your learning journey today.</h2>
-      <p>Join thousands of students and teachers already using EduLearn.</p>
+      <h2>Commencez votre parcours d'apprentissage dès aujourd'hui.</h2>
+      <p>Rejoignez des milliers d'étudiants et d'enseignants qui utilisent déjà EduLearn.</p>
     </div>
   </div>
 
@@ -14,30 +14,30 @@
   <div class="form-column">
     <div class="form-wrapper">
       <div class="form-header">
-        <h3>Create an Account</h3>
+        <h3>Créer un compte</h3>
         <div class="auth-tabs">
-          <button class="tab" (click)="goToLogin()">Login</button>
-          <button class="tab active">Register</button>
+          <button class="tab" (click)="goToLogin()">Connexion</button>
+          <button class="tab active">Inscription</button>
         </div>
       </div>
 
       <div class="auth-description">
-        <p>Create your account to access personalized learning content and track your progress.</p>
+        <p>Créez votre compte pour accéder à un contenu d'apprentissage personnalisé et suivre vos progrès.</p>
       </div>
 
       <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username">Nom d'utilisateur</label>
           <input 
             type="text" 
             id="username" 
             formControlName="username" 
-            placeholder="Choose a username"
+            placeholder="Choisissez un nom d'utilisateur"
             [class.invalid]="submitted && username?.errors">
           @if (submitted && username?.errors) {
             <div class="error-message">
               @if (username?.errors?.['required']) {
-                <div>Username is required</div>
+                <div>Le nom d'utilisateur est requis</div>
               }
             </div>
           }
@@ -49,28 +49,28 @@
             type="email" 
             id="email" 
             formControlName="email" 
-            placeholder="Enter your email"
+            placeholder="Entrez votre email"
             [class.invalid]="submitted && email?.errors">
           @if (submitted && email?.errors) {
             <div class="error-message">
               @if (email?.errors?.['required']) {
-                <div>Email is required</div>
+                <div>L'email est requis</div>
               }
               @if (email?.errors?.['email']) {
-                <div>Please enter a valid email</div>
+                <div>Veuillez entrer un email valide</div>
               }
             </div>
           }
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">Mot de passe</label>
           <div class="password-input-wrapper">
             <input 
               [type]="showPassword ? 'text' : 'password'" 
               id="password" 
               formControlName="password" 
-              placeholder="Create a password"
+            placeholder="Créez un mot de passe"
               [class.invalid]="submitted && password?.errors">
             <span class="toggle-password" (click)="togglePasswordVisibility()">
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -82,25 +82,25 @@
           @if (submitted && password?.errors) {
             <div class="error-message">
               @if (password?.errors?.['required']) {
-                <div>Password is required</div>
+                <div>Le mot de passe est requis</div>
               }
               @if (password?.errors?.['minlength']) {
-                <div>Password must be at least 6 characters</div>
+                <div>Le mot de passe doit comporter au moins 6 caractères</div>
               }
             </div>
           }
         </div>
 
         <div class="form-group">
-          <label>Register as</label>
+          <label>S'inscrire en tant que</label>
           <div class="radio-group">
             <div class="radio-option">
               <input type="radio" id="student-role" formControlName="role" value="student">
-              <label for="student-role">Student</label>
+              <label for="student-role">Étudiant</label>
             </div>
             <div class="radio-option">
               <input type="radio" id="teacher-role" formControlName="role" value="teacher">
-              <label for="teacher-role">Teacher</label>
+              <label for="teacher-role">Enseignant</label>
             </div>
           </div>
         </div>
@@ -114,12 +114,12 @@
         }
 
         <button type="submit" class="auth-button" [disabled]="loading">
-          {{ loading ? 'Registering...' : 'Register' }}
+          {{ loading ? 'Inscription en cours...' : 'Inscription' }}
         </button>
       </form>
 
       <div class="auth-footer">
-        <p>Already have an account? <a (click)="goToLogin()" class="signup-link">Login</a></p>
+        <p>Vous avez déjà un compte ? <a (click)="goToLogin()" class="signup-link">Connexion</a></p>
       </div>
     </div>
   </div>

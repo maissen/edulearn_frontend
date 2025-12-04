@@ -48,8 +48,8 @@
         <h3>{{ c.titre }}</h3>
         <p class="course-description">{{ c.description || 'Continuez votre apprentissage dans ce cours' }}</p>
         <div class="course-meta">
-          <span class="teacher-info">By {{ c.teacher_username }}</span>
-          <span class="enrolled-date">Started: {{ c.started_at | date:'shortDate' }}</span>
+          <span class="teacher-info">Par {{ c.teacher_username }}</span>
+          <span class="enrolled-date">Débuté le : {{ c.started_at | date:'shortDate' }}</span>
         </div>
         <button class="btn-continue" (click)="openCourse(c.id)">Continuer</button>
       </div>
@@ -79,7 +79,7 @@
           <span class="teacher-info">By {{ c.teacher_username }}</span>
           <span class="completion-date">Completed: {{ c.completed_at | date:'shortDate' }}</span>
         </div>
-        <button class="btn-review" (click)="openCourse(c.id)">Review Course</button>
+        <button class="btn-review" (click)="openCourse(c.id)">Revoir le cours</button>
       </div>
     </div>
   </div>
@@ -93,7 +93,7 @@
 
 <!-- Quiz Results -->
 <section class="section">
-  <h2>🎯 Your taken tests</h2>
+  <h2>🎯 Vos tests passés</h2>
   <div class="quiz-results-grid" *ngIf="quizResults.length > 0; else noQuizResults">
     <div class="quiz-card" *ngFor="let quiz of quizResults">
       <div class="quiz-header">
@@ -107,22 +107,22 @@
         </div>
         <div class="stat">
           <div class="stat-value">{{ quiz.correct_answers }}/{{ quiz.total_questions }}</div>
-          <div class="stat-label">Correct</div>
+          <div class="stat-label">Correctes</div>
         </div>
         <div class="stat">
           <div class="stat-value">{{ Math.round((quiz.correct_answers / quiz.total_questions) * 100) }}%</div>
-          <div class="stat-label">Accuracy</div>
+          <div class="stat-label">Précision</div>
         </div>
       </div>
       <div class="quiz-footer">
-        <span class="submitted-date">Submitted: {{ quiz.submitted_at | date:'short' }}</span>
+        <span class="submitted-date">Soumis : {{ quiz.submitted_at | date:'short' }}</span>
         <span class="score-badge" [ngClass]="{
           'excellent': isScoreExcellent(quiz),
           'good': isScoreGood(quiz),
           'average': isScoreAverage(quiz),
           'poor': isScorePoor(quiz)
         }">
-          {{ isQuizPassed(quiz) ? 'Passed' : 'Failed' }}
+          {{ isQuizPassed(quiz) ? 'Réussi' : 'Échoué' }}
         </span>
       </div>
     </div>

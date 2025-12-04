@@ -16,13 +16,13 @@
   <!-- Page Header -->
   <header class="page-header">
     <div class="header-content">
-      <h1>📚 Manage My Courses</h1>
-      <p>Create, edit and organize your educational content</p>
+      <h1>📚 Gérer mes cours</h1>
+      <p>Créez, modifiez et organisez votre contenu éducatif</p>
     </div>
     <div class="header-stats">
       <div class="stat-item">
         <span class="stat-number">{{ courses.length }}</span>
-        <span class="stat-label">Courses</span>
+        <span class="stat-label">Cours</span>
       </div>
     </div>
   </header>
@@ -32,7 +32,7 @@
     <div class="alert alert-success">
       <div class="alert-icon">✅</div>
       <div class="alert-content">
-        <strong>Success!</strong> {{ successMessage }}
+        <strong>Succès !</strong> {{ successMessage }}
       </div>
       <button class="alert-close" (click)="successMessage = ''">&times;</button>
     </div>
@@ -42,7 +42,7 @@
     <div class="alert alert-error">
       <div class="alert-icon">❌</div>
       <div class="alert-content">
-        <strong>Error:</strong> {{ errorMessage }}
+        <strong>Erreur :</strong> {{ errorMessage }}
       </div>
       <button class="alert-close" (click)="errorMessage = ''">&times;</button>
     </div>
@@ -54,13 +54,13 @@
       <div class="form-header">
         <h2>
           @if (mode === 'create') {
-            <i class="icon-add"></i> Create New Course
+            <i class="icon-add"></i> Créer un nouveau cours
           } @else {
-            <i class="icon-edit"></i> Edit Course: {{ oldCourse.title }}
+            <i class="icon-edit"></i> Modifier le cours : {{ oldCourse.title }}
           }
         </h2>
         <div class="form-mode-indicator" [class.mode-create]="mode === 'create'" [class.mode-edit]="mode === 'edit'">
-          {{ mode === 'create' ? 'Creating' : 'Editing' }}
+          {{ mode === 'create' ? 'Création' : 'Modification' }}
         </div>
       </div>
 
@@ -70,9 +70,9 @@
           <div class="left-column">
             <!-- Titre -->
             <div class="form-group" [class.error]="formErrors['title']">
-              <label for="courseTitle">Course Title *</label>
+              <label for="courseTitle">Titre du cours *</label>
               <input type="text" id="courseTitle" [(ngModel)]="oldCourse.title" name="title"
-                     placeholder="Enter course title" [class.error]="formErrors['title']" required>
+                     placeholder="Entrez le titre du cours" [class.error]="formErrors['title']" required>
               @if (formErrors['title']) {
                 <div class="error-message">{{ formErrors['title'] }}</div>
               }
@@ -81,7 +81,7 @@
             <div class="form-group" [class.error]="formErrors['description']">
               <label for="courseDescription">Description *</label>
               <textarea id="courseDescription" [(ngModel)]="newCourse.description" name="description"
-                        rows="4" placeholder="Describe what students will learn in this course"
+                        rows="4" placeholder="Décrivez ce que les étudiants apprendront dans ce cours"
                         [class.error]="formErrors['description']" required></textarea>
               @if (formErrors['description']) {
                 <div class="error-message">{{ formErrors['description'] }}</div>
@@ -111,17 +111,17 @@
             }
 
             <div class="form-group">
-              <label for="courseImage">Cover Image URL</label>
+              <label for="courseImage">URL de l'image de couverture</label>
               <input type="url" id="courseImage" [(ngModel)]="oldCourse.image_url" name="image_url"
-                     placeholder="https://example.com/image.jpg">
-              <small>Optional: URL to course thumbnail image</small>
+                     placeholder="https://exemple.com/image.jpg">
+              <small>Optionnel : URL de la vignette du cours</small>
             </div>
 
             <div class="form-group">
-              <label for="youtubeVideoUrl">YouTube Video URL</label>
+              <label for="youtubeVideoUrl">URL de la vidéo YouTube</label>
               <input type="url" id="youtubeVideoUrl" [(ngModel)]="newCourse.youtube_vd_url" name="youtube_vd_url"
                      placeholder="https://www.youtube.com/watch?v=...">
-              <small>Optional: Direct YouTube video URL</small>
+              <small>Optionnel : URL directe de la vidéo YouTube</small>
             </div>
             
             <!-- Form Actions moved to left column -->
@@ -130,22 +130,22 @@
                 @if (loading || isSubmitting) {
                   <span class="loading-spinner"></span>
                   @if (mode === 'create') {
-                    Creating Course...
+                    Création du cours...
                   } @else {
-                    Updating Course...
+                    Mise à jour du cours...
                   }
                 } @else {
                   @if (mode === 'create') {
-                    <i class="icon-rocket"></i> Create Course
+                    <i class="icon-rocket"></i> Créer le cours
                   } @else {
-                    <i class="icon-check"></i> Update Course
+                    <i class="icon-check"></i> Mettre à jour le cours
                   }
                 }
               </button>
               @if (mode === 'edit') {
                 <button type="button" class="btn-secondary" (click)="resetForm()"
                         [disabled]="isSubmitting || loading">
-                  <i class="icon-cancel"></i> Cancel
+                  <i class="icon-cancel"></i> Annuler
                 </button>
               }
             </div>
@@ -155,19 +155,19 @@
           <div class="right-column">
             <div class="test-section">
               <div class="test-header">
-                <h3>Add a test for your course</h3>
+                <h3>Ajouter un test pour votre cours</h3>
               </div>
 
               <!-- Small Test Name Form -->
               <div class="test-form test-name-form">
                 <div class="form-group">
-                  <label>Test Name *</label>
+                  <label>Nom du test *</label>
                   <input type="text" [(ngModel)]="testName" name="testName"
-                         placeholder="Enter test name" required>
+                         placeholder="Entrez le nom du test" required>
                 </div>
                 <div class="test-form-actions">
                   <button type="button" class="btn-primary" (click)="saveTestName()" [disabled]="!testName || !testName.trim()">
-                    Add Question
+                    Ajouter une question
                   </button>
                 </div>
               </div>
@@ -175,11 +175,11 @@
               <!-- Question Form (appears when Add Question button is clicked) -->
               @if (showTestForm) {
                 <div class="test-form">
-                  <h4>Create a question for your test</h4>
+                  <h4>Créer une question pour votre test</h4>
                   <div class="form-group">
                     <label>Question *</label>
                     <input type="text" [(ngModel)]="currentQuiz.question" name="testQuestion"
-                           placeholder="Enter your test question" required>
+                           placeholder="Entrez votre question de test" required>
                   </div>
 
                   <div class="options-section">
@@ -205,33 +205,33 @@
                   </div>
 
                   <div class="form-group">
-                    <label>Correct Answer *</label>
+                    <label>Bonne réponse *</label>
                     <select [(ngModel)]="currentQuiz.correctAnswer" name="correctAnswer" required>
                       <option [value]="null" disabled selected>Select correct option</option>
-                      <option [value]="0" [disabled]="!currentQuiz.options[0]?.trim()">Option 1: {{ currentQuiz.options[0] || 'Option 1' }}</option>
-                      <option [value]="1" [disabled]="!currentQuiz.options[1]?.trim()">Option 2: {{ currentQuiz.options[1] || 'Option 2' }}</option>
-                      <option [value]="2" [disabled]="!currentQuiz.options[2]?.trim()">Option 3: {{ currentQuiz.options[2] || 'Option 3' }}</option>
-                      <option [value]="3" [disabled]="!currentQuiz.options[3]?.trim()">Option 4: {{ currentQuiz.options[3] || 'Option 4' }}</option>
+                      <option [value]="0" [disabled]="!currentQuiz.options[0]?.trim()">Option 1 : {{ currentQuiz.options[0] || 'Option 1' }}</option>
+                      <option [value]="1" [disabled]="!currentQuiz.options[1]?.trim()">Option 2 : {{ currentQuiz.options[1] || 'Option 2' }}</option>
+                      <option [value]="2" [disabled]="!currentQuiz.options[2]?.trim()">Option 3 : {{ currentQuiz.options[2] || 'Option 3' }}</option>
+                      <option [value]="3" [disabled]="!currentQuiz.options[3]?.trim()">Option 4 : {{ currentQuiz.options[3] || 'Option 4' }}</option>
                     </select>
                   </div>
 
                   <div class="test-form-actions">
-                    <button type="button" class="btn-secondary" (click)="cancelTestForm()">Cancel</button>
+                    <button type="button" class="btn-secondary" (click)="cancelTestForm()">Annuler</button>
                     <button type="button" class="btn-primary" (click)="saveTestQuestion()" [disabled]="!isQuizValid()">
-                      Save Question
+                      Enregistrer la question
                     </button>
-                  </div>
                 </div>
+              </div>
               }
 
               <!-- Existing Tests -->
               @if (oldCourse.quizzes.length > 0) {
                 <div class="tests-list">
-                  <h4>Existing Questions</h4>
+                  <h4>Questions existantes</h4>
                   <div class="test-item" *ngFor="let test of oldCourse.quizzes; let i = index">
                     <div class="test-item-header">
                       <h5>Question {{ i + 1 }}</h5>
-                      <button type="button" class="btn-remove-test" (click)="removeQuiz(i)" title="Remove test">
+                      <button type="button" class="btn-remove-test" (click)="removeQuiz(i)" title="Supprimer le test">
                         <i class="icon-trash"></i>
                       </button>
                     </div>
@@ -249,7 +249,7 @@
               } @else if (!showTestForm && !currentQuiz.titre) {
                 <div class="empty-tests">
                   <div class="empty-icon">🧠</div>
-                  <p>Enter a test name and click "Add Question" to get started!</p>
+                  <p>Entrez un nom de test et cliquez sur « Ajouter une question » pour commencer !</p>
                 </div>
               }
             </div>

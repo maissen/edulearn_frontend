@@ -3,7 +3,7 @@
   <div class="nav-menu">
     <!-- Student Links -->
     <ng-container *ngIf="isStudent()">
-      <a routerLink="/courses" routerLinkActive="active">Courses</a>
+      <a routerLink="/courses" routerLinkActive="active">Cours</a>
       <!-- Removed Forum link as requested -->
       <a routerLink="/profile" routerLinkActive="active">Profil</a>
     </ng-container>
@@ -16,12 +16,12 @@
 
     <!-- Admin Links -->
     <ng-container *ngIf="isAdmin()">
-      <a routerLink="/admin" routerLinkActive="active">Dashboard</a>
-      <a routerLink="/admin/teachers" routerLinkActive="active">Teachers</a>
-      <a routerLink="/admin/students" routerLinkActive="active">Students</a>
+      <a routerLink="/admin" routerLinkActive="active">Tableau de bord</a>
+      <a routerLink="/admin/teachers" routerLinkActive="active">Enseignants</a>
+      <a routerLink="/admin/students" routerLinkActive="active">Étudiants</a>
       <a routerLink="/admin/classes" routerLinkActive="active">Classes</a>
-      <a routerLink="/admin/courses" routerLinkActive="active">Courses</a>
-      <a routerLink="/admin/exams" routerLinkActive="active">Exams</a>
+      <a routerLink="/admin/courses" routerLinkActive="active">Cours</a>
+      <a routerLink="/admin/exams" routerLinkActive="active">Examens</a>
     </ng-container>
 
     <ng-container *ngIf="!isStudent() && !isTeacher() && !isAdmin()">

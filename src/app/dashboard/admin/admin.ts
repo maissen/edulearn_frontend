@@ -152,7 +152,7 @@ export class AdminComponent implements OnInit {
       error: (err: any) => {
         this.statisticsLoading = false;
         console.error('Error loading statistics:', err);
-        this.showSnackbarMessage('Failed to load statistics. Please try again.', 'error');
+        this.showSnackbarMessage('Échec du chargement des statistiques. Veuillez réessayer.', 'error');
       }
     });
   }
@@ -185,7 +185,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to load users. Please try again.', 'error');
+          this.showSnackbarMessage('Échec du chargement des utilisateurs. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -228,7 +228,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to load courses. Please try again.', 'error');
+          this.showSnackbarMessage('Échec du chargement des cours. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -246,7 +246,7 @@ export class AdminComponent implements OnInit {
           this.allLogs = response.logs;
           this.updatePaginatedLogs();
         } else {
-          this.showSnackbarMessage('Failed to load logs.', 'error');
+          this.showSnackbarMessage('Échec du chargement des logs.', 'error');
         }
       },
       error: (err: any) => {
@@ -264,7 +264,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to load logs. Please try again.', 'error');
+          this.showSnackbarMessage('Échec du chargement des logs. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -281,7 +281,7 @@ export class AdminComponent implements OnInit {
         if (response.success) {
           this.allBackups = response.backups;
         } else {
-          this.showSnackbarMessage('Failed to load backups.', 'error');
+          this.showSnackbarMessage('Échec du chargement des sauvegardes.', 'error');
         }
       },
       error: (err: any) => {
@@ -299,7 +299,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to load backups. Please try again.', 'error');
+          this.showSnackbarMessage('Échec du chargement des sauvegardes. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -324,7 +324,7 @@ export class AdminComponent implements OnInit {
           };
           this.allBackups.unshift(newBackup);
         } else {
-          this.showSnackbarMessage('Failed to create backup.', 'error');
+          this.showSnackbarMessage('Échec de la création de la sauvegarde.', 'error');
         }
       },
       error: (err: any) => {
@@ -342,7 +342,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to create backup. Please try again.', 'error');
+          this.showSnackbarMessage('Échec de la création de la sauvegarde. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -377,7 +377,7 @@ export class AdminComponent implements OnInit {
             // Remove the deleted backup from the list
             this.allBackups = this.allBackups.filter(backup => backup.filename !== this.deleteBackupFilename);
           } else {
-            this.showSnackbarMessage('Failed to delete backup.', 'error');
+            this.showSnackbarMessage('Échec de la suppression de la sauvegarde.', 'error');
           }
         },
         error: (err: any) => {
@@ -395,7 +395,7 @@ export class AdminComponent implements OnInit {
           } else if (err.status === 0) {
             this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
           } else {
-            this.showSnackbarMessage('Failed to delete backup. Please try again.', 'error');
+            this.showSnackbarMessage('Échec de la suppression de la sauvegarde. Veuillez réessayer.', 'error');
           }
         }
       });
@@ -420,7 +420,7 @@ export class AdminComponent implements OnInit {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
         
-        this.showSnackbarMessage('Logs exported successfully', 'success');
+        this.showSnackbarMessage('Export des logs réussi', 'success');
       },
       error: (err: any) => {
         this.logLoading = false;
@@ -437,7 +437,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to export logs. Please try again.', 'error');
+          this.showSnackbarMessage('Échec de l’export des logs. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -456,7 +456,7 @@ export class AdminComponent implements OnInit {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
         
-        this.showSnackbarMessage('Backup downloaded successfully', 'success');
+        this.showSnackbarMessage('Sauvegarde téléchargée avec succès', 'success');
       },
       error: (err: any) => {
         console.error('Error downloading backup:', err);
@@ -470,7 +470,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to download backup. Please try again.', 'error');
+          this.showSnackbarMessage('Échec du téléchargement de la sauvegarde. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -502,7 +502,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to toggle teacher activation. Please try again.', 'error');
+          this.showSnackbarMessage('Échec du changement d’activation de l’enseignant. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -534,7 +534,7 @@ export class AdminComponent implements OnInit {
         } else if (err.status === 0) {
           this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to toggle student activation. Please try again.', 'error');
+          this.showSnackbarMessage('Échec du changement d’activation de l’étudiant. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -613,20 +613,20 @@ export class AdminComponent implements OnInit {
   createAdmin() {
     // Basic validation
     if (!this.newAdmin.username || !this.newAdmin.email || !this.newAdmin.password) {
-      this.showSnackbarMessage('Please fill in all required fields', 'error');
+      this.showSnackbarMessage('Veuillez remplir tous les champs requis', 'error');
       return;
     }
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.newAdmin.email)) {
-      this.showSnackbarMessage('Please enter a valid email address', 'error');
+      this.showSnackbarMessage('Veuillez entrer une adresse email valide', 'error');
       return;
     }
     
     // Password validation
     if (this.newAdmin.password.length < 6) {
-      this.showSnackbarMessage('Password must be at least 6 characters long', 'error');
+      this.showSnackbarMessage('Le mot de passe doit comporter au moins 6 caractères', 'error');
       return;
     }
     
@@ -644,17 +644,17 @@ export class AdminComponent implements OnInit {
         console.error('Error creating admin:', err);
         
         if (err.status === 409) {
-          this.showSnackbarMessage('An admin with this email or username already exists', 'error');
+          this.showSnackbarMessage('Un administrateur avec cet email ou nom d’utilisateur existe déjà', 'error');
         } else if (err.status === 403) {
-          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+          this.showSnackbarMessage('Accès refusé. Veuillez vous assurer que vous êtes connecté en tant qu’administrateur.', 'error');
         } else if (err.status === 401) {
-          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.showSnackbarMessage('Échec de l’authentification. Veuillez vous reconnecter.', 'error');
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+          this.showSnackbarMessage('Erreur réseau. Veuillez vérifier votre connexion et réessayer.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to create admin. Please try again.', 'error');
+          this.showSnackbarMessage('Échec de la création de l’administrateur. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -675,15 +675,15 @@ export class AdminComponent implements OnInit {
         console.error('Error creating student:', err);
         
         if (err.status === 403) {
-          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+          this.showSnackbarMessage('Accès refusé. Veuillez vous assurer que vous êtes connecté en tant qu’administrateur.', 'error');
         } else if (err.status === 401) {
-          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.showSnackbarMessage('Échec de l’authentification. Veuillez vous reconnecter.', 'error');
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+          this.showSnackbarMessage('Erreur réseau. Veuillez vérifier votre connexion et réessayer.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to create student. Please try again.', 'error');
+          this.showSnackbarMessage('Échec de la création de l’étudiant. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -720,15 +720,15 @@ export class AdminComponent implements OnInit {
           console.error('Error deleting teacher:', err);
           
           if (err.status === 403) {
-            this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+            this.showSnackbarMessage('Accès refusé. Veuillez vous assurer que vous êtes connecté en tant qu’administrateur.', 'error');
           } else if (err.status === 401) {
-            this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+            this.showSnackbarMessage('Échec de l’authentification. Veuillez vous reconnecter.', 'error');
             this.authService.logout();
             this.router.navigate(['/login']);
           } else if (err.status === 0) {
-            this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+            this.showSnackbarMessage('Erreur réseau. Veuillez vérifier votre connexion et réessayer.', 'error');
           } else {
-            this.showSnackbarMessage('Failed to delete teacher. Please try again.', 'error');
+            this.showSnackbarMessage('Échec de la suppression de l’enseignant. Veuillez réessayer.', 'error');
           }
         }
       });
@@ -748,15 +748,15 @@ export class AdminComponent implements OnInit {
           console.error('Error deleting student:', err);
           
           if (err.status === 403) {
-            this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+            this.showSnackbarMessage('Accès refusé. Veuillez vous assurer que vous êtes connecté en tant qu’administrateur.', 'error');
           } else if (err.status === 401) {
-            this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+            this.showSnackbarMessage('Échec de l’authentification. Veuillez vous reconnecter.', 'error');
             this.authService.logout();
             this.router.navigate(['/login']);
           } else if (err.status === 0) {
-            this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+            this.showSnackbarMessage('Erreur réseau. Veuillez vérifier votre connexion et réessayer.', 'error');
           } else {
-            this.showSnackbarMessage('Failed to delete student. Please try again.', 'error');
+            this.showSnackbarMessage('Échec de la suppression de l’étudiant. Veuillez réessayer.', 'error');
           }
         }
       });
@@ -791,15 +791,15 @@ export class AdminComponent implements OnInit {
         console.error('Error deleting course:', err);
         
         if (err.status === 403) {
-          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+          this.showSnackbarMessage('Accès refusé. Veuillez vous assurer que vous êtes connecté en tant qu’administrateur.', 'error');
         } else if (err.status === 401) {
-          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.showSnackbarMessage('Échec de l’authentification. Veuillez vous reconnecter.', 'error');
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+          this.showSnackbarMessage('Erreur réseau. Veuillez vérifier votre connexion et réessayer.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to delete course. Please try again.', 'error');
+          this.showSnackbarMessage('Échec de la suppression du cours. Veuillez réessayer.', 'error');
         }
       }
     });
@@ -1067,7 +1067,7 @@ export class AdminComponent implements OnInit {
           this.allLogs = [];
           this.updatePaginatedLogs();
         } else {
-          this.showSnackbarMessage('Failed to clear logs.', 'error');
+          this.showSnackbarMessage('Échec de la suppression des logs.', 'error');
         }
       },
       error: (err: any) => {
@@ -1076,16 +1076,16 @@ export class AdminComponent implements OnInit {
 
         // More specific error handling
         if (err.status === 403) {
-          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+          this.showSnackbarMessage('Accès refusé. Veuillez vous assurer que vous êtes connecté en tant qu’administrateur.', 'error');
         } else if (err.status === 401) {
-          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.showSnackbarMessage('Échec de l’authentification. Veuillez vous reconnecter.', 'error');
           // Automatically redirect to login
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+          this.showSnackbarMessage('Erreur réseau. Veuillez vérifier votre connexion et réessayer.', 'error');
         } else {
-          this.showSnackbarMessage('Failed to clear logs. Please try again.', 'error');
+          this.showSnackbarMessage('Échec de la suppression des logs. Veuillez réessayer.', 'error');
         }
       }
     });

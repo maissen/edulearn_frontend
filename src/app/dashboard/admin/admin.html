@@ -3,16 +3,16 @@
   <div class="top-nav">
     <div class="nav-logo">EduLearn Admin</div>
     <div class="nav-actions">
-      <span class="user-name">Welcome, {{ userName }}</span>
-      <button class="logout-btn" (click)="logout()">Logout</button>
+      <span class="user-name">Bienvenue, {{ userName }}</span>
+      <button class="logout-btn" (click)="logout()">Déconnexion</button>
     </div>
   </div>
 
   <!-- Hero Section -->
   <section class="hero-banner">
     <div class="hero-content">
-      <h1>Admin Dashboard</h1>
-      <p>Manage your school platform from here.</p>
+      <h1>Tableau de bord administrateur</h1>
+      <p>Gérez votre plateforme scolaire depuis ici.</p>
     </div>
   </section>
 
@@ -29,55 +29,55 @@
 
   <!-- Loading indicator -->
   <div *ngIf="loading" class="loading">
-    <p>Loading users...</p>
+    <p>Chargement des utilisateurs...</p>
   </div>
 
   <!-- Action loading indicator -->
   <div *ngIf="actionLoading" class="action-loading">
-    <p>Processing request...</p>
+    <p>Traitement de la demande...</p>
   </div>
 
   <!-- Statistics Section -->
   <section class="statistics-section" *ngIf="!statisticsLoading">
     <div class="table-header" style="margin-top: 50px;">
-      <h2>System Statistics</h2>
+      <h2>Statistiques du système</h2>
       <div class="header-actions">
-        <button class="create-btn" (click)="openCreateAdminForm()">Create New Admin</button>
+        <button class="create-btn" (click)="openCreateAdminForm()">Créer un nouvel administrateur</button>
         <button class="refresh-btn" (click)="loadStatistics()" [disabled]="statisticsLoading">
-          <span *ngIf="!statisticsLoading">Refresh</span>
-          <span *ngIf="statisticsLoading">Loading...</span>
+          <span *ngIf="!statisticsLoading">Actualiser</span>
+          <span *ngIf="statisticsLoading">Chargement...</span>
         </button>
       </div>
     </div>
     <div class="stats-grid">
       <div class="stat-card">
-        <h3>Users</h3>
+        <h3>Utilisateurs</h3>
         <div class="stat-item">
-          <span class="stat-label">Admins:</span>
+          <span class="stat-label">Administrateurs :</span>
           <span class="stat-value">{{ statistics.users.admins }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">Teachers:</span>
+          <span class="stat-label">Enseignants :</span>
           <span class="stat-value">{{ statistics.users.teachers }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">Students:</span>
+          <span class="stat-label">Étudiants :</span>
           <span class="stat-value">{{ statistics.users.students }}</span>
         </div>
       </div>
       
       <div class="stat-card">
-        <h3>Content</h3>
+        <h3>Contenu</h3>
         <div class="stat-item">
-          <span class="stat-label">Courses:</span>
+          <span class="stat-label">Cours :</span>
           <span class="stat-value">{{ statistics.content.courses }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">Tests:</span>
+          <span class="stat-label">Tests :</span>
           <span class="stat-value">{{ statistics.content.tests }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">Questions:</span>
+          <span class="stat-label">Questions :</span>
           <span class="stat-value">{{ statistics.content.questions }}</span>
         </div>
       </div>
@@ -86,16 +86,16 @@
   
   <section class="statistics-section" *ngIf="statisticsLoading">
     <div class="table-header">
-      <h2>System Statistics</h2>
+      <h2>Statistiques du système</h2>
       <div class="header-actions">
         <button class="refresh-btn" (click)="loadStatistics()" [disabled]="statisticsLoading">
-          <span *ngIf="!statisticsLoading">Refresh</span>
-          <span *ngIf="statisticsLoading">Loading...</span>
+          <span *ngIf="!statisticsLoading">Actualiser</span>
+          <span *ngIf="statisticsLoading">Chargement...</span>
         </button>
       </div>
     </div>
     <div class="loading-stats">
-      <p>Loading statistics...</p>
+      <p>Chargement des statistiques...</p>
     </div>
   </section>
   
@@ -104,13 +104,13 @@
     <!-- Teachers Table -->
     <div class="table-container">
       <div class="table-header">
-        <h2>Teachers</h2>
+        <h2>Enseignants</h2>
         <div class="header-actions">
           <button class="refresh-btn" (click)="loadAllUsers()" [disabled]="loading">
-            <span *ngIf="!loading">Refresh</span>
-            <span *ngIf="loading">Loading...</span>
+            <span *ngIf="!loading">Actualiser</span>
+            <span *ngIf="loading">Chargement...</span>
           </button>
-          <button class="create-btn" (click)="openCreateTeacherForm()">Create New Teacher</button>
+          <button class="create-btn" (click)="openCreateTeacherForm()">Créer un nouvel enseignant</button>
         </div>
       </div>
       
@@ -121,31 +121,31 @@
             class="filter-btn" 
             [class.active]="teacherFilter === 'all'"
             (click)="updateTeacherFilter('all')">
-            All Teachers
+            Tous les enseignants
           </button>
           <button 
             class="filter-btn" 
             [class.active]="teacherFilter === 'active'"
             (click)="updateTeacherFilter('active')">
-            Active Only
+            Actifs uniquement
           </button>
           <button 
             class="filter-btn" 
             [class.active]="teacherFilter === 'inactive'"
             (click)="updateTeacherFilter('inactive')">
-            Inactive Only
+            Inactifs uniquement
           </button>
           <button 
             class="filter-btn" 
             [class.active]="teacherFilter === 'newest'"
             (click)="updateTeacherFilter('newest')">
-            Newest First
+            Les plus récents
           </button>
           <button 
             class="filter-btn" 
             [class.active]="teacherFilter === 'oldest'"
             (click)="updateTeacherFilter('oldest')">
-            Oldest First
+            Les plus anciens
           </button>
         </div>
       </div>
@@ -154,11 +154,11 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Username</th>
+            <th>Nom d'utilisateur</th>
             <th>Email</th>
             <th>Module</th>
-            <th>Status</th>
-            <th>Created At</th>
+            <th>Statut</th>
+            <th>Créé le</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -170,7 +170,7 @@
             <td>{{ teacher.module }}</td>
             <td>
               <span class="status-badge" [ngClass]="{'active': teacher.isActivated, 'inactive': !teacher.isActivated}">
-                {{ teacher.isActivated ? 'Active' : 'Inactive' }}
+                {{ teacher.isActivated ? 'Actif' : 'Inactif' }}
               </span>
             </td>
             <td>{{ teacher.created_at | date:'short' }}</td>
@@ -180,18 +180,18 @@
                 [ngClass]="{'disable-btn': teacher.isActivated, 'enable-btn': !teacher.isActivated}"
                 (click)="toggleTeacherActivation(teacher)"
                 [disabled]="actionLoading">
-                {{ teacher.isActivated ? 'Disable' : 'Enable' }}
+                {{ teacher.isActivated ? 'Désactiver' : 'Activer' }}
               </button>
               <button 
                 class="delete-btn"
                 (click)="openDeleteConfirm('teacher', teacher.id, teacher.username)"
                 [disabled]="actionLoading">
-                Delete
+                Supprimer
               </button>
             </td>
           </tr>
           <tr *ngIf="paginatedTeachers.length === 0">
-            <td colspan="7" class="no-data">No teachers found</td>
+            <td colspan="7" class="no-data">Aucun enseignant trouvé</td>
           </tr>
         </tbody>
       </table>
@@ -202,16 +202,16 @@
           (click)="prevPageTeachers()" 
           [disabled]="currentPageTeachers === 1"
           class="pagination-btn">
-          Previous
+          Précédent
         </button>
         <span class="pagination-info">
-          Page {{ currentPageTeachers }} of {{ getTotalPagesTeachers() }}
+          Page {{ currentPageTeachers }} sur {{ getTotalPagesTeachers() }}
         </span>
         <button 
           (click)="nextPageTeachers()" 
           [disabled]="currentPageTeachers === getTotalPagesTeachers()"
           class="pagination-btn">
-          Next
+          Suivant
         </button>
       </div>
     </div>
@@ -219,13 +219,13 @@
     <!-- Students Table -->
     <div class="table-container">
       <div class="table-header">
-        <h2>Students</h2>
+        <h2>Étudiants</h2>
         <div class="header-actions">
           <button class="refresh-btn" (click)="loadAllUsers()" [disabled]="loading">
-            <span *ngIf="!loading">Refresh</span>
-            <span *ngIf="loading">Loading...</span>
+            <span *ngIf="!loading">Actualiser</span>
+            <span *ngIf="loading">Chargement...</span>
           </button>
-          <button class="create-btn" (click)="openCreateStudentForm()">Create New Student</button>
+          <button class="create-btn" (click)="openCreateStudentForm()">Créer un nouvel étudiant</button>
         </div>
       </div>
       
@@ -236,31 +236,31 @@
             class="filter-btn" 
             [class.active]="studentFilter === 'all'"
             (click)="updateStudentFilter('all')">
-            All Students
+            Tous les étudiants
           </button>
           <button 
             class="filter-btn" 
             [class.active]="studentFilter === 'active'"
             (click)="updateStudentFilter('active')">
-            Active Only
+            Actifs uniquement
           </button>
           <button 
             class="filter-btn" 
             [class.active]="studentFilter === 'inactive'"
             (click)="updateStudentFilter('inactive')">
-            Inactive Only
+            Inactifs uniquement
           </button>
           <button 
             class="filter-btn" 
             [class.active]="studentFilter === 'newest'"
             (click)="updateStudentFilter('newest')">
-            Newest First
+            Les plus récents
           </button>
           <button 
             class="filter-btn" 
             [class.active]="studentFilter === 'oldest'"
             (click)="updateStudentFilter('oldest')">
-            Oldest First
+            Les plus anciens
           </button>
         </div>
       </div>
@@ -269,10 +269,10 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Username</th>
+            <th>Nom d'utilisateur</th>
             <th>Email</th>
-            <th>Status</th>
-            <th>Created At</th>
+            <th>Statut</th>
+            <th>Créé le</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -283,7 +283,7 @@
             <td>{{ student.email }}</td>
             <td>
               <span class="status-badge" [ngClass]="{'active': student.isActivated, 'inactive': !student.isActivated}">
-                {{ student.isActivated ? 'Active' : 'Inactive' }}
+                {{ student.isActivated ? 'Actif' : 'Inactif' }}
               </span>
             </td>
             <td>{{ student.created_at | date:'short' }}</td>
@@ -293,18 +293,18 @@
                 [ngClass]="{'disable-btn': student.isActivated, 'enable-btn': !student.isActivated}"
                 (click)="toggleStudentActivation(student)"
                 [disabled]="actionLoading">
-                {{ student.isActivated ? 'Disable' : 'Enable' }}
+                {{ student.isActivated ? 'Désactiver' : 'Activer' }}
               </button>
               <button 
                 class="delete-btn"
                 (click)="openDeleteConfirm('student', student.id, student.username)"
                 [disabled]="actionLoading">
-                Delete
+                Supprimer
               </button>
             </td>
           </tr>
           <tr *ngIf="paginatedStudents.length === 0">
-            <td colspan="6" class="no-data">No students found</td>
+            <td colspan="6" class="no-data">Aucun étudiant trouvé</td>
           </tr>
         </tbody>
       </table>
@@ -315,16 +315,16 @@
           (click)="prevPageStudents()" 
           [disabled]="currentPageStudents === 1"
           class="pagination-btn">
-          Previous
+          Précédent
         </button>
         <span class="pagination-info">
-          Page {{ currentPageStudents }} of {{ getTotalPagesStudents() }}
+          Page {{ currentPageStudents }} sur {{ getTotalPagesStudents() }}
         </span>
         <button 
           (click)="nextPageStudents()" 
           [disabled]="currentPageStudents === getTotalPagesStudents()"
           class="pagination-btn">
-          Next
+          Suivant
         </button>
       </div>
     </div>
@@ -332,28 +332,28 @@
     <!-- Courses Table -->
     <div class="table-container">
       <div class="table-header">
-        <h2>Courses</h2>
+        <h2>Cours</h2>
         <div class="header-actions">
           <button class="refresh-btn" (click)="loadAllCourses()" [disabled]="courseLoading">
-            <span *ngIf="!courseLoading">Refresh</span>
-            <span *ngIf="courseLoading">Loading...</span>
+            <span *ngIf="!courseLoading">Actualiser</span>
+            <span *ngIf="courseLoading">Chargement...</span>
           </button>
         </div>
       </div>
       
       <!-- Course Loading indicator -->
       <div *ngIf="courseLoading" class="loading">
-        <p>Loading courses...</p>
+        <p>Chargement des cours...</p>
       </div>
       
       <table class="users-table" *ngIf="!courseLoading">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Teacher</th>
-            <th>Students Enrolled</th>
+            <th>Titre</th>
+            <th>Catégorie</th>
+            <th>Enseignant</th>
+            <th>Étudiants inscrits</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -369,12 +369,12 @@
                 class="delete-btn"
                 (click)="openCourseDeleteConfirm(course.id, course.title)"
                 [disabled]="actionLoading">
-                Delete
+                Supprimer
               </button>
             </td>
           </tr>
           <tr *ngIf="paginatedCourses.length === 0">
-            <td colspan="6" class="no-data">No courses found</td>
+            <td colspan="6" class="no-data">Aucun cours trouvé</td>
           </tr>
         </tbody>
       </table>
@@ -385,16 +385,16 @@
           (click)="prevPageCourses()" 
           [disabled]="currentPageCourses === 1"
           class="pagination-btn">
-          Previous
+          Précédent
         </button>
         <span class="pagination-info">
-          Page {{ currentPageCourses }} of {{ getTotalPagesCourses() }}
+          Page {{ currentPageCourses }} sur {{ getTotalPagesCourses() }}
         </span>
         <button 
           (click)="nextPageCourses()" 
           [disabled]="currentPageCourses === getTotalPagesCourses()"
           class="pagination-btn">
-          Next
+          Suivant
         </button>
       </div>
     </div>
@@ -402,30 +402,30 @@
     <!-- Backups Table -->
     <div class="table-container">
       <div class="table-header">
-        <h2>Database Backups</h2>
+        <h2>Sauvegardes de base de données</h2>
         <div class="header-actions">
           <button class="create-btn" (click)="createBackup()" [disabled]="backupLoading">
-            <span *ngIf="!backupLoading">Create Backup</span>
-            <span *ngIf="backupLoading">Creating...</span>
+            <span *ngIf="!backupLoading">Créer une sauvegarde</span>
+            <span *ngIf="backupLoading">Création...</span>
           </button>
           <button class="refresh-btn" (click)="refreshBackups()" [disabled]="backupLoading">
-            <span *ngIf="!backupLoading">Refresh</span>
-            <span *ngIf="backupLoading">Loading...</span>
+            <span *ngIf="!backupLoading">Actualiser</span>
+            <span *ngIf="backupLoading">Chargement...</span>
           </button>
         </div>
       </div>
       
       <!-- Backup Loading indicator -->
       <div *ngIf="backupLoading" class="loading">
-        <p>Loading backups...</p>
+        <p>Chargement des sauvegardes...</p>
       </div>
       
       <table class="users-table" *ngIf="!backupLoading">
         <thead>
           <tr>
-            <th>Filename</th>
-            <th>Created At</th>
-            <th>Size</th>
+            <th>Nom du fichier</th>
+            <th>Créé le</th>
+            <th>Taille</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -438,18 +438,18 @@
               <button 
                 class="download-btn"
                 (click)="downloadBackup(backup.filename)">
-                Download
+                Télécharger
               </button>
               <button 
                 class="delete-btn"
                 (click)="openBackupDeleteConfirm(backup.filename)"
                 [disabled]="actionLoading">
-                Delete
+                Supprimer
               </button>
             </td>
           </tr>
           <tr *ngIf="allBackups.length === 0">
-            <td colspan="4" class="no-data">No backups found</td>
+            <td colspan="4" class="no-data">Aucune sauvegarde trouvée</td>
           </tr>
         </tbody>
       </table>
@@ -458,36 +458,36 @@
     <!-- Logs Table -->
     <div class="table-container">
       <div class="table-header">
-        <h2>System Logs</h2>
+        <h2>Journaux système</h2>
         <div class="header-actions">
           <button class="clear-btn" (click)="clearLogs()" [disabled]="logLoading">
-            <span *ngIf="!logLoading">Clear All Logs</span>
-            <span *ngIf="logLoading">Clearing...</span>
+            <span *ngIf="!logLoading">Effacer tous les journaux</span>
+            <span *ngIf="logLoading">Effacement...</span>
           </button>
           <button class="export-btn" (click)="exportLogs()" [disabled]="logLoading">
-            <span *ngIf="!logLoading">Export to CSV</span>
-            <span *ngIf="logLoading">Exporting...</span>
+            <span *ngIf="!logLoading">Exporter en CSV</span>
+            <span *ngIf="logLoading">Exportation...</span>
           </button>
           <button class="refresh-btn" (click)="refreshLogs()" [disabled]="logLoading">
-            <span *ngIf="!logLoading">Refresh</span>
-            <span *ngIf="logLoading">Loading...</span>
+            <span *ngIf="!logLoading">Actualiser</span>
+            <span *ngIf="logLoading">Chargement...</span>
           </button>
         </div>
       </div>
       
       <!-- Log Loading indicator -->
       <div *ngIf="logLoading" class="loading">
-        <p>Loading logs...</p>
+        <p>Chargement des journaux...</p>
       </div>
       
       <table class="users-table" *ngIf="!logLoading">
         <thead>
           <tr>
-            <th>Timestamp</th>
-            <th>Level</th>
+            <th>Horodatage</th>
+            <th>Niveau</th>
             <th>Message</th>
             <th>Service</th>
-            <th>User ID</th>
+            <th>ID utilisateur</th>
           </tr>
         </thead>
         <tbody>
@@ -503,7 +503,7 @@
             <td>{{ log.userId }}</td>
           </tr>
           <tr *ngIf="paginatedLogs.length === 0">
-            <td colspan="5" class="no-data">No logs found</td>
+            <td colspan="5" class="no-data">Aucun journal trouvé</td>
           </tr>
         </tbody>
       </table>
@@ -514,16 +514,16 @@
           (click)="prevPageLogs()" 
           [disabled]="currentPageLogs === 1"
           class="pagination-btn">
-          Previous
+          Précédent
         </button>
         <span class="pagination-info">
-          Page {{ currentPageLogs }} of {{ getTotalPagesLogs() }}
+          Page {{ currentPageLogs }} sur {{ getTotalPagesLogs() }}
         </span>
         <button 
           (click)="nextPageLogs()" 
           [disabled]="currentPageLogs === getTotalPagesLogs()"
           class="pagination-btn">
-          Next
+          Suivant
         </button>
       </div>
     </div>
@@ -533,13 +533,13 @@
   <div class="modal" *ngIf="showCreateTeacherForm">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Create New Teacher</h3>
+        <h3>Créer un nouvel enseignant</h3>
         <span class="close" (click)="closeCreateTeacherForm()">&times;</span>
       </div>
       <div class="modal-body">
         <form (ngSubmit)="createTeacher()" #teacherForm="ngForm">
           <div class="form-group">
-            <label for="teacherUsername">Username *</label>
+            <label for="teacherUsername">Nom d'utilisateur *</label>
             <input 
               type="text" 
               id="teacherUsername" 
@@ -547,7 +547,7 @@
               name="teacherUsername" 
               class="form-control" 
               required
-              placeholder="Enter teacher's username">
+              placeholder="Entrez le nom d'utilisateur de l'enseignant">
           </div>
           
           <div class="form-group">
@@ -559,11 +559,11 @@
               name="teacherEmail" 
               class="form-control" 
               required
-              placeholder="Enter teacher's email">
+              placeholder="Entrez l'email de l'enseignant">
           </div>
           
           <div class="form-group">
-            <label for="teacherPassword">Password *</label>
+            <label for="teacherPassword">Mot de passe *</label>
             <input 
               type="password" 
               id="teacherPassword" 
@@ -571,7 +571,7 @@
               name="teacherPassword" 
               class="form-control" 
               required
-              placeholder="Enter teacher's password">
+              placeholder="Entrez le mot de passe de l'enseignant">
           </div>
           
           <div class="form-group">
@@ -582,15 +582,15 @@
               [(ngModel)]="newTeacher.module" 
               name="teacherModule" 
               class="form-control"
-              placeholder="Enter teacher's module (optional)">
+              placeholder="Entrez le module de l'enseignant (facultatif)">
           </div>
           
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="closeCreateTeacherForm()" [disabled]="actionLoading">
-              Cancel
+              Annuler
             </button>
             <button type="submit" class="btn btn-primary" [disabled]="actionLoading">
-              {{ actionLoading ? 'Creating...' : 'Create Teacher' }}
+              {{ actionLoading ? 'Création...' : 'Créer un enseignant' }}
             </button>
           </div>
         </form>
@@ -602,13 +602,13 @@
   <div class="modal" *ngIf="showCreateStudentForm">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Create New Student</h3>
+        <h3>Créer un nouvel étudiant</h3>
         <span class="close" (click)="closeCreateStudentForm()">&times;</span>
       </div>
       <div class="modal-body">
         <form (ngSubmit)="createStudent()" #studentForm="ngForm">
           <div class="form-group">
-            <label for="studentUsername">Username *</label>
+            <label for="studentUsername">Nom d'utilisateur *</label>
             <input 
               type="text" 
               id="studentUsername" 
@@ -616,7 +616,7 @@
               name="studentUsername" 
               class="form-control" 
               required
-              placeholder="Enter student's username">
+              placeholder="Entrez le nom d'utilisateur de l'étudiant">
           </div>
           
           <div class="form-group">
@@ -628,11 +628,11 @@
               name="studentEmail" 
               class="form-control" 
               required
-              placeholder="Enter student's email">
+              placeholder="Entrez l'email de l'étudiant">
           </div>
           
           <div class="form-group">
-            <label for="studentPassword">Password *</label>
+            <label for="studentPassword">Mot de passe *</label>
             <input 
               type="password" 
               id="studentPassword" 
@@ -640,15 +640,15 @@
               name="studentPassword" 
               class="form-control" 
               required
-              placeholder="Enter student's password">
+              placeholder="Entrez le mot de passe de l'étudiant">
           </div>
           
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="closeCreateStudentForm()" [disabled]="actionLoading">
-              Cancel
+              Annuler
             </button>
             <button type="submit" class="btn btn-primary" [disabled]="actionLoading">
-              {{ actionLoading ? 'Creating...' : 'Create Student' }}
+              {{ actionLoading ? 'Création...' : 'Créer un étudiant' }}
             </button>
           </div>
         </form>
@@ -660,13 +660,13 @@
   <div class="modal" *ngIf="showCreateAdminForm">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Create New Admin</h3>
+        <h3>Créer un nouvel administrateur</h3>
         <span class="close" (click)="closeCreateAdminForm()">&times;</span>
       </div>
       <div class="modal-body">
         <form (ngSubmit)="createAdmin()" #adminForm="ngForm">
           <div class="form-group">
-            <label for="adminUsername">Username *</label>
+            <label for="adminUsername">Nom d'utilisateur *</label>
             <input 
               type="text" 
               id="adminUsername" 
@@ -674,9 +674,9 @@
               name="adminUsername" 
               class="form-control" 
               required
-              placeholder="Enter admin's username">
+              placeholder="Entrez le nom d'utilisateur de l'administrateur">
             <div class="error-message" *ngIf="adminForm.submitted && !newAdmin.username">
-              Username is required
+              Le nom d'utilisateur est requis
             </div>
           </div>
           
@@ -689,14 +689,14 @@
               name="adminEmail" 
               class="form-control" 
               required
-              placeholder="Enter admin's email">
+              placeholder="Entrez l'email de l'administrateur">
             <div class="error-message" *ngIf="adminForm.submitted && !newAdmin.email">
-              Valid email is required
+              Un email valide est requis
             </div>
           </div>
           
           <div class="form-group">
-            <label for="adminPassword">Password *</label>
+            <label for="adminPassword">Mot de passe *</label>
             <input 
               type="password" 
               id="adminPassword" 
@@ -705,18 +705,18 @@
               class="form-control" 
               required
               minlength="6"
-              placeholder="Enter admin's password (min 6 characters)">
+              placeholder="Entrez le mot de passe de l'administrateur (min 6 caractères)">
             <div class="error-message" *ngIf="adminForm.submitted && !newAdmin.password">
-              Password is required (minimum 6 characters)
+              Le mot de passe est requis (minimum 6 caractères)
             </div>
           </div>
           
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="closeCreateAdminForm()" [disabled]="actionLoading">
-              Cancel
+              Annuler
             </button>
             <button type="submit" class="btn btn-primary" [disabled]="actionLoading">
-              {{ actionLoading ? 'Creating...' : 'Create Admin' }}
+              {{ actionLoading ? 'Création...' : 'Créer un administrateur' }}
             </button>
           </div>
         </form>
@@ -728,18 +728,18 @@
   <div class="modal" *ngIf="showDeleteConfirm">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Confirm Deletion</h3>
+        <h3>Confirmer la suppression</h3>
         <span class="close" (click)="closeDeleteConfirm()">&times;</span>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete <strong>{{ deleteItemName }}</strong>? This action cannot be undone and will permanently remove all associated data.</p>
+        <p>Êtes-vous sûr de vouloir supprimer <strong>{{ deleteItemName }}</strong> ? Cette action est irréversible et supprimera définitivement toutes les données associées.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeDeleteConfirm()" [disabled]="actionLoading">
-          Cancel
+          Annuler
         </button>
         <button type="button" class="btn btn-danger" (click)="confirmDelete()" [disabled]="actionLoading">
-          {{ actionLoading ? 'Deleting...' : 'Delete' }}
+          {{ actionLoading ? 'Suppression...' : 'Supprimer' }}
         </button>
       </div>
     </div>
@@ -749,18 +749,18 @@
   <div class="modal" *ngIf="showCourseDeleteConfirm">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Confirm Course Deletion</h3>
+        <h3>Confirmer la suppression du cours</h3>
         <span class="close" (click)="closeCourseDeleteConfirm()">&times;</span>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete the course <strong>{{ deleteCourseTitle }}</strong>? This action cannot be undone and will permanently remove all associated data including tests, questions, enrollments, and test results.</p>
+        <p>Êtes-vous sûr de vouloir supprimer le cours <strong>{{ deleteCourseTitle }}</strong> ? Cette action est irréversible et supprimera définitivement toutes les données associées, y compris les tests, les questions, les inscriptions et les résultats des tests.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeCourseDeleteConfirm()" [disabled]="actionLoading">
-          Cancel
+          Annuler
         </button>
         <button type="button" class="btn btn-danger" (click)="confirmCourseDelete()" [disabled]="actionLoading">
-          {{ actionLoading ? 'Deleting...' : 'Delete' }}
+          {{ actionLoading ? 'Suppression...' : 'Supprimer' }}
         </button>
       </div>
     </div>
@@ -770,24 +770,24 @@
   <div class="modal" *ngIf="showBackupDeleteConfirm">
     <div class="modal-content delete-confirm">
       <div class="modal-header">
-        <h3>Confirm Delete</h3>
+        <h3>Confirmer la suppression</h3>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete the backup file "{{ deleteBackupFilename }}"? This action cannot be undone.</p>
+        <p>Êtes-vous sûr de vouloir supprimer le fichier de sauvegarde "{{ deleteBackupFilename }}" ? Cette action est irréversible.</p>
       </div>
       <div class="modal-footer">
         <button 
           class="cancel-btn" 
           (click)="closeBackupDeleteConfirm()"
           [disabled]="actionLoading">
-          Cancel
+          Annuler
         </button>
         <button 
           class="confirm-delete-btn" 
           (click)="confirmBackupDelete()"
           [disabled]="actionLoading">
-          <span *ngIf="!actionLoading">Delete</span>
-          <span *ngIf="actionLoading">Deleting...</span>
+          <span *ngIf="!actionLoading">Supprimer</span>
+          <span *ngIf="actionLoading">Suppression...</span>
         </button>
       </div>
     </div>

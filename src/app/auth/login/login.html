@@ -14,10 +14,10 @@
   <div class="form-column">
     <div class="form-wrapper">
       <div class="form-header">
-        <h3>Welcome to EduLearn!</h3>
+        <h3>Bienvenue sur EduLearn !</h3>
         <div class="auth-tabs">
-          <button class="tab active">Login</button>
-          <button class="tab" (click)="goToSignup()">Register</button>
+          <button class="tab active">Connexion</button>
+          <button class="tab" (click)="goToSignup()">Inscription</button>
         </div>
       </div>
 
@@ -27,19 +27,19 @@
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
         <div class="form-group">
-          <label>Login as</label>
+          <label>Se connecter en tant que</label>
           <div class="radio-group">
             <div class="radio-option">
               <input type="radio" id="student" formControlName="role" value="student">
-              <label for="student">Student</label>
+              <label for="student">Étudiant</label>
             </div>
             <div class="radio-option">
               <input type="radio" id="teacher" formControlName="role" value="teacher">
-              <label for="teacher">Teacher</label>
+              <label for="teacher">Enseignant</label>
             </div>
             <div class="radio-option">
               <input type="radio" id="admin" formControlName="role" value="admin">
-              <label for="admin">Admin</label>
+              <label for="admin">Administrateur</label>
             </div>
           </div>
         </div>
@@ -50,21 +50,21 @@
             type="email" 
             id="email" 
             formControlName="email" 
-            placeholder="Enter your email"
+            placeholder="Entrez votre email"
             [class.invalid]="submitted && email?.errors">
           @if (submitted && email?.errors) {
-            <div class="error-message">Valid email is required</div>
+            <div class="error-message">Un email valide est requis</div>
           }
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">Mot de passe</label>
           <div class="password-input-wrapper">
             <input 
               [type]="showPassword ? 'text' : 'password'" 
               id="password" 
               formControlName="password" 
-              placeholder="Enter your Password"
+              placeholder="Entrez votre mot de passe"
               [class.invalid]="submitted && password?.errors">
             <span class="toggle-password" (click)="togglePasswordVisibility()">
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -74,7 +74,7 @@
             </span>
           </div>
           @if (submitted && password?.errors) {
-            <div class="error-message">Password is required</div>
+            <div class="error-message">Le mot de passe est requis</div>
           }
         </div>
 
@@ -83,12 +83,12 @@
         }
 
         <button type="submit" class="auth-button" [disabled]="loading">
-          {{ loading ? 'Logging in...' : 'Login' }}
+          {{ loading ? 'Connexion en cours...' : 'Connexion' }}
         </button>
       </form>
 
       <div class="auth-footer">
-        <p>Don’t have an account? <a (click)="goToSignup()" class="signup-link">Sign up</a></p>
+        <p>Vous n'avez pas de compte ? <a (click)="goToSignup()" class="signup-link">Inscrivez-vous</a></p>
       </div>
     </div>
   </div>

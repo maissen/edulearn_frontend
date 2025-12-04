@@ -79,7 +79,7 @@ export class Login implements OnInit {
         loginObservable = this.authService.loginAdmin({ email, password });
         break;
       default:
-        this.errorMessage = 'Invalid role selected';
+        this.errorMessage = 'Rôle sélectionné invalide';
         this.loading = false;
         return;
     }
@@ -125,7 +125,7 @@ export class Login implements OnInit {
       error: (error: any) => {
         this.loading = false;
         // Handle login errors (wrong credentials, etc.)
-        this.errorMessage = error.error?.message || 'Login failed. Please check your credentials.';
+        this.errorMessage = error.error?.message || 'Échec de la connexion. Veuillez vérifier vos identifiants.';
         console.error('Login error:', error);
       }
     });

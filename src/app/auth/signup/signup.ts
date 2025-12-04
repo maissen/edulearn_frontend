@@ -82,7 +82,7 @@ export class Signup implements OnInit {
         registerObservable = this.authService.registerTeacher({ username, email, password });
         break;
       default:
-        this.errorMessage = 'Only student and teacher registration is available';
+        this.errorMessage = 'Seule l’inscription des étudiants et des enseignants est disponible';
         this.loading = false;
         return;
     }
@@ -90,7 +90,7 @@ export class Signup implements OnInit {
     registerObservable.subscribe({
       next: (response: any) => {
         this.loading = false;
-        this.successMessage = response.message || 'Registration successful!';
+        this.successMessage = response.message || 'Inscription réussie !';
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 2000);

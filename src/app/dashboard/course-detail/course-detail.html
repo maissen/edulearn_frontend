@@ -18,7 +18,7 @@
         @if (isTeacher) {
           <div class="teacher-actions">
             <button type="button" class="btn-update-course" (click)="updateCourse()">
-              <i class="icon-edit"></i> Update Course
+              <i class="icon-edit"></i> Mettre à jour le cours
             </button>
           </div>
         }
@@ -26,12 +26,12 @@
 
       <!-- Course Description -->
       <section class="course-description-section">
-        <h2>📖 Course Description</h2>
+        <h2>📖 Description du cours</h2>
         <p *ngIf="hasDescription; else noDescription">
           {{ course?.description }}
         </p>
         <ng-template #noDescription>
-          <p class="no-description">No description available for this course.</p>
+          <p class="no-description">Aucune description disponible pour ce cours.</p>
         </ng-template>
       </section>
 
@@ -39,15 +39,12 @@
       @if (hasTakenTest && studentScore !== null && studentScore >= 12 && !isTeacher) {
         <div class="test-result" style="margin-top: 1rem; margin-bottom: 1rem;">
           <div class="celebration-complete" style="position: static; transform: none; padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); z-index: auto;">
-            <h2>🎉 Congratulations!</h2>
-            <p>You've successfully passed the exam with a score of {{ studentScore }}/{{ totalScore }}.</p>
+            <h2>🎉 Félicitations !</h2>
+            <p>Vous avez réussi l'examen avec un score de {{ studentScore }}/{{ totalScore }}.</p>
             @if (!isCourseCompleted) {
-              <p>Complete this course to add it to your achievements.</p>
-              <button type="button" class="btn-finish-course" (click)="completeCourse()">
-                Finish this Course
-              </button>
+              <p>Terminez ce cours pour l'ajouter à vos réussites.</p>
             } @else {
-              <p>This course has been completed! 🎓</p>
+              <p>Ce cours a été terminé ! 🎓</p>
             }
           </div>
         </div>
@@ -57,8 +54,8 @@
       @if (hasTakenTest && studentScore !== null && studentScore < 12 && !isTeacher) {
         <div class="test-result" style="margin-top: 1rem; margin-bottom: 1rem;">
           <div class="encouragement-message" style="position: static; transform: none; padding: 1.5rem; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 12px; text-align: center; border: 1px solid #fde68a; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); z-index: auto;">
-            <h2>📚 Keep Trying!</h2>
-            <p>You scored {{ studentScore }}/{{ totalScore }}.</p>
+            <h2>📚 Continuez vos efforts !</h2>
+            <p>Votre score est {{ studentScore }}/{{ totalScore }}.</p>
           </div>
         </div>
       }
@@ -69,7 +66,7 @@
           <!-- Teacher view: Display test information with questions and correct answers -->
           @if (course && course.test) {
             <div class="test-display">
-              <h2>📝 {{ course.test.titre }}</h2>
+              <h2>📝 {{ course.test.titre }} || Le Test de cet cours</h2>
               <div class="questions-list">
                 <div class="question-card" *ngFor="let question of course.test.questions; let i = index">
                   <div class="question-header">
@@ -100,31 +97,31 @@
           } @else {
             <!-- No test created yet -->
             <div class="quiz-header">
-              <h2>🧠 Pass your exam Now</h2>
+              <h2>🧠 Créez votre examen maintenant</h2>
               <button type="button" class="btn-add-quiz" (click)="openAddQuizModal()">
-                <i class="icon-plus"></i> Add Quiz
+                <i class="icon-plus"></i> Ajouter un quiz
               </button>
             </div>
             <div class="empty-quiz">
               <div class="empty-icon">🧠</div>
-              <h3>No test created yet</h3>
-              <p>Create a test for your students to evaluate their knowledge.</p>
+              <h3>Aucun test créé pour le moment</h3>
+              <p>Créez un test pour évaluer les connaissances de vos étudiants.</p>
               <button type="button" class="btn-add-first-quiz" (click)="openAddQuizModal()">
-                Create Test
+                Créer un test
               </button>
             </div>
           }
         } @else {
           <!-- Student view: Quiz taking -->
           <div class="quiz-header">
-            <h2>🧠 Pass your exam Now</h2>
+            <h2>🧠 Passez votre examen maintenant</h2>
           </div>
           
           @if (quizzes.length === 0) {
             <div class="empty-quiz">
               <div class="empty-icon">🧠</div>
-              <h3>No quizzes yet</h3>
-              <p>Quizzes will help you test your knowledge and understanding.</p>
+              <h3>Aucun quiz pour le moment</h3>
+              <p>Les quiz vous aideront à tester vos connaissances et votre compréhension.</p>
             </div>
           } @else {
             <div class="student-quiz-section">
@@ -132,11 +129,11 @@
                 <div class="quiz-stats">
                   <div class="stat-item">
                     <span class="stat-number">{{ quizzes.length }}</span>
-                    <span class="stat-label">Test{{ quizzes.length > 1 ? 's' : '' }} Available</span>
+                    <span class="stat-label">Test{{ quizzes.length > 1 ? 's' : '' }} disponibles</span>
                   </div>
                   <div class="stat-item">
                     <span class="stat-number">{{ getTotalQuestions() }}</span>
-                    <span class="stat-label">Questions Total</span>
+                    <span class="stat-label">Questions au total</span>
                   </div>
                 </div>
                 
@@ -146,7 +143,7 @@
                     <div class="result-score">
                       <span class="score">{{ studentScore }} / {{ totalScore }}</span>
                       <span class="status" [class.passed]="studentScore && studentScore >= 12" [class.failed]="studentScore && studentScore <= 12">
-                        {{ studentScore && studentScore >= 12 ? 'Passed' : 'Failed' }}
+                        {{ studentScore && studentScore >= 12 ? 'Réussi' : 'Échoué' }}
                       </span>
                     </div>
                   </div>
@@ -156,12 +153,12 @@
                 @if (!hasTakenTest || (hasTakenTest && (studentScore === null || studentScore === undefined || studentScore < 12))) {
                   <div class="quiz-actions">
                     <button type="button" class="btn-start-quiz" (click)="startQuiz()" [disabled]="(hasTakenTest && studentScore !== null && studentScore !== undefined && studentScore >= 12) || !hasStartedCourse || !isEnrolled">
-                      🚀 Start Test Now
+                      🚀 Commencer le test maintenant
                     </button>
                   </div>
                   <!-- Notice for students who haven't started the course -->
                   <div *ngIf="!hasStartedCourse" class="start-course-notice" style="width: 100%; text-align: center; color: #e74c3c; font-style: italic; margin-top: 1rem; padding: 0.5rem; border-top: 1px solid #e2e8f0;">
-                    You need to start the course before taking the test.
+                    Vous devez démarrer le cours avant de passer le test.
                   </div>
                 }
               </div>
@@ -177,7 +174,7 @@
         <!-- Show start course button for students who are not enrolled and haven't finished the course -->
         <div *ngIf="!isTeacher && showStartCourseButton && !isCourseCompleted && !loading" class="start-course-container">
           <button type="button" class="btn-start-course" (click)="startCourse()">
-            🚀 Start the Course Now
+            🚀 Démarrer le cours maintenant
           </button>
         </div>
         
@@ -209,9 +206,9 @@
         <form (ngSubmit)="saveQuiz()" class="quiz-form">
           <!-- Test Title -->
           <div class="form-group">
-            <label for="testTitle">Test Title *</label>
+            <label for="testTitle">Titre du test *</label>
             <input type="text" id="testTitle" [(ngModel)]="currentTest.title"
-                   name="title" placeholder="e.g., Python Fundamentals Test" required>
+                   name="title" placeholder="Exemple : Test fondamentaux de Python" required>
           </div>
 
           <!-- Questions Section -->
@@ -219,7 +216,7 @@
             <div class="section-header">
               <label>Questions</label>
               <button type="button" class="btn-add-question" (click)="addQuestion()">
-                <i class="icon-plus"></i> Add Question
+                <i class="icon-plus"></i> Ajouter une question
               </button>
             </div>
 
@@ -239,7 +236,7 @@
                   <div class="form-group">
                     <input type="text" [(ngModel)]="currentTest.questions[i].question"
                            [name]="'question_' + i"
-                           placeholder="Enter your question" required>
+                           placeholder="Entrez votre question" required>
                   </div>
 
                   <!-- Options -->
@@ -284,7 +281,7 @@
 
                   <!-- Correct Answer -->
                   <div class="correct-answer-group">
-                    <label>Correct Answer:</label>
+                    <label>Réponse correcte :</label>
                     <select [(ngModel)]="currentTest.questions[i].correct"
                             [name]="'correct_' + i" required>
                       <option [value]="'a'">A. {{ currentTest.questions[i].option_a || 'Option A' }}</option>
@@ -299,9 +296,9 @@
           </div>
 
           <div class="modal-actions">
-            <button type="button" class="btn-secondary" (click)="closeQuizModal()">Cancel</button>
+            <button type="button" class="btn-secondary" (click)="closeQuizModal()">Annuler</button>
             <button type="submit" class="btn-primary" [disabled]="!isTestFormValid()">
-              {{ editingQuizIndex !== null ? 'Update Test' : 'Create Test' }}
+              {{ editingQuizIndex !== null ? 'Mettre à jour le test' : 'Créer un test' }}
             </button>
           </div>
         </form>
@@ -314,7 +311,7 @@
     <div class="modal-overlay" (click)="closeQuizTakingModal()">
       <div class="modal-content quiz-taking-modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h3>🧠 Course Quiz</h3>
+          <h3>🧠 Quiz du cours</h3>
           <button type="button" class="modal-close" (click)="closeQuizTakingModal()">
             <i class="icon-close"></i>
           </button>
@@ -324,7 +321,7 @@
           <div class="progress-bar">
             <div class="progress-fill" [style.width.%]="((currentQuestionIndex + 1) / quizQuestions.length) * 100"></div>
           </div>
-          <span class="progress-text">Question {{ currentQuestionIndex + 1 }} of {{ quizQuestions.length }}</span>
+          <span class="progress-text">Question {{ currentQuestionIndex + 1 }} sur {{ quizQuestions.length }}</span>
         </div>
 
         @if (!quizSubmissionResult) {
@@ -355,13 +352,13 @@
                       class="btn-secondary"
                       [disabled]="currentQuestionIndex === 0"
                       (click)="previousQuestion()">
-                ← Previous
+                ← Précédent
               </button>
               <button type="button"
                       class="btn-primary"
                       [disabled]="!canProceed()"
                       (click)="nextQuestion()">
-                {{ isLastQuestion() ? 'Check Your Score' : 'Next' }}
+                {{ isLastQuestion() ? 'Voir votre score' : 'Suivant' }}
               </button>
             </div>
           </div>
@@ -371,44 +368,49 @@
             <div class="results-header">
               <div class="score-circle">
                 <span class="score-number">{{ quizSubmissionResult.score }}/20</span>
-                <span class="score-label">Your Score</span>
+                <span class="score-label">Votre score</span>
               </div>
             </div>
 
             <div class="results-details">
               <div class="result-stat">
                 <span class="stat-value">{{ quizSubmissionResult.correctAnswers }}</span>
-                <span class="stat-label">Correct Answers</span>
+                <span class="stat-label">Réponses correctes</span>
               </div>
               <div class="result-stat">
                 <span class="stat-value">{{ quizSubmissionResult.totalQuestions }}</span>
-                <span class="stat-label">Total Questions</span>
+                <span class="stat-label">Nombre total de questions</span>
               </div>
               <div class="result-stat">
                 <span class="stat-value">{{ quizSubmissionResult.pointsPerQuestion }}</span>
-                <span class="stat-label">Points per Question</span>
+                <span class="stat-label">Points par question</span>
               </div>
             </div>
 
             <div class="results-message">
               @if (quizSubmissionResult.score >= 16) {
                 <div class="success-message">
-                  🎉 Excellent! You've mastered this material!
+                  🎉 Excellent ! Vous maîtrisez ce contenu !
                 </div>
               } @else if (quizSubmissionResult.score >= 12) {
                 <div class="good-message">
-                  👍 Good job! Keep practicing to improve further.
+                  👍 Bon travail ! Continuez à pratiquer pour progresser.
                 </div>
               } @else {
                 <div class="retry-message">
-                  📚 Don't worry! Review the material and try again.
+                  📚 Ne vous inquiétez pas ! Revoyez le contenu et réessayez.
                 </div>
               }
             </div>
 
             <div class="results-actions">
+              @if (quizSubmissionResult.score >= 12) {
+                <button type="button" class="btn-primary" (click)="completeCourse()">
+                  Terminer le cours
+                </button>
+              }
               <button type="button" class="btn-secondary" (click)="closeQuizTakingModal()">
-                Close
+                Fermer
               </button>
             </div>
           </div>

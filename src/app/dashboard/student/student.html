@@ -4,7 +4,7 @@
 
   <!-- Section "Welcome back" -->
   <section class="welcome-section">
-    <h2>Welcome back {{userName}}! Ready for your next lesson?</h2>
+    <h2>Bon retour {{userName}} ! Prêt pour votre prochaine leçon ?</h2>
     <div class="course-slider" *ngIf="!loading && inProgressCourses.length > 0">
       <div class="course-card" *ngFor="let course of inProgressCourses" (click)="navigateToCourse(course.id)">
         <div class="course-image-container">
@@ -19,25 +19,25 @@
       </div>
     </div>
     <div class="no-courses" *ngIf="!loading && inProgressCourses.length === 0">
-      <p>You haven't started any courses yet. Browse our categories below to find something interesting!</p>
+      <p>Vous n'avez commencé aucun cours pour le moment. Parcourez nos catégories ci-dessous pour trouver quelque chose d'intéressant !</p>
     </div>
     <div class="loading" *ngIf="loading">
-      <p>Loading your courses...</p>
+      <p>Chargement de vos cours...</p>
     </div>
   </section>
 
   <!-- Catégories de cours -->
   <section class="categories-section">
-    <h2>Choose your favorite course from top categories</h2>
+    <h2>Choisissez votre cours préféré parmi les meilleures catégories</h2>
     <div class="category-grid" *ngIf="!categoriesLoading && categories.length > 0">
       <div class="category-card" *ngFor="let category of categories">
         <div class="category-icon">{{getCategoryIcon(category)}}</div>
         <h3 class="category-title">{{category}}</h3>
-        <p class="category-desc">{{getCategoryDescription(category)}}</p>
+      <p class="category-desc">{{getCategoryDescription(category)}}</p>
       </div>
     </div>
     <div class="loading" *ngIf="categoriesLoading">
-      <p>Loading categories...</p>
+      <p>Chargement des catégories...</p>
     </div>
   </section>
 
