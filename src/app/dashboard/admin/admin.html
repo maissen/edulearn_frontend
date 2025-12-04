@@ -42,6 +42,7 @@
     <div class="table-header" style="margin-top: 50px;">
       <h2>System Statistics</h2>
       <div class="header-actions">
+        <button class="create-btn" (click)="openCreateAdminForm()">Create New Admin</button>
         <button class="refresh-btn" (click)="loadStatistics()" [disabled]="statisticsLoading">
           <span *ngIf="!statisticsLoading">Refresh</span>
           <span *ngIf="statisticsLoading">Loading...</span>
@@ -655,6 +656,64 @@
     </div>
   </div>
 
+  <!-- Create Admin Modal -->
+  <div class="modal" *ngIf="showCreateAdminForm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New Admin</h3>
+        <span class="close" (click)="closeCreateAdminForm()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createAdmin()" #adminForm="ngForm">
+          <div class="form-group">
+            <label for="adminUsername">Username *</label>
+            <input 
+              type="text" 
+              id="adminUsername" 
+              [(ngModel)]="newAdmin.username" 
+              name="adminUsername" 
+              class="form-control" 
+              required
+              placeholder="Enter admin's username">
+          </div>
+          
+          <div class="form-group">
+            <label for="adminEmail">Email *</label>
+            <input 
+              type="email" 
+              id="adminEmail" 
+              [(ngModel)]="newAdmin.email" 
+              name="adminEmail" 
+              class="form-control" 
+              required
+              placeholder="Enter admin's email">
+          </div>
+          
+          <div class="form-group">
+            <label for="adminPassword">Password *</label>
+            <input 
+              type="password" 
+              id="adminPassword" 
+              [(ngModel)]="newAdmin.password" 
+              name="adminPassword" 
+              class="form-control" 
+              required
+              placeholder="Enter admin's password">
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeCreateAdminForm()" [disabled]="actionLoading">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="actionLoading">
+              {{ actionLoading ? 'Creating...' : 'Create Admin' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Delete Confirmation Modal -->
   <div class="modal" *ngIf="showDeleteConfirm">
     <div class="modal-content">
@@ -725,5 +784,5 @@
   </div>
 
   <!-- Modal Background Overlay -->
-  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm || showDeleteConfirm || showCourseDeleteConfirm || showBackupDeleteConfirm"></div>
+  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm || showCreateAdminForm || showDeleteConfirm || showCourseDeleteConfirm || showBackupDeleteConfirm"></div>
 </div>

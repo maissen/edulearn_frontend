@@ -91,6 +91,12 @@ export interface CreateStudentRequest {
   password: string;
 }
 
+export interface CreateAdminRequest {
+  username: string;
+  email: string;
+  password: string;
+}
+
 export interface CreateResponse {
   message: string;
   teacherId?: number;
@@ -278,6 +284,26 @@ export class AdminService {
     return this.http.post<CreateResponse>(
       `${this.apiUrl}/students`,
       student,
+      { headers }
+    );
+  }
+
+  /**
+   * Create a new admin account
+   * @param admin Admin data
+   * @returns Observable of CreateResponse
+   */
+  createAdmin(admin: CreateAdminRequest): Observable<CreateResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.post<CreateResponse>(
+      `${this.apiUrl}/admins`,
+      admin,
       { headers }
     );
   }

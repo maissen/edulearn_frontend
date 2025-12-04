@@ -3,7 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateResponse, DeleteResponse, TeacherCoursesResponse, TeacherWithCourses, TeacherCourse, LogEntry, BackupEntry, BackupsResponse, CreateBackupResponse, DeleteBackupResponse, StatisticsResponse } from '../../../services/admin.service';
+import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateAdminRequest, CreateResponse, DeleteResponse, TeacherCoursesResponse, TeacherWithCourses, TeacherCourse, LogEntry, BackupEntry, BackupsResponse, CreateBackupResponse, DeleteBackupResponse, StatisticsResponse } from '../../../services/admin.service';
 
 // Extend TeacherCourse interface to include teacher information
 interface TeacherCourseWithTeacherInfo extends TeacherCourse {
@@ -85,6 +85,7 @@ export class AdminComponent implements OnInit {
   // Popup form states
   showCreateTeacherForm = false;
   showCreateStudentForm = false;
+  showCreateAdminForm = false;
   showDeleteConfirm = false;
   showCourseDeleteConfirm = false;
   showBackupDeleteConfirm = false;
@@ -110,6 +111,12 @@ export class AdminComponent implements OnInit {
   };
   
   newStudent: CreateStudentRequest = {
+    username: '',
+    email: '',
+    password: ''
+  };
+
+  newAdmin: CreateAdminRequest = {
     username: '',
     email: '',
     password: ''
@@ -587,6 +594,49 @@ export class AdminComponent implements OnInit {
 
   closeCreateStudentForm() {
     this.showCreateStudentForm = false;
+  }
+
+  // Admin form methods
+  openCreateAdminForm() {
+    this.newAdmin = {
+      username: '',
+      email: '',
+      password: ''
+    };
+    this.showCreateAdminForm = true;
+  }
+
+  closeCreateAdminForm() {
+    this.showCreateAdminForm = false;
+  }
+
+  createAdmin() {
+    this.actionLoading = true;
+    this.adminService.createAdmin(this.newAdmin).subscribe({
+      next: (response: CreateResponse) => {
+        this.actionLoading = false;
+        this.closeCreateAdminForm();
+        this.showSnackbarMessage(response.message, 'success');
+        // Reload users to show the new admin
+        this.loadAllUsers();
+      },
+      error: (err: any) => {
+        this.actionLoading = false;
+        console.error('Error creating admin:', err);
+        
+        if (err.status === 403) {
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+        } else if (err.status === 401) {
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+        } else {
+          this.showSnackbarMessage('Failed to create admin. Please try again.', 'error');
+        }
+      }
+    });
   }
 
   createStudent() {
