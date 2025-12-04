@@ -481,22 +481,23 @@ export class AdminComponent implements OnInit {
   // Teacher pagination methods
   updatePaginatedTeachers() {
     // Apply filter first
-    let filteredTeachers = this.allTeachers;
+    let filteredTeachers = [...this.allTeachers]; // Create a copy to avoid mutating original
     
     if (this.teacherFilter !== 'all') {
       if (this.teacherFilter === 'active' || this.teacherFilter === 'inactive') {
         const isActive = this.teacherFilter === 'active';
-        filteredTeachers = this.allTeachers.filter(teacher => 
-          teacher.isActivated === isActive
-        );
+        filteredTeachers = filteredTeachers.filter(teacher => {
+          const isActivated = Boolean(teacher.isActivated);
+          return isActivated === isActive;
+        });
       } else if (this.teacherFilter === 'newest') {
         // Sort by creation date descending (newest first)
-        filteredTeachers = [...this.allTeachers].sort((a, b) => 
+        filteredTeachers.sort((a, b) => 
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
       } else if (this.teacherFilter === 'oldest') {
         // Sort by creation date ascending (oldest first)
-        filteredTeachers = [...this.allTeachers].sort((a, b) => 
+        filteredTeachers.sort((a, b) => 
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
       }
@@ -535,9 +536,10 @@ export class AdminComponent implements OnInit {
     
     if (this.teacherFilter === 'active' || this.teacherFilter === 'inactive') {
       const isActive = this.teacherFilter === 'active';
-      return this.allTeachers.filter(teacher => 
-        teacher.isActivated === isActive
-      ).length;
+      return this.allTeachers.filter(teacher => {
+        const isActivated = Boolean(teacher.isActivated);
+        return isActivated === isActive;
+      }).length;
     }
     
     // For sorting filters, return all teachers
@@ -551,22 +553,23 @@ export class AdminComponent implements OnInit {
   // Student pagination methods
   updatePaginatedStudents() {
     // Apply filter first
-    let filteredStudents = this.allStudents;
+    let filteredStudents = [...this.allStudents]; // Create a copy to avoid mutating original
     
     if (this.studentFilter !== 'all') {
       if (this.studentFilter === 'active' || this.studentFilter === 'inactive') {
         const isActive = this.studentFilter === 'active';
-        filteredStudents = this.allStudents.filter(student => 
-          student.isActivated === isActive
-        );
+        filteredStudents = filteredStudents.filter(student => {
+          const isActivated = Boolean(student.isActivated);
+          return isActivated === isActive;
+        });
       } else if (this.studentFilter === 'newest') {
         // Sort by creation date descending (newest first)
-        filteredStudents = [...this.allStudents].sort((a, b) => 
+        filteredStudents.sort((a, b) => 
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
       } else if (this.studentFilter === 'oldest') {
         // Sort by creation date ascending (oldest first)
-        filteredStudents = [...this.allStudents].sort((a, b) => 
+        filteredStudents.sort((a, b) => 
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
       }
@@ -605,9 +608,10 @@ export class AdminComponent implements OnInit {
     
     if (this.studentFilter === 'active' || this.studentFilter === 'inactive') {
       const isActive = this.studentFilter === 'active';
-      return this.allStudents.filter(student => 
-        student.isActivated === isActive
-      ).length;
+      return this.allStudents.filter(student => {
+        const isActivated = Boolean(student.isActivated);
+        return isActivated === isActive;
+      }).length;
     }
     
     // For sorting filters, return all students

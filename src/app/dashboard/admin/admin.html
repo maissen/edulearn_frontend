@@ -88,6 +88,7 @@
             <th>Email</th>
             <th>Module</th>
             <th>Status</th>
+            <th>Created At</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -102,6 +103,7 @@
                 {{ teacher.isActivated ? 'Active' : 'Inactive' }}
               </span>
             </td>
+            <td>{{ teacher.created_at | date:'short' }}</td>
             <td class="action-buttons">
               <button 
                 class="toggle-btn" 
@@ -119,7 +121,7 @@
             </td>
           </tr>
           <tr *ngIf="paginatedTeachers.length === 0">
-            <td colspan="6" class="no-data">No teachers found</td>
+            <td colspan="7" class="no-data">No teachers found</td>
           </tr>
         </tbody>
       </table>
@@ -193,8 +195,8 @@
             <th>ID</th>
             <th>Username</th>
             <th>Email</th>
-            <th>Class ID</th>
             <th>Status</th>
+            <th>Created At</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -203,12 +205,12 @@
             <td>{{ student.id }}</td>
             <td>{{ student.username }}</td>
             <td>{{ student.email }}</td>
-            <td>{{ student.classe_id }}</td>
             <td>
               <span class="status-badge" [ngClass]="{'active': student.isActivated, 'inactive': !student.isActivated}">
                 {{ student.isActivated ? 'Active' : 'Inactive' }}
               </span>
             </td>
+            <td>{{ student.created_at | date:'short' }}</td>
             <td class="action-buttons">
               <button 
                 class="toggle-btn" 
