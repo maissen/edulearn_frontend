@@ -16,13 +16,15 @@
     </div>
   </section>
 
-  <!-- Success and Error Messages -->
-  <div *ngIf="successMessage" class="success-message">
-    <p>{{ successMessage }}</p>
-  </div>
-  
-  <div *ngIf="error" class="error-message">
-    <p>{{ error }}</p>
+  <!-- Snackbar for messages -->
+  <div 
+    class="snackbar" 
+    [ngClass]="{
+      'show': showSnackbar, 
+      'success': snackbarType === 'success', 
+      'error': snackbarType === 'error'
+    }">
+    {{ snackbarMessage }}
   </div>
 
   <!-- Loading indicator -->
@@ -37,7 +39,15 @@
 
   <!-- Statistics Section -->
   <section class="statistics-section" *ngIf="!statisticsLoading">
-    <h2>System Statistics</h2>
+    <div class="table-header">
+      <h2>System Statistics</h2>
+      <div class="header-actions">
+        <button class="refresh-btn" (click)="loadStatistics()" [disabled]="statisticsLoading">
+          <span *ngIf="!statisticsLoading">Refresh</span>
+          <span *ngIf="statisticsLoading">Loading...</span>
+        </button>
+      </div>
+    </div>
     <div class="stats-grid">
       <div class="stat-card">
         <h3>Users</h3>
@@ -70,15 +80,19 @@
           <span class="stat-value">{{ statistics.content.questions }}</span>
         </div>
       </div>
-      
-      <div class="stat-card">
-        <h3>Interactions</h3>
-      </div>
     </div>
   </section>
   
   <section class="statistics-section" *ngIf="statisticsLoading">
-    <h2>System Statistics</h2>
+    <div class="table-header">
+      <h2>System Statistics</h2>
+      <div class="header-actions">
+        <button class="refresh-btn" (click)="loadStatistics()" [disabled]="statisticsLoading">
+          <span *ngIf="!statisticsLoading">Refresh</span>
+          <span *ngIf="statisticsLoading">Loading...</span>
+        </button>
+      </div>
+    </div>
     <div class="loading-stats">
       <p>Loading statistics...</p>
     </div>
@@ -90,7 +104,13 @@
     <div class="table-container">
       <div class="table-header">
         <h2>Teachers</h2>
-        <button class="create-btn" (click)="openCreateTeacherForm()">Create New Teacher</button>
+        <div class="header-actions">
+          <button class="refresh-btn" (click)="loadAllUsers()" [disabled]="loading">
+            <span *ngIf="!loading">Refresh</span>
+            <span *ngIf="loading">Loading...</span>
+          </button>
+          <button class="create-btn" (click)="openCreateTeacherForm()">Create New Teacher</button>
+        </div>
       </div>
       
       <!-- Teacher Filter -->
@@ -199,7 +219,13 @@
     <div class="table-container">
       <div class="table-header">
         <h2>Students</h2>
-        <button class="create-btn" (click)="openCreateStudentForm()">Create New Student</button>
+        <div class="header-actions">
+          <button class="refresh-btn" (click)="loadAllUsers()" [disabled]="loading">
+            <span *ngIf="!loading">Refresh</span>
+            <span *ngIf="loading">Loading...</span>
+          </button>
+          <button class="create-btn" (click)="openCreateStudentForm()">Create New Student</button>
+        </div>
       </div>
       
       <!-- Student Filter -->
@@ -306,6 +332,12 @@
     <div class="table-container">
       <div class="table-header">
         <h2>Courses</h2>
+        <div class="header-actions">
+          <button class="refresh-btn" (click)="loadAllCourses()" [disabled]="courseLoading">
+            <span *ngIf="!courseLoading">Refresh</span>
+            <span *ngIf="courseLoading">Loading...</span>
+          </button>
+        </div>
       </div>
       
       <!-- Course Loading indicator -->
@@ -390,35 +422,33 @@
       <table class="users-table" *ngIf="!backupLoading">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Name</th>
+            <th>Filename</th>
             <th>Created At</th>
-            <th>Size</th>
+            <th>Size (bytes)</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let backup of allBackups">
-            <td>{{ backup.id }}</td>
-            <td>{{ backup.name }}</td>
+            <td>{{ backup.filename }}</td>
             <td>{{ backup.createdAt | date:'short' }}</td>
             <td>{{ backup.size }}</td>
             <td class="action-buttons">
               <button 
                 class="download-btn"
-                (click)="downloadBackup(backup.id)">
+                (click)="downloadBackup(backup.filename)">
                 Download
               </button>
               <button 
                 class="delete-btn"
-                (click)="openBackupDeleteConfirm(backup.name)"
+                (click)="openBackupDeleteConfirm(backup.filename)"
                 [disabled]="actionLoading">
                 Delete
               </button>
             </td>
           </tr>
           <tr *ngIf="allBackups.length === 0">
-            <td colspan="5" class="no-data">No backups found</td>
+            <td colspan="4" class="no-data">No backups found</td>
           </tr>
         </tbody>
       </table>
@@ -429,6 +459,10 @@
       <div class="table-header">
         <h2>System Logs</h2>
         <div class="header-actions">
+          <button class="clear-btn" (click)="clearLogs()" [disabled]="logLoading">
+            <span *ngIf="!logLoading">Clear All Logs</span>
+            <span *ngIf="logLoading">Clearing...</span>
+          </button>
           <button class="export-btn" (click)="exportLogs()" [disabled]="logLoading">
             <span *ngIf="!logLoading">Export to CSV</span>
             <span *ngIf="logLoading">Exporting...</span>
@@ -436,24 +470,6 @@
           <button class="refresh-btn" (click)="refreshLogs()" [disabled]="logLoading">
             <span *ngIf="!logLoading">Refresh</span>
             <span *ngIf="logLoading">Loading...</span>
-          </button>
-        </div>
-      </div>
-      
-      <!-- Log Filter -->
-      <div class="filter-section">
-        <div class="filter-group">
-          <button 
-            class="filter-btn" 
-            [class.active]="logType === 'combined'"
-            (click)="updateLogType('combined')">
-            All Logs
-          </button>
-          <button 
-            class="filter-btn" 
-            [class.active]="logType === 'error'"
-            (click)="updateLogType('error')">
-            Error Logs Only
           </button>
         </div>
       </div>

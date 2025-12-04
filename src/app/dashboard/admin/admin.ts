@@ -77,6 +77,11 @@ export class AdminComponent implements OnInit {
   actionLoading = false;
   successMessage = '';
   
+  // Snackbar properties
+  showSnackbar = false;
+  snackbarMessage = '';
+  snackbarType: 'success' | 'error' = 'success';
+  
   // Popup form states
   showCreateTeacherForm = false;
   showCreateStudentForm = false;
@@ -140,21 +145,7 @@ export class AdminComponent implements OnInit {
       error: (err: any) => {
         this.statisticsLoading = false;
         console.error('Error loading statistics:', err);
-        
-        // More specific error handling
-        if (err.status === 403) {
-          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
-        } else if (err.status === 401) {
-          this.error = 'Authentication failed. Please log in again.';
-          // Automatically redirect to login
-          this.authService.logout();
-          this.router.navigate(['/login']);
-        } else if (err.status === 0) {
-          this.error = 'Network error. Please check your connection and try again.';
-        } else {
-          this.error = 'Failed to load statistics. Please try again.';
-        }
-        setTimeout(() => this.error = '', 3000);
+        this.showSnackbarMessage('Failed to load statistics. Please try again.', 'error');
       }
     });
   }
@@ -178,18 +169,17 @@ export class AdminComponent implements OnInit {
         
         // More specific error handling
         if (err.status === 403) {
-          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
         } else if (err.status === 401) {
-          this.error = 'Authentication failed. Please log in again.';
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
           // Automatically redirect to login
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.error = 'Network error. Please check your connection and try again.';
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.error = 'Failed to load users. Please try again.';
+          this.showSnackbarMessage('Failed to load users. Please try again.', 'error');
         }
-        setTimeout(() => this.error = '', 3000);
       }
     });
   }
@@ -222,18 +212,17 @@ export class AdminComponent implements OnInit {
         
         // More specific error handling
         if (err.status === 403) {
-          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
         } else if (err.status === 401) {
-          this.error = 'Authentication failed. Please log in again.';
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
           // Automatically redirect to login
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.error = 'Network error. Please check your connection and try again.';
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.error = 'Failed to load courses. Please try again.';
+          this.showSnackbarMessage('Failed to load courses. Please try again.', 'error');
         }
-        setTimeout(() => this.error = '', 3000);
       }
     });
   }
@@ -250,8 +239,7 @@ export class AdminComponent implements OnInit {
           this.allLogs = response.logs;
           this.updatePaginatedLogs();
         } else {
-          this.error = 'Failed to load logs.';
-          setTimeout(() => this.error = '', 3000);
+          this.showSnackbarMessage('Failed to load logs.', 'error');
         }
       },
       error: (err: any) => {
@@ -260,18 +248,17 @@ export class AdminComponent implements OnInit {
         
         // More specific error handling
         if (err.status === 403) {
-          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
         } else if (err.status === 401) {
-          this.error = 'Authentication failed. Please log in again.';
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
           // Automatically redirect to login
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.error = 'Network error. Please check your connection and try again.';
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.error = 'Failed to load logs. Please try again.';
+          this.showSnackbarMessage('Failed to load logs. Please try again.', 'error');
         }
-        setTimeout(() => this.error = '', 3000);
       }
     });
   }
@@ -287,8 +274,7 @@ export class AdminComponent implements OnInit {
         if (response.success) {
           this.allBackups = response.backups;
         } else {
-          this.error = 'Failed to load backups.';
-          setTimeout(() => this.error = '', 3000);
+          this.showSnackbarMessage('Failed to load backups.', 'error');
         }
       },
       error: (err: any) => {
@@ -297,28 +283,19 @@ export class AdminComponent implements OnInit {
         
         // More specific error handling
         if (err.status === 403) {
-          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
         } else if (err.status === 401) {
-          this.error = 'Authentication failed. Please log in again.';
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
           // Automatically redirect to login
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.error = 'Network error. Please check your connection and try again.';
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.error = 'Failed to load backups. Please try again.';
+          this.showSnackbarMessage('Failed to load backups. Please try again.', 'error');
         }
-        setTimeout(() => this.error = '', 3000);
       }
     });
-  }
-
-  refreshBackups() {
-    this.loadAllBackups();
-  }
-
-  refreshLogs() {
-    this.loadAllLogs();
   }
 
   createBackup() {
@@ -330,14 +307,17 @@ export class AdminComponent implements OnInit {
       next: (response: CreateBackupResponse) => {
         this.backupLoading = false;
         if (response.success) {
-          this.successMessage = response.message;
-          // Refresh the backups list to include the new backup
-          this.loadAllBackups();
-          // Clear success message after 3 seconds
-          setTimeout(() => this.successMessage = '', 3000);
+          this.showSnackbarMessage(response.message, 'success');
+          // Add the new backup to the list
+          const newBackup: BackupEntry = {
+            filename: response.filename,
+            size: response.size,
+            createdAt: response.createdAt,
+            modifiedAt: response.createdAt // Using createdAt as modifiedAt since it's a new backup
+          };
+          this.allBackups.unshift(newBackup);
         } else {
-          this.error = 'Failed to create backup.';
-          setTimeout(() => this.error = '', 3000);
+          this.showSnackbarMessage('Failed to create backup.', 'error');
         }
       },
       error: (err: any) => {
@@ -346,18 +326,17 @@ export class AdminComponent implements OnInit {
 
         // More specific error handling
         if (err.status === 403) {
-          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
         } else if (err.status === 401) {
-          this.error = 'Authentication failed. Please log in again.';
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
           // Automatically redirect to login
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.error = 'Network error. Please check your connection and try again.';
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.error = 'Failed to create backup. Please try again.';
+          this.showSnackbarMessage('Failed to create backup. Please try again.', 'error');
         }
-        setTimeout(() => this.error = '', 3000);
       }
     });
   }
@@ -366,6 +345,8 @@ export class AdminComponent implements OnInit {
     this.deleteItemType = 'backup';
     this.deleteBackupFilename = filename;
     this.showBackupDeleteConfirm = true;
+    // Reset actionLoading flag when opening confirmation
+    this.actionLoading = false;
   }
 
   closeBackupDeleteConfirm() {
@@ -375,10 +356,9 @@ export class AdminComponent implements OnInit {
   }
 
   confirmBackupDelete() {
+    // Ensure we have the right data before proceeding
     if (this.deleteItemType === 'backup' && this.deleteBackupFilename) {
       this.actionLoading = true;
-      this.error = '';
-      this.successMessage = '';
 
       this.adminService.deleteBackup(this.deleteBackupFilename).subscribe({
         next: (response: DeleteBackupResponse) => {
@@ -386,42 +366,107 @@ export class AdminComponent implements OnInit {
           this.closeBackupDeleteConfirm();
           
           if (response.success) {
-            this.successMessage = response.message;
-            // Refresh the backups list to remove the deleted backup
-            this.loadAllBackups();
-            // Clear success message after 3 seconds
-            setTimeout(() => this.successMessage = '', 3000);
+            this.showSnackbarMessage(response.message, 'success');
+            // Remove the deleted backup from the list
+            this.allBackups = this.allBackups.filter(backup => backup.filename !== this.deleteBackupFilename);
           } else {
-            this.error = 'Failed to delete backup.';
-            setTimeout(() => this.error = '', 3000);
+            this.showSnackbarMessage('Failed to delete backup.', 'error');
           }
         },
         error: (err: any) => {
           this.actionLoading = false;
           this.closeBackupDeleteConfirm();
-          console.error('Error deleting backup:', err);
 
           // More specific error handling
           if (err.status === 403) {
-            this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+            this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
           } else if (err.status === 401) {
-            this.error = 'Authentication failed. Please log in again.';
+            this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
             // Automatically redirect to login
             this.authService.logout();
             this.router.navigate(['/login']);
           } else if (err.status === 0) {
-            this.error = 'Network error. Please check your connection and try again.';
+            this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
           } else {
-            this.error = 'Failed to delete backup. Please try again.';
+            this.showSnackbarMessage('Failed to delete backup. Please try again.', 'error');
           }
-          setTimeout(() => this.error = '', 3000);
         }
       });
     }
   }
 
-  downloadBackup(id: number) {
-    this.adminService.downloadBackup(id);
+  exportLogs() {
+    this.logLoading = true;
+    this.error = '';
+    this.successMessage = '';
+
+    this.adminService.exportLogs(this.logType).subscribe({
+      next: (response: Blob) => {
+        this.logLoading = false;
+        // Create a download link for the CSV file
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `logs-${this.logType}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        this.showSnackbarMessage('Logs exported successfully', 'success');
+      },
+      error: (err: any) => {
+        this.logLoading = false;
+        console.error('Error exporting logs:', err);
+
+        // More specific error handling
+        if (err.status === 403) {
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+        } else if (err.status === 401) {
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          // Automatically redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+        } else {
+          this.showSnackbarMessage('Failed to export logs. Please try again.', 'error');
+        }
+      }
+    });
+  }
+
+  downloadBackup(filename: string) {
+    this.adminService.downloadBackup(filename).subscribe({
+      next: (response: Blob) => {
+        // Create a download link for the backup file
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        this.showSnackbarMessage('Backup downloaded successfully', 'success');
+      },
+      error: (err: any) => {
+        console.error('Error downloading backup:', err);
+        
+        if (err.status === 403) {
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+        } else if (err.status === 401) {
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+        } else {
+          this.showSnackbarMessage('Failed to download backup. Please try again.', 'error');
+        }
+      }
+    });
   }
 
   toggleTeacherActivation(teacher: TeacherUser) {
@@ -433,17 +478,25 @@ export class AdminComponent implements OnInit {
         const index = this.allTeachers.findIndex(t => t.id === teacher.id);
         if (index !== -1) {
           this.allTeachers[index].isActivated = response.isActivated;
-          // Refresh the paginated data
           this.updatePaginatedTeachers();
         }
-        this.successMessage = response.message;
-        setTimeout(() => this.successMessage = '', 3000);
+        this.showSnackbarMessage(response.message, 'success');
       },
       error: (err: any) => {
         this.actionLoading = false;
         console.error('Error toggling teacher activation:', err);
-        this.error = 'Failed to update teacher activation status. Please try again.';
-        setTimeout(() => this.error = '', 3000);
+        
+        if (err.status === 403) {
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+        } else if (err.status === 401) {
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+        } else {
+          this.showSnackbarMessage('Failed to toggle teacher activation. Please try again.', 'error');
+        }
       }
     });
   }
@@ -457,17 +510,25 @@ export class AdminComponent implements OnInit {
         const index = this.allStudents.findIndex(s => s.id === student.id);
         if (index !== -1) {
           this.allStudents[index].isActivated = response.isActivated;
-          // Refresh the paginated data
           this.updatePaginatedStudents();
         }
-        this.successMessage = response.message;
-        setTimeout(() => this.successMessage = '', 3000);
+        this.showSnackbarMessage(response.message, 'success');
       },
       error: (err: any) => {
         this.actionLoading = false;
         console.error('Error toggling student activation:', err);
-        this.error = 'Failed to update student activation status. Please try again.';
-        setTimeout(() => this.error = '', 3000);
+        
+        if (err.status === 403) {
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+        } else if (err.status === 401) {
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+        } else {
+          this.showSnackbarMessage('Failed to toggle student activation. Please try again.', 'error');
+        }
       }
     });
   }
@@ -482,6 +543,39 @@ export class AdminComponent implements OnInit {
     this.showCreateTeacherForm = true;
   }
 
+  closeCreateTeacherForm() {
+    this.showCreateTeacherForm = false;
+  }
+
+  createTeacher() {
+    this.actionLoading = true;
+    this.adminService.createTeacher(this.newTeacher).subscribe({
+      next: (response: CreateResponse) => {
+        this.actionLoading = false;
+        this.closeCreateTeacherForm();
+        this.showSnackbarMessage(response.message, 'success');
+        // Reload users to show the new teacher
+        this.loadAllUsers();
+      },
+      error: (err: any) => {
+        this.actionLoading = false;
+        console.error('Error creating teacher:', err);
+        
+        if (err.status === 403) {
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+        } else if (err.status === 401) {
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+        } else {
+          this.showSnackbarMessage('Failed to create teacher. Please try again.', 'error');
+        }
+      }
+    });
+  }
+
   openCreateStudentForm() {
     this.newStudent = {
       username: '',
@@ -491,67 +585,39 @@ export class AdminComponent implements OnInit {
     this.showCreateStudentForm = true;
   }
 
-  closeCreateTeacherForm() {
-    this.showCreateTeacherForm = false;
-  }
-
   closeCreateStudentForm() {
     this.showCreateStudentForm = false;
   }
 
-  createTeacher() {
-    if (!this.newTeacher.username || !this.newTeacher.email || !this.newTeacher.password) {
-      this.error = 'Please fill in all required fields.';
-      setTimeout(() => this.error = '', 3000);
-      return;
-    }
-
-    this.actionLoading = true;
-    this.adminService.createTeacher(this.newTeacher).subscribe({
-      next: (response: CreateResponse) => {
-        this.actionLoading = false;
-        this.closeCreateTeacherForm();
-        this.successMessage = response.message;
-        setTimeout(() => this.successMessage = '', 3000);
-        // Reload users to show the new teacher
-        this.loadAllUsers();
-      },
-      error: (err: any) => {
-        this.actionLoading = false;
-        console.error('Error creating teacher:', err);
-        this.error = err.error?.message || 'Failed to create teacher. Please try again.';
-        setTimeout(() => this.error = '', 3000);
-      }
-    });
-  }
-
   createStudent() {
-    if (!this.newStudent.username || !this.newStudent.email || !this.newStudent.password) {
-      this.error = 'Please fill in all required fields.';
-      setTimeout(() => this.error = '', 3000);
-      return;
-    }
-
     this.actionLoading = true;
     this.adminService.createStudent(this.newStudent).subscribe({
       next: (response: CreateResponse) => {
         this.actionLoading = false;
         this.closeCreateStudentForm();
-        this.successMessage = response.message;
-        setTimeout(() => this.successMessage = '', 3000);
+        this.showSnackbarMessage(response.message, 'success');
         // Reload users to show the new student
         this.loadAllUsers();
       },
       error: (err: any) => {
         this.actionLoading = false;
         console.error('Error creating student:', err);
-        this.error = err.error?.message || 'Failed to create student. Please try again.';
-        setTimeout(() => this.error = '', 3000);
+        
+        if (err.status === 403) {
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+        } else if (err.status === 401) {
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+        } else {
+          this.showSnackbarMessage('Failed to create student. Please try again.', 'error');
+        }
       }
     });
   }
 
-  // Open delete confirmation dialog
   openDeleteConfirm(itemType: string, itemId: number, itemName: string) {
     this.deleteItemType = itemType;
     this.deleteItemId = itemId;
@@ -559,7 +625,6 @@ export class AdminComponent implements OnInit {
     this.showDeleteConfirm = true;
   }
 
-  // Close delete confirmation dialog
   closeDeleteConfirm() {
     this.showDeleteConfirm = false;
     this.deleteItemType = '';
@@ -567,92 +632,104 @@ export class AdminComponent implements OnInit {
     this.deleteItemName = '';
   }
 
-  // Open course delete confirmation dialog
+  confirmDelete() {
+    if (this.deleteItemType === 'teacher') {
+      this.actionLoading = true;
+      this.adminService.deleteTeacher(this.deleteItemId).subscribe({
+        next: (response: DeleteResponse) => {
+          this.actionLoading = false;
+          this.closeDeleteConfirm();
+          this.showSnackbarMessage(response.message, 'success');
+          // Reload users to reflect the deletion
+          this.loadAllUsers();
+        },
+        error: (err: any) => {
+          this.actionLoading = false;
+          this.closeDeleteConfirm();
+          console.error('Error deleting teacher:', err);
+          
+          if (err.status === 403) {
+            this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+          } else if (err.status === 401) {
+            this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          } else if (err.status === 0) {
+            this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+          } else {
+            this.showSnackbarMessage('Failed to delete teacher. Please try again.', 'error');
+          }
+        }
+      });
+    } else if (this.deleteItemType === 'student') {
+      this.actionLoading = true;
+      this.adminService.deleteStudent(this.deleteItemId).subscribe({
+        next: (response: DeleteResponse) => {
+          this.actionLoading = false;
+          this.closeDeleteConfirm();
+          this.showSnackbarMessage(response.message, 'success');
+          // Reload users to reflect the deletion
+          this.loadAllUsers();
+        },
+        error: (err: any) => {
+          this.actionLoading = false;
+          this.closeDeleteConfirm();
+          console.error('Error deleting student:', err);
+          
+          if (err.status === 403) {
+            this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+          } else if (err.status === 401) {
+            this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          } else if (err.status === 0) {
+            this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+          } else {
+            this.showSnackbarMessage('Failed to delete student. Please try again.', 'error');
+          }
+        }
+      });
+    }
+  }
+
   openCourseDeleteConfirm(courseId: number, courseTitle: string) {
     this.deleteCourseId = courseId;
     this.deleteCourseTitle = courseTitle;
     this.showCourseDeleteConfirm = true;
   }
 
-  // Close course delete confirmation dialog
   closeCourseDeleteConfirm() {
     this.showCourseDeleteConfirm = false;
     this.deleteCourseId = 0;
     this.deleteCourseTitle = '';
   }
 
-  // Confirm and execute delete
-  confirmDelete() {
-    if (this.deleteItemType === 'teacher') {
-      this.deleteTeacher(this.deleteItemId);
-    } else if (this.deleteItemType === 'student') {
-      this.deleteStudent(this.deleteItemId);
-    }
-    this.closeDeleteConfirm();
-  }
-
-  // Confirm and execute course delete
   confirmCourseDelete() {
-    this.deleteCourse(this.deleteCourseId);
-    this.closeCourseDeleteConfirm();
-  }
-
-  // Delete teacher
-  deleteTeacher(id: number) {
     this.actionLoading = true;
-    this.adminService.deleteTeacher(id).subscribe({
+    this.adminService.deleteCourse(this.deleteCourseId).subscribe({
       next: (response: DeleteResponse) => {
         this.actionLoading = false;
-        this.successMessage = response.message;
-        setTimeout(() => this.successMessage = '', 3000);
-        // Reload users to reflect the deletion
-        this.loadAllUsers();
-      },
-      error: (err: any) => {
-        this.actionLoading = false;
-        console.error('Error deleting teacher:', err);
-        this.error = err.error?.message || 'Failed to delete teacher. Please try again.';
-        setTimeout(() => this.error = '', 3000);
-      }
-    });
-  }
-
-  // Delete student
-  deleteStudent(id: number) {
-    this.actionLoading = true;
-    this.adminService.deleteStudent(id).subscribe({
-      next: (response: DeleteResponse) => {
-        this.actionLoading = false;
-        this.successMessage = response.message;
-        setTimeout(() => this.successMessage = '', 3000);
-        // Reload users to reflect the deletion
-        this.loadAllUsers();
-      },
-      error: (err: any) => {
-        this.actionLoading = false;
-        console.error('Error deleting student:', err);
-        this.error = err.error?.message || 'Failed to delete student. Please try again.';
-        setTimeout(() => this.error = '', 3000);
-      }
-    });
-  }
-
-  // Delete course
-  deleteCourse(id: number) {
-    this.actionLoading = true;
-    this.adminService.deleteCourse(id).subscribe({
-      next: (response: DeleteResponse) => {
-        this.actionLoading = false;
-        this.successMessage = response.message;
-        setTimeout(() => this.successMessage = '', 3000);
+        this.closeCourseDeleteConfirm();
+        this.showSnackbarMessage(response.message, 'success');
         // Reload courses to reflect the deletion
         this.loadAllCourses();
       },
       error: (err: any) => {
         this.actionLoading = false;
+        this.closeCourseDeleteConfirm();
         console.error('Error deleting course:', err);
-        this.error = err.error?.message || 'Failed to delete course. Please try again.';
-        setTimeout(() => this.error = '', 3000);
+        
+        if (err.status === 403) {
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
+        } else if (err.status === 401) {
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
+        } else {
+          this.showSnackbarMessage('Failed to delete course. Please try again.', 'error');
+        }
       }
     });
   }
@@ -904,45 +981,41 @@ export class AdminComponent implements OnInit {
     this.loadAllLogs();
   }
 
-  exportLogs() {
+  // Clear logs
+  clearLogs() {
     this.logLoading = true;
     this.error = '';
     this.successMessage = '';
 
-    this.adminService.exportLogs(this.logType).subscribe({
-      next: (response: Blob) => {
+    this.adminService.clearLogs().subscribe({
+      next: (response: { success: boolean; message: string }) => {
         this.logLoading = false;
-        // Create a download link for the CSV file
-        const url = window.URL.createObjectURL(response);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `logs-${this.logType}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        
-        this.successMessage = 'Logs exported successfully';
-        setTimeout(() => this.successMessage = '', 3000);
+        if (response.success) {
+          this.showSnackbarMessage(response.message, 'success');
+          // Clear the logs array
+          this.allLogs = [];
+          this.updatePaginatedLogs();
+        } else {
+          this.showSnackbarMessage('Failed to clear logs.', 'error');
+        }
       },
       error: (err: any) => {
         this.logLoading = false;
-        console.error('Error exporting logs:', err);
+        console.error('Error clearing logs:', err);
 
         // More specific error handling
         if (err.status === 403) {
-          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+          this.showSnackbarMessage('Access denied. Please ensure you are logged in as an administrator.', 'error');
         } else if (err.status === 401) {
-          this.error = 'Authentication failed. Please log in again.';
+          this.showSnackbarMessage('Authentication failed. Please log in again.', 'error');
           // Automatically redirect to login
           this.authService.logout();
           this.router.navigate(['/login']);
         } else if (err.status === 0) {
-          this.error = 'Network error. Please check your connection and try again.';
+          this.showSnackbarMessage('Network error. Please check your connection and try again.', 'error');
         } else {
-          this.error = 'Failed to export logs. Please try again.';
+          this.showSnackbarMessage('Failed to clear logs. Please try again.', 'error');
         }
-        setTimeout(() => this.error = '', 3000);
       }
     });
   }
@@ -950,5 +1023,29 @@ export class AdminComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  // Snackbar methods
+  showSnackbarMessage(message: string, type: 'success' | 'error') {
+    this.snackbarMessage = message;
+    this.snackbarType = type;
+    this.showSnackbar = true;
+
+    // Hide the snackbar after 3 seconds
+    setTimeout(() => {
+      this.hideSnackbar();
+    }, 3000);
+  }
+
+  hideSnackbar() {
+    this.showSnackbar = false;
+  }
+
+  refreshBackups() {
+    this.loadAllBackups();
+  }
+
+  refreshLogs() {
+    this.loadAllLogs();
   }
 }

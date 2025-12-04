@@ -117,15 +117,14 @@ export interface LogsResponse {
 
 // Placeholder interface for backups - to be updated when API is available
 export interface BackupEntry {
-  id: number;
-  name: string;
+  filename: string;
+  size: number;
   createdAt: string;
-  size: string;
+  modifiedAt: string;
 }
 
 export interface BackupsResponse {
   success: boolean;
-  count: number;
   backups: BackupEntry[];
 }
 
@@ -133,7 +132,7 @@ export interface CreateBackupResponse {
   success: boolean;
   message: string;
   filename: string;
-  size: number;
+  size: number; // This is a number in the create response
   createdAt: string;
 }
 
@@ -385,6 +384,24 @@ export class AdminService {
   }
 
   /**
+   * Clear all application logs (empties log files)
+   * @returns Observable of the response
+   */
+  clearLogs(): Observable<{ success: boolean; message: string }> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.delete<{ success: boolean; message: string }>(
+      `${this.apiUrl}/logs`,
+      { headers }
+    );
+  }
+
+  /**
    * Get system statistics including counts of users, content, and interactions
    * @returns Observable of StatisticsResponse
    */
@@ -400,7 +417,7 @@ export class AdminService {
   }
 
   /**
-   * Get available backups (placeholder implementation)
+   * Get available backups
    * @returns Observable of BackupsResponse
    */
   getBackups(): Observable<BackupsResponse> {
@@ -411,40 +428,8 @@ export class AdminService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     
-    // When API is available, use this line:
-    return this.http.get<BackupsResponse>(`${this.apiUrl}/backup`, { headers });
-    
-    // Placeholder - remove when API is available
-    // return new Observable<BackupsResponse>((observer: any) => {
-    //   // Simulate API response
-    //   setTimeout(() => {
-    //     observer.next({
-    //       success: true,
-    //       count: 3,
-    //       backups: [
-    //         {
-    //           id: 1,
-    //           name: 'backup_2025-12-04_14-30-00.zip',
-    //           createdAt: '2025-12-04T14:30:00.000Z',
-    //           size: '125 MB'
-    //         },
-    //         {
-    //           id: 2,
-    //           name: 'backup_2025-12-03_10-15-00.zip',
-    //           createdAt: '2025-12-03T10:15:00.000Z',
-    //           size: '118 MB'
-    //         },
-    //         {
-    //           id: 3,
-    //           name: 'backup_2025-12-02_09-45-00.zip',
-    //           createdAt: '2025-12-02T09:45:00.000Z',
-    //           size: '132 MB'
-    //         }
-    //       ]
-    //     });
-    //     observer.complete();
-    //   }, 500);
-    // });
+    // Using the correct endpoint: /admin/backups
+    return this.http.get<BackupsResponse>(`${this.apiUrl}/backups`, { headers });
   }
 
   /**
@@ -459,6 +444,7 @@ export class AdminService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     
+    // Using the correct endpoint: /admin/backups
     return this.http.post<CreateBackupResponse>(`${this.apiUrl}/backup`, {}, { headers });
   }
 
@@ -475,6 +461,7 @@ export class AdminService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     
+    // Using the correct endpoint: /admin/backups/:filename
     return this.http.delete<DeleteBackupResponse>(
       `${this.apiUrl}/backups/${filename}`, 
       { headers }
@@ -483,16 +470,20 @@ export class AdminService {
 
   /**
    * Download a backup file
-   * @param id Backup ID
+   * @param filename Name of the backup file to download
+   * @returns Observable of the backup file content
    */
-  downloadBackup(id: number): void {
-    // Placeholder - replace with actual download logic when API is available
-    console.log(`Downloading backup with ID: ${id}`);
-    alert(`Download functionality would be implemented here. Backup ID: ${id}`);
+  downloadBackup(filename: string): Observable<Blob> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
     
-    // When API is available, implement actual download logic:
-    // const token = this.authService.getToken();
-    // const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    // return this.http.get(`${this.apiUrl}/backups/${id}/download`, { headers, responseType: 'blob' });
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.get(`${this.apiUrl}/backups/${filename}`, { 
+      headers, 
+      responseType: 'blob' 
+    });
   }
 }
