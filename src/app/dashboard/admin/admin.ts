@@ -3,7 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateResponse, DeleteResponse, TeacherCoursesResponse, TeacherWithCourses, TeacherCourse } from '../../../services/admin.service';
+import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateResponse, DeleteResponse, TeacherCoursesResponse, TeacherWithCourses, TeacherCourse, LogEntry, BackupEntry, BackupsResponse, CreateBackupResponse, DeleteBackupResponse, StatisticsResponse } from '../../../services/admin.service';
 
 // Extend TeacherCourse interface to include teacher information
 interface TeacherCourseWithTeacherInfo extends TeacherCourse {
@@ -25,12 +25,33 @@ export class AdminComponent implements OnInit {
   currentPageTeachers = 1;
   currentPageStudents = 1;
   currentPageCourses = 1;
+  currentPageLogs = 1;
   itemsPerPage = 5;
   
   // Data arrays
   allTeachers: TeacherUser[] = [];
   allStudents: StudentUser[] = [];
   allCourses: TeacherCourseWithTeacherInfo[] = [];
+  allLogs: LogEntry[] = [];
+  allBackups: BackupEntry[] = [];
+  
+  // Statistics data
+  statistics: StatisticsResponse = {
+    users: {
+      admins: 0,
+      teachers: 0,
+      students: 0
+    },
+    content: {
+      courses: 0,
+      tests: 0,
+      questions: 0,
+      classes: 0
+    },
+    interactions: {
+      forumPosts: 0
+    }
+  };
   
   // Filter properties
   courseFilter = '';
@@ -38,15 +59,20 @@ export class AdminComponent implements OnInit {
   studentStatusFilter: 'all' | 'active' | 'inactive' = 'all';
   teacherFilter: 'all' | 'active' | 'inactive' | 'newest' | 'oldest' = 'all';
   studentFilter: 'all' | 'active' | 'inactive' | 'newest' | 'oldest' = 'all';
+  logType: 'combined' | 'error' = 'combined';
   
   // Paginated data
   paginatedTeachers: TeacherUser[] = [];
   paginatedStudents: StudentUser[] = [];
   paginatedCourses: TeacherCourseWithTeacherInfo[] = [];
+  paginatedLogs: LogEntry[] = [];
   
   // Loading and error states
   loading = false;
   courseLoading = false;
+  logLoading = false;
+  backupLoading = false;
+  statisticsLoading = false;
   error = '';
   actionLoading = false;
   successMessage = '';
@@ -56,15 +82,19 @@ export class AdminComponent implements OnInit {
   showCreateStudentForm = false;
   showDeleteConfirm = false;
   showCourseDeleteConfirm = false;
+  showBackupDeleteConfirm = false;
   
   // Delete confirmation data
-  deleteItemType = ''; // 'teacher', 'student', or 'course'
+  deleteItemType = ''; // 'teacher', 'student', 'course', or 'backup'
   deleteItemId = 0;
   deleteItemName = '';
   
   // Course delete confirmation data
   deleteCourseId = 0;
   deleteCourseTitle = '';
+  
+  // Backup delete confirmation data
+  deleteBackupFilename = '';
   
   // Form data
   newTeacher: CreateTeacherRequest = {
@@ -93,6 +123,40 @@ export class AdminComponent implements OnInit {
     }
     this.loadAllUsers();
     this.loadAllCourses();
+    this.loadAllLogs();
+    this.loadAllBackups();
+    this.loadStatistics();
+  }
+
+  loadStatistics() {
+    this.statisticsLoading = true;
+    this.error = '';
+    
+    this.adminService.getStatistics().subscribe({
+      next: (response: StatisticsResponse) => {
+        this.statisticsLoading = false;
+        this.statistics = response;
+      },
+      error: (err: any) => {
+        this.statisticsLoading = false;
+        console.error('Error loading statistics:', err);
+        
+        // More specific error handling
+        if (err.status === 403) {
+          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+        } else if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+          // Automatically redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.error = 'Network error. Please check your connection and try again.';
+        } else {
+          this.error = 'Failed to load statistics. Please try again.';
+        }
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
   }
 
   loadAllUsers() {
@@ -172,6 +236,192 @@ export class AdminComponent implements OnInit {
         setTimeout(() => this.error = '', 3000);
       }
     });
+  }
+
+  loadAllLogs() {
+    this.logLoading = true;
+    this.error = '';
+    this.successMessage = '';
+    
+    this.adminService.getLogs(50, this.logType).subscribe({
+      next: (response: any) => {
+        this.logLoading = false;
+        if (response.success) {
+          this.allLogs = response.logs;
+          this.updatePaginatedLogs();
+        } else {
+          this.error = 'Failed to load logs.';
+          setTimeout(() => this.error = '', 3000);
+        }
+      },
+      error: (err: any) => {
+        this.logLoading = false;
+        console.error('Error loading logs:', err);
+        
+        // More specific error handling
+        if (err.status === 403) {
+          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+        } else if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+          // Automatically redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.error = 'Network error. Please check your connection and try again.';
+        } else {
+          this.error = 'Failed to load logs. Please try again.';
+        }
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
+  }
+
+  loadAllBackups() {
+    this.backupLoading = true;
+    this.error = '';
+    this.successMessage = '';
+    
+    this.adminService.getBackups().subscribe({
+      next: (response: BackupsResponse) => {
+        this.backupLoading = false;
+        if (response.success) {
+          this.allBackups = response.backups;
+        } else {
+          this.error = 'Failed to load backups.';
+          setTimeout(() => this.error = '', 3000);
+        }
+      },
+      error: (err: any) => {
+        this.backupLoading = false;
+        console.error('Error loading backups:', err);
+        
+        // More specific error handling
+        if (err.status === 403) {
+          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+        } else if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+          // Automatically redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.error = 'Network error. Please check your connection and try again.';
+        } else {
+          this.error = 'Failed to load backups. Please try again.';
+        }
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
+  }
+
+  refreshBackups() {
+    this.loadAllBackups();
+  }
+
+  refreshLogs() {
+    this.loadAllLogs();
+  }
+
+  createBackup() {
+    this.backupLoading = true;
+    this.error = '';
+    this.successMessage = '';
+
+    this.adminService.createBackup().subscribe({
+      next: (response: CreateBackupResponse) => {
+        this.backupLoading = false;
+        if (response.success) {
+          this.successMessage = response.message;
+          // Refresh the backups list to include the new backup
+          this.loadAllBackups();
+          // Clear success message after 3 seconds
+          setTimeout(() => this.successMessage = '', 3000);
+        } else {
+          this.error = 'Failed to create backup.';
+          setTimeout(() => this.error = '', 3000);
+        }
+      },
+      error: (err: any) => {
+        this.backupLoading = false;
+        console.error('Error creating backup:', err);
+
+        // More specific error handling
+        if (err.status === 403) {
+          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+        } else if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+          // Automatically redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.error = 'Network error. Please check your connection and try again.';
+        } else {
+          this.error = 'Failed to create backup. Please try again.';
+        }
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
+  }
+
+  openBackupDeleteConfirm(filename: string) {
+    this.deleteItemType = 'backup';
+    this.deleteBackupFilename = filename;
+    this.showBackupDeleteConfirm = true;
+  }
+
+  closeBackupDeleteConfirm() {
+    this.showBackupDeleteConfirm = false;
+    this.deleteItemType = '';
+    this.deleteBackupFilename = '';
+  }
+
+  confirmBackupDelete() {
+    if (this.deleteItemType === 'backup' && this.deleteBackupFilename) {
+      this.actionLoading = true;
+      this.error = '';
+      this.successMessage = '';
+
+      this.adminService.deleteBackup(this.deleteBackupFilename).subscribe({
+        next: (response: DeleteBackupResponse) => {
+          this.actionLoading = false;
+          this.closeBackupDeleteConfirm();
+          
+          if (response.success) {
+            this.successMessage = response.message;
+            // Refresh the backups list to remove the deleted backup
+            this.loadAllBackups();
+            // Clear success message after 3 seconds
+            setTimeout(() => this.successMessage = '', 3000);
+          } else {
+            this.error = 'Failed to delete backup.';
+            setTimeout(() => this.error = '', 3000);
+          }
+        },
+        error: (err: any) => {
+          this.actionLoading = false;
+          this.closeBackupDeleteConfirm();
+          console.error('Error deleting backup:', err);
+
+          // More specific error handling
+          if (err.status === 403) {
+            this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+          } else if (err.status === 401) {
+            this.error = 'Authentication failed. Please log in again.';
+            // Automatically redirect to login
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          } else if (err.status === 0) {
+            this.error = 'Network error. Please check your connection and try again.';
+          } else {
+            this.error = 'Failed to delete backup. Please try again.';
+          }
+          setTimeout(() => this.error = '', 3000);
+        }
+      });
+    }
+  }
+
+  downloadBackup(id: number) {
+    this.adminService.downloadBackup(id);
   }
 
   toggleTeacherActivation(teacher: TeacherUser) {
@@ -620,6 +870,81 @@ export class AdminComponent implements OnInit {
 
   getTotalPagesStudents(): number {
     return Math.ceil(this.getStudentFilteredCount() / this.itemsPerPage);
+  }
+
+  // Log pagination methods
+  updatePaginatedLogs() {
+    const startIndex = (this.currentPageLogs - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedLogs = this.allLogs.slice(startIndex, endIndex);
+  }
+
+  nextPageLogs() {
+    if (this.currentPageLogs * this.itemsPerPage < this.allLogs.length) {
+      this.currentPageLogs++;
+      this.updatePaginatedLogs();
+    }
+  }
+
+  prevPageLogs() {
+    if (this.currentPageLogs > 1) {
+      this.currentPageLogs--;
+      this.updatePaginatedLogs();
+    }
+  }
+
+  getTotalPagesLogs(): number {
+    return Math.ceil(this.allLogs.length / this.itemsPerPage);
+  }
+
+  // Update log type filter
+  updateLogType(type: 'combined' | 'error') {
+    this.logType = type;
+    this.currentPageLogs = 1; // Reset to first page when filter changes
+    this.loadAllLogs();
+  }
+
+  exportLogs() {
+    this.logLoading = true;
+    this.error = '';
+    this.successMessage = '';
+
+    this.adminService.exportLogs(this.logType).subscribe({
+      next: (response: Blob) => {
+        this.logLoading = false;
+        // Create a download link for the CSV file
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `logs-${this.logType}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        this.successMessage = 'Logs exported successfully';
+        setTimeout(() => this.successMessage = '', 3000);
+      },
+      error: (err: any) => {
+        this.logLoading = false;
+        console.error('Error exporting logs:', err);
+
+        // More specific error handling
+        if (err.status === 403) {
+          this.error = 'Access denied. Please ensure you are logged in as an administrator.';
+        } else if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+          // Automatically redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        } else if (err.status === 0) {
+          this.error = 'Network error. Please check your connection and try again.';
+        } else {
+          this.error = 'Failed to export logs. Please try again.';
+        }
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
   }
 
   logout() {

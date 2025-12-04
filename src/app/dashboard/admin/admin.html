@@ -35,6 +35,55 @@
     <p>Processing request...</p>
   </div>
 
+  <!-- Statistics Section -->
+  <section class="statistics-section" *ngIf="!statisticsLoading">
+    <h2>System Statistics</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Users</h3>
+        <div class="stat-item">
+          <span class="stat-label">Admins:</span>
+          <span class="stat-value">{{ statistics.users.admins }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Teachers:</span>
+          <span class="stat-value">{{ statistics.users.teachers }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Students:</span>
+          <span class="stat-value">{{ statistics.users.students }}</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <h3>Content</h3>
+        <div class="stat-item">
+          <span class="stat-label">Courses:</span>
+          <span class="stat-value">{{ statistics.content.courses }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Tests:</span>
+          <span class="stat-value">{{ statistics.content.tests }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Questions:</span>
+          <span class="stat-value">{{ statistics.content.questions }}</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <h3>Interactions</h3>
+      </div>
+    </div>
+  </section>
+  
+  <section class="statistics-section" *ngIf="statisticsLoading">
+    <h2>System Statistics</h2>
+    <div class="loading-stats">
+      <p>Loading statistics...</p>
+    </div>
+  </section>
+  
   <!-- Users Section -->
   <section class="users-section" *ngIf="!loading && !error">
     <!-- Teachers Table -->
@@ -259,28 +308,6 @@
         <h2>Courses</h2>
       </div>
       
-      <!-- Course Filter -->
-      <div class="filter-section">
-        <div class="filter-group">
-          <select [(ngModel)]="courseFilterType" class="filter-select" (change)="updateCourseFilter()">
-            <option value="teacher">Filter by Teacher</option>
-            <option value="category">Filter by Category</option>
-          </select>
-          <input 
-            type="text" 
-            [(ngModel)]="courseFilter" 
-            (input)="updateCourseFilter()"
-            placeholder="Enter filter text..." 
-            class="filter-input">
-          <button 
-            *ngIf="courseFilter" 
-            (click)="clearCourseFilter()" 
-            class="clear-filter-btn">
-            Clear
-          </button>
-        </div>
-      </div>
-      
       <!-- Course Loading indicator -->
       <div *ngIf="courseLoading" class="loading">
         <p>Loading courses...</p>
@@ -291,11 +318,9 @@
           <tr>
             <th>ID</th>
             <th>Title</th>
-            <th>Description</th>
             <th>Category</th>
             <th>Teacher</th>
-            <th>Test Questions</th>
-            <th>Enrolled Students</th>
+            <th>Students Enrolled</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -303,10 +328,8 @@
           <tr *ngFor="let course of paginatedCourses">
             <td>{{ course.id }}</td>
             <td>{{ course.title }}</td>
-            <td>{{ course.description }}</td>
             <td>{{ course.category }}</td>
             <td>{{ course.teacherName }}</td>
-            <td>{{ course.test.question_count || 0 }}</td>
             <td>{{ course.enrolled_student_count }}</td>
             <td class="action-buttons">
               <button 
@@ -318,13 +341,13 @@
             </td>
           </tr>
           <tr *ngIf="paginatedCourses.length === 0">
-            <td colspan="8" class="no-data">No courses found</td>
+            <td colspan="6" class="no-data">No courses found</td>
           </tr>
         </tbody>
       </table>
       
       <!-- Courses Pagination -->
-      <div class="pagination-controls" *ngIf="getCourseFilteredCount() > itemsPerPage && !courseLoading">
+      <div class="pagination-controls" *ngIf="allCourses.length > itemsPerPage && !courseLoading">
         <button 
           (click)="prevPageCourses()" 
           [disabled]="currentPageCourses === 1"
@@ -337,6 +360,151 @@
         <button 
           (click)="nextPageCourses()" 
           [disabled]="currentPageCourses === getTotalPagesCourses()"
+          class="pagination-btn">
+          Next
+        </button>
+      </div>
+    </div>
+    
+    <!-- Backups Table -->
+    <div class="table-container">
+      <div class="table-header">
+        <h2>Database Backups</h2>
+        <div class="header-actions">
+          <button class="create-btn" (click)="createBackup()" [disabled]="backupLoading">
+            <span *ngIf="!backupLoading">Create Backup</span>
+            <span *ngIf="backupLoading">Creating...</span>
+          </button>
+          <button class="refresh-btn" (click)="refreshBackups()" [disabled]="backupLoading">
+            <span *ngIf="!backupLoading">Refresh</span>
+            <span *ngIf="backupLoading">Loading...</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Backup Loading indicator -->
+      <div *ngIf="backupLoading" class="loading">
+        <p>Loading backups...</p>
+      </div>
+      
+      <table class="users-table" *ngIf="!backupLoading">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Created At</th>
+            <th>Size</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let backup of allBackups">
+            <td>{{ backup.id }}</td>
+            <td>{{ backup.name }}</td>
+            <td>{{ backup.createdAt | date:'short' }}</td>
+            <td>{{ backup.size }}</td>
+            <td class="action-buttons">
+              <button 
+                class="download-btn"
+                (click)="downloadBackup(backup.id)">
+                Download
+              </button>
+              <button 
+                class="delete-btn"
+                (click)="openBackupDeleteConfirm(backup.name)"
+                [disabled]="actionLoading">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="allBackups.length === 0">
+            <td colspan="5" class="no-data">No backups found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Logs Table -->
+    <div class="table-container">
+      <div class="table-header">
+        <h2>System Logs</h2>
+        <div class="header-actions">
+          <button class="export-btn" (click)="exportLogs()" [disabled]="logLoading">
+            <span *ngIf="!logLoading">Export to CSV</span>
+            <span *ngIf="logLoading">Exporting...</span>
+          </button>
+          <button class="refresh-btn" (click)="refreshLogs()" [disabled]="logLoading">
+            <span *ngIf="!logLoading">Refresh</span>
+            <span *ngIf="logLoading">Loading...</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Log Filter -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <button 
+            class="filter-btn" 
+            [class.active]="logType === 'combined'"
+            (click)="updateLogType('combined')">
+            All Logs
+          </button>
+          <button 
+            class="filter-btn" 
+            [class.active]="logType === 'error'"
+            (click)="updateLogType('error')">
+            Error Logs Only
+          </button>
+        </div>
+      </div>
+      
+      <!-- Log Loading indicator -->
+      <div *ngIf="logLoading" class="loading">
+        <p>Loading logs...</p>
+      </div>
+      
+      <table class="users-table" *ngIf="!logLoading">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Level</th>
+            <th>Message</th>
+            <th>Service</th>
+            <th>User ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of paginatedLogs">
+            <td>{{ log.timestamp | date:'short' }}</td>
+            <td>
+              <span class="log-level" [ngClass]="log.level">
+                {{ log.level }}
+              </span>
+            </td>
+            <td>{{ log.message }}</td>
+            <td>{{ log.service }}</td>
+            <td>{{ log.userId }}</td>
+          </tr>
+          <tr *ngIf="paginatedLogs.length === 0">
+            <td colspan="5" class="no-data">No logs found</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Logs Pagination -->
+      <div class="pagination-controls" *ngIf="allLogs.length > itemsPerPage && !logLoading">
+        <button 
+          (click)="prevPageLogs()" 
+          [disabled]="currentPageLogs === 1"
+          class="pagination-btn">
+          Previous
+        </button>
+        <span class="pagination-info">
+          Page {{ currentPageLogs }} of {{ getTotalPagesLogs() }}
+        </span>
+        <button 
+          (click)="nextPageLogs()" 
+          [disabled]="currentPageLogs === getTotalPagesLogs()"
           class="pagination-btn">
           Next
         </button>
@@ -513,6 +681,33 @@
     </div>
   </div>
 
+  <!-- Delete Backup Confirmation Modal -->
+  <div class="modal" *ngIf="showBackupDeleteConfirm">
+    <div class="modal-content delete-confirm">
+      <div class="modal-header">
+        <h3>Confirm Delete</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete the backup file "{{ deleteBackupFilename }}"? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button 
+          class="cancel-btn" 
+          (click)="closeBackupDeleteConfirm()"
+          [disabled]="actionLoading">
+          Cancel
+        </button>
+        <button 
+          class="confirm-delete-btn" 
+          (click)="confirmBackupDelete()"
+          [disabled]="actionLoading">
+          <span *ngIf="!actionLoading">Delete</span>
+          <span *ngIf="actionLoading">Deleting...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Background Overlay -->
-  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm || showDeleteConfirm || showCourseDeleteConfirm"></div>
+  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm || showDeleteConfirm || showCourseDeleteConfirm || showBackupDeleteConfirm"></div>
 </div>
