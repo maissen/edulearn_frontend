@@ -64,6 +64,10 @@ export interface CreateResponse {
   studentId?: number;
 }
 
+export interface DeleteResponse {
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -168,6 +172,44 @@ export class AdminService {
     return this.http.post<CreateResponse>(
       `${this.apiUrl}/students`,
       student,
+      { headers }
+    );
+  }
+
+  /**
+   * Delete a teacher account and all related data
+   * @param id Teacher ID
+   * @returns Observable of DeleteResponse
+   */
+  deleteTeacher(id: number): Observable<DeleteResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.delete<DeleteResponse>(
+      `${this.apiUrl}/teachers/${id}`,
+      { headers }
+    );
+  }
+
+  /**
+   * Delete a student account and all related data
+   * @param id Student ID
+   * @returns Observable of DeleteResponse
+   */
+  deleteStudent(id: number): Observable<DeleteResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.delete<DeleteResponse>(
+      `${this.apiUrl}/students/${id}`,
       { headers }
     );
   }

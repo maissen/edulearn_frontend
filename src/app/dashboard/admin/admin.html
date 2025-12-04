@@ -32,7 +32,7 @@
 
   <!-- Action loading indicator -->
   <div *ngIf="actionLoading" class="action-loading">
-    <p>Updating user status...</p>
+    <p>Processing request...</p>
   </div>
 
   <!-- Users Section -->
@@ -65,13 +65,19 @@
                 {{ teacher.isActivated ? 'Active' : 'Inactive' }}
               </span>
             </td>
-            <td>
+            <td class="action-buttons">
               <button 
                 class="toggle-btn" 
                 [ngClass]="{'disable-btn': teacher.isActivated, 'enable-btn': !teacher.isActivated}"
                 (click)="toggleTeacherActivation(teacher)"
                 [disabled]="actionLoading">
                 {{ teacher.isActivated ? 'Disable' : 'Enable' }}
+              </button>
+              <button 
+                class="delete-btn"
+                (click)="openDeleteConfirm('teacher', teacher.id, teacher.username)"
+                [disabled]="actionLoading">
+                Delete
               </button>
             </td>
           </tr>
@@ -129,13 +135,19 @@
                 {{ student.isActivated ? 'Active' : 'Inactive' }}
               </span>
             </td>
-            <td>
+            <td class="action-buttons">
               <button 
                 class="toggle-btn" 
                 [ngClass]="{'disable-btn': student.isActivated, 'enable-btn': !student.isActivated}"
                 (click)="toggleStudentActivation(student)"
                 [disabled]="actionLoading">
                 {{ student.isActivated ? 'Disable' : 'Enable' }}
+              </button>
+              <button 
+                class="delete-btn"
+                (click)="openDeleteConfirm('student', student.id, student.username)"
+                [disabled]="actionLoading">
+                Delete
               </button>
             </td>
           </tr>
@@ -286,6 +298,27 @@
     </div>
   </div>
 
+  <!-- Delete Confirmation Modal -->
+  <div class="modal" *ngIf="showDeleteConfirm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <span class="close" (click)="closeDeleteConfirm()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong>{{ deleteItemName }}</strong>? This action cannot be undone and will permanently remove all associated data.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteConfirm()" [disabled]="actionLoading">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()" [disabled]="actionLoading">
+          {{ actionLoading ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Background Overlay -->
-  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm" (click)="closeCreateTeacherForm(); closeCreateStudentForm()"></div>
+  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm || showDeleteConfirm" (click)="closeCreateTeacherForm(); closeCreateStudentForm(); closeDeleteConfirm()"></div>
 </div>

@@ -3,7 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateResponse } from '../../../services/admin.service';
+import { AdminService, AdminUsersResponse, TeacherUser, StudentUser, ActivationResponse, CreateTeacherRequest, CreateStudentRequest, CreateResponse, DeleteResponse } from '../../../services/admin.service';
 
 @Component({
   selector: 'app-admin',
@@ -37,6 +37,12 @@ export class AdminComponent implements OnInit {
   // Popup form states
   showCreateTeacherForm = false;
   showCreateStudentForm = false;
+  showDeleteConfirm = false;
+  
+  // Delete confirmation data
+  deleteItemType = ''; // 'teacher' or 'student'
+  deleteItemId = 0;
+  deleteItemName = '';
   
   // Form data
   newTeacher: CreateTeacherRequest = {
@@ -96,6 +102,7 @@ export class AdminComponent implements OnInit {
         } else {
           this.error = 'Failed to load users. Please try again.';
         }
+        setTimeout(() => this.error = '', 3000);
       }
     });
   }
@@ -222,6 +229,72 @@ export class AdminComponent implements OnInit {
         this.actionLoading = false;
         console.error('Error creating student:', err);
         this.error = err.error?.message || 'Failed to create student. Please try again.';
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
+  }
+
+  // Open delete confirmation dialog
+  openDeleteConfirm(itemType: string, itemId: number, itemName: string) {
+    this.deleteItemType = itemType;
+    this.deleteItemId = itemId;
+    this.deleteItemName = itemName;
+    this.showDeleteConfirm = true;
+  }
+
+  // Close delete confirmation dialog
+  closeDeleteConfirm() {
+    this.showDeleteConfirm = false;
+    this.deleteItemType = '';
+    this.deleteItemId = 0;
+    this.deleteItemName = '';
+  }
+
+  // Confirm and execute delete
+  confirmDelete() {
+    if (this.deleteItemType === 'teacher') {
+      this.deleteTeacher(this.deleteItemId);
+    } else if (this.deleteItemType === 'student') {
+      this.deleteStudent(this.deleteItemId);
+    }
+    this.closeDeleteConfirm();
+  }
+
+  // Delete teacher
+  deleteTeacher(id: number) {
+    this.actionLoading = true;
+    this.adminService.deleteTeacher(id).subscribe({
+      next: (response: DeleteResponse) => {
+        this.actionLoading = false;
+        this.successMessage = response.message;
+        setTimeout(() => this.successMessage = '', 3000);
+        // Reload users to reflect the deletion
+        this.loadAllUsers();
+      },
+      error: (err: any) => {
+        this.actionLoading = false;
+        console.error('Error deleting teacher:', err);
+        this.error = err.error?.message || 'Failed to delete teacher. Please try again.';
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
+  }
+
+  // Delete student
+  deleteStudent(id: number) {
+    this.actionLoading = true;
+    this.adminService.deleteStudent(id).subscribe({
+      next: (response: DeleteResponse) => {
+        this.actionLoading = false;
+        this.successMessage = response.message;
+        setTimeout(() => this.successMessage = '', 3000);
+        // Reload users to reflect the deletion
+        this.loadAllUsers();
+      },
+      error: (err: any) => {
+        this.actionLoading = false;
+        console.error('Error deleting student:', err);
+        this.error = err.error?.message || 'Failed to delete student. Please try again.';
         setTimeout(() => this.error = '', 3000);
       }
     });
