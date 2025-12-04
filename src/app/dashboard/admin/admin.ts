@@ -1041,6 +1041,23 @@ export class AdminComponent implements OnInit {
     this.showSnackbar = false;
   }
 
+  // Helper function to format file size with appropriate units
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 bytes';
+    
+    const k = 1024;
+    const sizes = ['bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    // If the size is less than 1 KB, show in bytes
+    if (i === 0) {
+      return bytes + ' ' + sizes[i];
+    }
+    
+    // For larger sizes, show with 2 decimal places
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
   refreshBackups() {
     this.loadAllBackups();
   }

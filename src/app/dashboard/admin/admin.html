@@ -39,7 +39,7 @@
 
   <!-- Statistics Section -->
   <section class="statistics-section" *ngIf="!statisticsLoading">
-    <div class="table-header">
+    <div class="table-header" style="margin-top: 50px;">
       <h2>System Statistics</h2>
       <div class="header-actions">
         <button class="refresh-btn" (click)="loadStatistics()" [disabled]="statisticsLoading">
@@ -424,7 +424,7 @@
           <tr>
             <th>Filename</th>
             <th>Created At</th>
-            <th>Size (bytes)</th>
+            <th>Size</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -432,7 +432,7 @@
           <tr *ngFor="let backup of allBackups">
             <td>{{ backup.filename }}</td>
             <td>{{ backup.createdAt | date:'short' }}</td>
-            <td>{{ backup.size }}</td>
+            <td>{{ formatFileSize(backup.size) }}</td>
             <td class="action-buttons">
               <button 
                 class="download-btn"
