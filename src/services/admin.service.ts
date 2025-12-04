@@ -40,6 +40,30 @@ export interface AdminUsersResponse {
   students: StudentUser[];
 }
 
+export interface ActivationResponse {
+  message: string;
+  isActivated: boolean;
+}
+
+export interface CreateTeacherRequest {
+  username: string;
+  email: string;
+  password: string;
+  module?: string;
+}
+
+export interface CreateStudentRequest {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface CreateResponse {
+  message: string;
+  teacherId?: number;
+  studentId?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -64,5 +88,87 @@ export class AdminService {
     }
     
     return this.http.get<AdminUsersResponse>(`${this.apiUrl}/users`, { headers });
+  }
+
+  /**
+   * Toggle activation status for a teacher
+   * @param id Teacher ID
+   * @param isActivated New activation status
+   * @returns Observable of ActivationResponse
+   */
+  toggleTeacherActivation(id: number, isActivated: boolean): Observable<ActivationResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.patch<ActivationResponse>(
+      `${this.apiUrl}/teachers/${id}/activation`,
+      { isActivated: !isActivated }, // Send the opposite value to toggle
+      { headers }
+    );
+  }
+
+  /**
+   * Toggle activation status for a student
+   * @param id Student ID
+   * @param isActivated New activation status
+   * @returns Observable of ActivationResponse
+   */
+  toggleStudentActivation(id: number, isActivated: boolean): Observable<ActivationResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.patch<ActivationResponse>(
+      `${this.apiUrl}/students/${id}/activation`,
+      { isActivated: !isActivated }, // Send the opposite value to toggle
+      { headers }
+    );
+  }
+
+  /**
+   * Create a new teacher account
+   * @param teacher Teacher data
+   * @returns Observable of CreateResponse
+   */
+  createTeacher(teacher: CreateTeacherRequest): Observable<CreateResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.post<CreateResponse>(
+      `${this.apiUrl}/teachers`,
+      teacher,
+      { headers }
+    );
+  }
+
+  /**
+   * Create a new student account
+   * @param student Student data
+   * @returns Observable of CreateResponse
+   */
+  createStudent(student: CreateStudentRequest): Observable<CreateResponse> {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return this.http.post<CreateResponse>(
+      `${this.apiUrl}/students`,
+      student,
+      { headers }
+    );
   }
 }

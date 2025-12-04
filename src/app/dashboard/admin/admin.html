@@ -16,22 +16,33 @@
     </div>
   </section>
 
+  <!-- Success and Error Messages -->
+  <div *ngIf="successMessage" class="success-message">
+    <p>{{ successMessage }}</p>
+  </div>
+  
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
   <!-- Loading indicator -->
   <div *ngIf="loading" class="loading">
     <p>Loading users...</p>
   </div>
 
-  <!-- Error message -->
-  <div *ngIf="error" class="error">
-    <p>{{ error }}</p>
-    <button (click)="loadAllUsers()" class="retry-btn">Retry</button>
+  <!-- Action loading indicator -->
+  <div *ngIf="actionLoading" class="action-loading">
+    <p>Updating user status...</p>
   </div>
 
   <!-- Users Section -->
   <section class="users-section" *ngIf="!loading && !error">
     <!-- Teachers Table -->
     <div class="table-container">
-      <h2>Teachers</h2>
+      <div class="table-header">
+        <h2>Teachers</h2>
+        <button class="create-btn" (click)="openCreateTeacherForm()">Create New Teacher</button>
+      </div>
       <table class="users-table">
         <thead>
           <tr>
@@ -40,6 +51,7 @@
             <th>Email</th>
             <th>Module</th>
             <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -53,9 +65,18 @@
                 {{ teacher.isActivated ? 'Active' : 'Inactive' }}
               </span>
             </td>
+            <td>
+              <button 
+                class="toggle-btn" 
+                [ngClass]="{'disable-btn': teacher.isActivated, 'enable-btn': !teacher.isActivated}"
+                (click)="toggleTeacherActivation(teacher)"
+                [disabled]="actionLoading">
+                {{ teacher.isActivated ? 'Disable' : 'Enable' }}
+              </button>
+            </td>
           </tr>
           <tr *ngIf="paginatedTeachers.length === 0">
-            <td colspan="5" class="no-data">No teachers found</td>
+            <td colspan="6" class="no-data">No teachers found</td>
           </tr>
         </tbody>
       </table>
@@ -82,7 +103,10 @@
 
     <!-- Students Table -->
     <div class="table-container">
-      <h2>Students</h2>
+      <div class="table-header">
+        <h2>Students</h2>
+        <button class="create-btn" (click)="openCreateStudentForm()">Create New Student</button>
+      </div>
       <table class="users-table">
         <thead>
           <tr>
@@ -91,6 +115,7 @@
             <th>Email</th>
             <th>Class ID</th>
             <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -104,9 +129,18 @@
                 {{ student.isActivated ? 'Active' : 'Inactive' }}
               </span>
             </td>
+            <td>
+              <button 
+                class="toggle-btn" 
+                [ngClass]="{'disable-btn': student.isActivated, 'enable-btn': !student.isActivated}"
+                (click)="toggleStudentActivation(student)"
+                [disabled]="actionLoading">
+                {{ student.isActivated ? 'Disable' : 'Enable' }}
+              </button>
+            </td>
           </tr>
           <tr *ngIf="paginatedStudents.length === 0">
-            <td colspan="5" class="no-data">No students found</td>
+            <td colspan="6" class="no-data">No students found</td>
           </tr>
         </tbody>
       </table>
@@ -131,4 +165,127 @@
       </div>
     </div>
   </section>
+
+  <!-- Create Teacher Modal -->
+  <div class="modal" *ngIf="showCreateTeacherForm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New Teacher</h3>
+        <span class="close" (click)="closeCreateTeacherForm()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createTeacher()" #teacherForm="ngForm">
+          <div class="form-group">
+            <label for="teacherUsername">Username *</label>
+            <input 
+              type="text" 
+              id="teacherUsername" 
+              [(ngModel)]="newTeacher.username" 
+              name="teacherUsername" 
+              class="form-control" 
+              required>
+          </div>
+          
+          <div class="form-group">
+            <label for="teacherEmail">Email *</label>
+            <input 
+              type="email" 
+              id="teacherEmail" 
+              [(ngModel)]="newTeacher.email" 
+              name="teacherEmail" 
+              class="form-control" 
+              required>
+          </div>
+          
+          <div class="form-group">
+            <label for="teacherPassword">Password *</label>
+            <input 
+              type="password" 
+              id="teacherPassword" 
+              [(ngModel)]="newTeacher.password" 
+              name="teacherPassword" 
+              class="form-control" 
+              required>
+          </div>
+          
+          <div class="form-group">
+            <label for="teacherModule">Module</label>
+            <input 
+              type="text" 
+              id="teacherModule" 
+              [(ngModel)]="newTeacher.module" 
+              name="teacherModule" 
+              class="form-control">
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeCreateTeacherForm()" [disabled]="actionLoading">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="actionLoading">
+              {{ actionLoading ? 'Creating...' : 'Create Teacher' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Student Modal -->
+  <div class="modal" *ngIf="showCreateStudentForm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New Student</h3>
+        <span class="close" (click)="closeCreateStudentForm()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createStudent()" #studentForm="ngForm">
+          <div class="form-group">
+            <label for="studentUsername">Username *</label>
+            <input 
+              type="text" 
+              id="studentUsername" 
+              [(ngModel)]="newStudent.username" 
+              name="studentUsername" 
+              class="form-control" 
+              required>
+          </div>
+          
+          <div class="form-group">
+            <label for="studentEmail">Email *</label>
+            <input 
+              type="email" 
+              id="studentEmail" 
+              [(ngModel)]="newStudent.email" 
+              name="studentEmail" 
+              class="form-control" 
+              required>
+          </div>
+          
+          <div class="form-group">
+            <label for="studentPassword">Password *</label>
+            <input 
+              type="password" 
+              id="studentPassword" 
+              [(ngModel)]="newStudent.password" 
+              name="studentPassword" 
+              class="form-control" 
+              required>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeCreateStudentForm()" [disabled]="actionLoading">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="actionLoading">
+              {{ actionLoading ? 'Creating...' : 'Create Student' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Background Overlay -->
+  <div class="modal-overlay" *ngIf="showCreateTeacherForm || showCreateStudentForm" (click)="closeCreateTeacherForm(); closeCreateStudentForm()"></div>
 </div>
