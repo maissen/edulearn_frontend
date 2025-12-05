@@ -54,6 +54,15 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
+## Team Development Guides
+
+This project includes specialized guides for different development teams:
+
+- [Authentication System Guide](README-authentication.md) - For developers working on authentication features
+- [Course Management Guide](README-course-management.md) - For developers working on course creation and management
+- [Course Details Guide](README-course-details.md) - For developers working on course display and student features
+- [General Development Guide](README-development.md) - Overall development practices and project structure
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
