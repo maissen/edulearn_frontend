@@ -31,7 +31,7 @@ interface TestQuestion {
 }
 
 interface Test {
-  title: string;
+  titre: string;
   questions: TestQuestion[];
 }
 
@@ -111,7 +111,7 @@ export class CourseDetailComponent implements OnInit {
   showQuizModal = false;
   editingQuizIndex: number | null = null;
   currentTest: Test = {
-    title: '',
+    titre: '',
     questions: [{
       question: '',
       option_a: '',
@@ -366,7 +366,7 @@ export class CourseDetailComponent implements OnInit {
   openAddQuizModal(): void {
     this.editingQuizIndex = null;
     this.currentTest = {
-      title: '',
+      titre: '',
       questions: [{
         question: '',
         option_a: '',
@@ -388,7 +388,7 @@ export class CourseDetailComponent implements OnInit {
     this.showQuizModal = false;
     this.editingQuizIndex = null;
     this.currentTest = {
-      title: '',
+      titre: '',
       questions: [{
         question: '',
         option_a: '',
@@ -419,7 +419,7 @@ export class CourseDetailComponent implements OnInit {
 
   isTestFormValid(): boolean {
     return !!(
-      this.currentTest.title.trim() &&
+      this.currentTest.titre.trim() &&
       this.currentTest.questions.length > 0 &&
       this.currentTest.questions.every(q =>
         q.question.trim() &&
@@ -445,7 +445,7 @@ export class CourseDetailComponent implements OnInit {
 
     // Create the test data in the API format
     const testData = {
-      titre: this.currentTest.title,
+      titre: this.currentTest.titre,
       description: '', // Adding the required description field
       cours_id: this.courseId,
       questions: this.currentTest.questions.map(q => ({
