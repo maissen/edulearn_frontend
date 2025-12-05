@@ -49,7 +49,7 @@ export interface TestInfo {
 
 export interface TeacherCourse {
   id: number;
-  title: string;
+  titre: string;
   description: string;
   category: string;
   youtube_url: string;
